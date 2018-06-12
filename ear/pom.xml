@@ -139,7 +139,7 @@
                   <resources>
                     <resource>
                       <include>standalone.xml</include>
-                      <directory>${wildfly.standalone}</directory>
+                      <directory>${project.parent.basedir}/additional-material/wildfly10</directory>
                     </resource>
                   </resources>
                 </configuration>
