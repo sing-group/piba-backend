@@ -24,6 +24,7 @@
 package org.sing_group.piba.rest.entity.video;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,14 +41,38 @@ public class VideoData implements Serializable {
 
   @XmlElement(name = "id", required = true)
   private String id;
-
+  
+  @XmlElement(name = "title")
+  private String title;
+  
+  @XmlElement(name = "observations")
+  private String observations;
+  
+  @XmlElement(name = "video_sources")
+  private List<VideoSource> urls;
+  
   VideoData() {}
 
-  public VideoData(String id) {
+  public VideoData(String id, String title, String observations, List<VideoSource> urls) {
     this.id = id;
+    this.title = title;
+    this.observations = observations;
+    this.urls = urls;
   }
   
   public String getId() {
     return id;
+  }
+  
+  public String getObservations() {
+    return observations;
+  }
+  
+  public String getTitle() {
+    return title;
+  }
+  
+  public List<VideoSource> getUrls() {
+    return urls;
   }
 }

@@ -19,15 +19,11 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-
-
-
-
 package org.sing_group.piba.domain.entities.video;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -38,11 +34,33 @@ public class Video {
   @Id
   private String id;
   
+  @Column(name = "title")
+  private String title;
+  
+  @Column(name = "observations", length = 3000)
+  private String observations;
+  
   protected Video() {
     id = UUID.randomUUID().toString();
   }
   
   public String getId() {
     return id;
+  }
+  
+  public String getTitle() {
+    return title;
+  }
+  
+  public void setTitle(String title) {
+    this.title = title;
+  }
+  
+  public String getObservations() {
+    return observations;
+  }
+  
+  public void setObservations(String observations) {
+    this.observations = observations;
   }
 }

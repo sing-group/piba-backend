@@ -20,20 +20,33 @@
  * #L%
  */
 
-
 package org.sing_group.piba.rest.entity.mapper.video;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.inject.Default;
 
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.rest.entity.mapper.spi.video.VideoMapper;
 import org.sing_group.piba.rest.entity.video.VideoData;
+import org.sing_group.piba.rest.entity.video.VideoSource;
 
 @Default
 public class DefaultVideoMapper implements VideoMapper {
-  
+
   @Override
   public VideoData toVideoData(Video video) {
-    return new VideoData(video.getId());
+
+    return new VideoData(
+      video.getId(), video.getTitle(), video.getObservations(),
+      Stream.of("mp4", "ogg")
+        .map(
+          format -> new VideoSource(
+            "video/" + format, "http://static.sing-group.org/polydeep/videos/sample-exploration." + format
+          )
+        )
+        .collect(Collectors.toList())
+    );
   }
 }
