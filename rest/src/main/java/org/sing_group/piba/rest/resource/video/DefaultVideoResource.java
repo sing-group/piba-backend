@@ -71,7 +71,7 @@ public class DefaultVideoResource implements VideoResource {
   @Context
   private UriInfo uriInfo;
 
-  @Path("{id: \\d+}")
+  @Path("{id}")
   @GET
   @ApiOperation(
     value = "Return the data of a video.", response = VideoData.class, code = 200
