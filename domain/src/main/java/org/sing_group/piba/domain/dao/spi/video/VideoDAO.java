@@ -32,4 +32,5 @@ import org.sing_group.piba.domain.entities.video.Video;
 public interface VideoDAO {
   public Stream<Video> getVideos();
   public Video getVideo(String id);
+  public Video create(Video video);
 }

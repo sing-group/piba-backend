@@ -319,6 +319,7 @@
                 <simple name="java:global/piba/swagger/schemes" value="http" type="java.lang.String"/>
                 <simple name="java:global/piba/swagger/host" value="localhost:8080" type="java.lang.String"/>
                 <simple name="java:global/piba/swagger/basePath" value="/piba-backend/rest/api" type="java.lang.String"/>
+                <simple name="java:global/piba/defaultfilestorage/path" value="/var/lib/piba/storage" type="java.lang.String"/>
             </bindings>
             <remote-naming/>
         </subsystem>
@@ -400,7 +401,7 @@
         <subsystem xmlns="urn:jboss:domain:undertow:3.1">
             <buffer-cache name="default"/>
             <server name="default-server">
-                <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true"/>
+                <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true" max-post-size="6000000000"/>
                 <https-listener name="https" socket-binding="https" security-realm="ApplicationRealm" enable-http2="true"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
@@ -438,7 +439,7 @@
             <inet-address value="${jboss.bind.address.management:127.0.0.1}"/>
         </interface>
         <interface name="public">
-            <inet-address value="${jboss.bind.address:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address:0.0.0.0}"/>
         </interface>
     </interfaces>
 

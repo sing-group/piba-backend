@@ -21,18 +21,34 @@
  */
 
 
+package org.sing_group.piba.service.entity.video;
 
-package org.sing_group.piba.rest.resource.spi.video;
+import java.io.InputStream;
 
-import javax.ejb.Local;
-import javax.ws.rs.core.Response;
 
-import org.sing_group.piba.rest.entity.RestVideoUploadData;
+public class VideoUploadData  {
 
-@Local
-public interface VideoResource {
-  public Response getVideo(String id);
-  public Response getVideoStream(String id, String format);
-  public Response listVideos();
-  public Response uploadVideo(RestVideoUploadData video);
+  private String title;
+  
+  private String observations;
+  
+  private InputStream videoData;
+  
+  public VideoUploadData(String title, String observations, InputStream videoData) {
+    this.title = title;
+    this.observations = observations;
+    this.videoData = videoData;
+  }
+  
+  public String getObservations() {
+    return observations;
+  }
+  
+  public String getTitle() {
+    return title;
+  }
+  
+  public InputStream getVideoData() {
+    return videoData;
+  }
 }

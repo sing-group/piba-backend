@@ -31,9 +31,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -65,18 +62,17 @@ public class DefaultVideoDAO implements VideoDAO {
 
   @Override
   public Stream<Video> getVideos() {
-    CriteriaQuery<Video> query = dh.createCBQuery();
-    final Root<Video> root = query.from(dh.getEntityType());
-    query = query.select(root);
-    
-    TypedQuery<Video> typedQuery = em.createQuery(query);
-    
-    return typedQuery.getResultList().stream();
+    return dh.list().stream();
   }
 
   @Override
   public Video getVideo(String id) {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown video: " + id));
+  }
+
+  @Override
+  public Video create(Video video) {
+    return this.dh.persist(video);
   }
 }

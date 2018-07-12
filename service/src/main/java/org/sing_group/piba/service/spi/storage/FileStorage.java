@@ -1,8 +1,9 @@
 /*-
  * #%L
- * REST
+ * Service
  * %%
- * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato, Florentino Fdez-Riverola, Alba Nogueira Rodríguez
+ * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
+ * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,20 +20,11 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.piba.service.spi.storage;
 
+import java.io.InputStream;
 
-
-package org.sing_group.piba.rest.resource.spi.video;
-
-import javax.ejb.Local;
-import javax.ws.rs.core.Response;
-
-import org.sing_group.piba.rest.entity.RestVideoUploadData;
-
-@Local
-public interface VideoResource {
-  public Response getVideo(String id);
-  public Response getVideoStream(String id, String format);
-  public Response listVideos();
-  public Response uploadVideo(RestVideoUploadData video);
+public interface FileStorage {
+  public void store(String id, InputStream data);
+  public InputStream retrieve(String id);
 }

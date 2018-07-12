@@ -20,35 +20,47 @@
  * #L%
  */
 
-
-
 package org.sing_group.piba.rest.resource.video;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.video.Video;
+import org.sing_group.piba.rest.entity.RestVideoUploadData;
 import org.sing_group.piba.rest.entity.mapper.spi.video.VideoMapper;
 import org.sing_group.piba.rest.entity.video.VideoData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.video.VideoResource;
+import org.sing_group.piba.service.spi.storage.FileStorage;
 import org.sing_group.piba.service.spi.video.VideoService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
 
 @Path("video")
 @Api(value = "video")
@@ -67,6 +79,9 @@ public class DefaultVideoResource implements VideoResource {
 
   @Inject
   private VideoMapper videoMapper;
+
+  @Inject
+  private FileStorage fileStorage;
 
   @Context
   private UriInfo uriInfo;
@@ -88,6 +103,34 @@ public class DefaultVideoResource implements VideoResource {
       .build();
   }
 
+  @Path("{id}/stream")
+  @GET
+  @ApiOperation(
+    value = "Return the stream of a video.", response = StreamingOutput.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown video: {id}")
+  )
+  @Override
+  public Response getVideoStream(
+    @PathParam("id") String id,
+    @QueryParam("format") String format
+  ) {
+    final InputStream videoStream = this.fileStorage.retrieve(id+"."+format);
+    return Response
+      .ok(new StreamingOutput() {
+        @Override
+        public void write(OutputStream output) throws IOException, WebApplicationException {
+          byte[] buf = new byte[8192];
+          int len = -1;
+          while ((len = videoStream.read(buf)) != -1) {
+            output.write(buf, 0, len);
+          }
+        }
+      }).type("video/"+format)
+      .build();
+  }
+
   @GET
   @ApiOperation(
     value = "Return the data of all videos.", response = VideoData.class, responseContainer = "List", code = 200
@@ -96,4 +139,17 @@ public class DefaultVideoResource implements VideoResource {
   public Response listVideos() {
     return Response.ok(this.service.getVideos().map(this.videoMapper::toVideoData).toArray(VideoData[]::new)).build();
   }
+
+  @PUT
+  @ApiOperation(
+    value = "Creates a new video.", responseHeaders = @ResponseHeader(
+      name = "Location", description = "Location of the new video created."
+    ), code = 201
+  )
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response uploadVideo(RestVideoUploadData videoData) {
+    Video video = this.service.create(videoData);
+    return Response.created(UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build()).build();
+  }
+
 }

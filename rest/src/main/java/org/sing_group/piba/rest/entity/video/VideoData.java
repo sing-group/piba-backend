@@ -51,7 +51,7 @@ public class VideoData implements Serializable {
   @XmlElement(name = "video_sources")
   private List<VideoSource> urls;
   
-  VideoData() {}
+  public VideoData() {}
 
   public VideoData(String id, String title, String observations, List<VideoSource> urls) {
     this.id = id;

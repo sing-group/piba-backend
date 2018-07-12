@@ -40,7 +40,7 @@ public class Video {
   @Column(name = "observations", length = 3000)
   private String observations;
   
-  protected Video() {
+  public Video() {
     id = UUID.randomUUID().toString();
   }
   

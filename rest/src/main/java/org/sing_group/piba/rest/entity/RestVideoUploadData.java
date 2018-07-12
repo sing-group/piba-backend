@@ -2,7 +2,8 @@
  * #%L
  * REST
  * %%
- * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato, Florentino Fdez-Riverola, Alba Nogueira Rodríguez
+ * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
+ * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,20 +20,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.piba.rest.entity;
 
+import java.io.InputStream;
+import java.io.Serializable;
 
+import org.sing_group.piba.service.entity.video.VideoUploadData;
 
-package org.sing_group.piba.rest.resource.spi.video;
+import io.swagger.annotations.ApiModel;
 
-import javax.ejb.Local;
-import javax.ws.rs.core.Response;
+@ApiModel(value = "video-upload-data", description = "Upload data of a video.")
+public class RestVideoUploadData extends VideoUploadData implements Serializable {
+  public RestVideoUploadData(String title, String observations, InputStream videoData) {
+    super(title, observations, videoData);
+  }
 
-import org.sing_group.piba.rest.entity.RestVideoUploadData;
+  private static final long serialVersionUID = 1L;
 
-@Local
-public interface VideoResource {
-  public Response getVideo(String id);
-  public Response getVideoStream(String id, String format);
-  public Response listVideos();
-  public Response uploadVideo(RestVideoUploadData video);
 }

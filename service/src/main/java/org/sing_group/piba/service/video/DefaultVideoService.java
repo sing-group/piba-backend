@@ -20,11 +20,9 @@
  * #L%
  */
 
-
-
-
 package org.sing_group.piba.service.video;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
@@ -33,13 +31,18 @@ import javax.inject.Inject;
 
 import org.sing_group.piba.domain.dao.spi.video.VideoDAO;
 import org.sing_group.piba.domain.entities.video.Video;
+import org.sing_group.piba.service.entity.video.VideoUploadData;
+import org.sing_group.piba.service.spi.storage.FileStorage;
 import org.sing_group.piba.service.spi.video.VideoService;
 
 @Stateless
 @PermitAll
 public class DefaultVideoService implements VideoService {
-  @Inject 
+  @Inject
   private VideoDAO videoDao;
+
+  @Inject
+  private FileStorage videoStorage;
 
   @Override
   public Stream<Video> getVideos() {
@@ -49,5 +52,19 @@ public class DefaultVideoService implements VideoService {
   @Override
   public Video getVideo(String id) {
     return videoDao.getVideo(id);
+  }
+
+  @Override
+  public Video create(VideoUploadData data) {
+    try {
+      Video video = new Video();
+      videoStorage.store(video.getId() + ".mp4", data.getVideoData());
+      data.getVideoData().close();
+      video.setObservations(data.getObservations());
+      video.setTitle(data.getTitle());
+      return videoDao.create(video);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
