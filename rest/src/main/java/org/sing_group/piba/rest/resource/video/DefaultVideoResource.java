@@ -87,6 +87,10 @@ public class DefaultVideoResource implements VideoResource {
   @Context
   private UriInfo uriInfo;
 
+  @PostConstruct
+  public void init() {
+    this.videoMapper.setRequestURI(this.uriInfo);
+  }
   @Path("{id}")
   @GET
   @ApiOperation(
@@ -114,10 +118,12 @@ public class DefaultVideoResource implements VideoResource {
   )
   @Override
   public Response getVideoStream(
-    @PathParam("id") String id,
+    @PathParam(
+      "id"
+    ) String id,
     @QueryParam("format") String format
   ) {
-    final InputStream videoStream = this.fileStorage.retrieve(id+"."+format);
+    final InputStream videoStream = this.fileStorage.retrieve(id + "." + format);
     return Response
       .ok(new StreamingOutput() {
         @Override
@@ -128,7 +134,7 @@ public class DefaultVideoResource implements VideoResource {
             output.write(buf, 0, len);
           }
         }
-      }).type("video/"+format)
+      }).type("video/" + format)
       .build();
   }
 

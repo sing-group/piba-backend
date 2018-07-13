@@ -26,27 +26,39 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.Default;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.rest.entity.mapper.spi.video.VideoMapper;
 import org.sing_group.piba.rest.entity.video.VideoData;
 import org.sing_group.piba.rest.entity.video.VideoSource;
+import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
 
 @Default
 public class DefaultVideoMapper implements VideoMapper {
+
+  private UriInfo requestURI;
+
+  public void setRequestURI(UriInfo requestURI) {
+    this.requestURI = requestURI;
+  }
 
   @Override
   public VideoData toVideoData(Video video) {
 
     return new VideoData(
       video.getId(), video.getTitle(), video.getObservations(),
-      Stream.of("mp4", "ogg")
+      Stream.of("mp4")
         .map(
           format -> new VideoSource(
-            "video/" + format, "http://static.sing-group.org/polydeep/videos/sample-exploration." + format
+            "video/" + format, requestURI.getBaseUriBuilder().build() + UriBuilder.fromResource(
+              DefaultVideoResource.class
+            ).path(video.getId()).path("stream").queryParam("format", format).build().toString()
           )
         )
         .collect(Collectors.toList())
     );
   }
+
 }
