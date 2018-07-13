@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -143,13 +144,15 @@ public class DefaultVideoResource implements VideoResource {
   @PUT
   @ApiOperation(
     value = "Creates a new video.", responseHeaders = @ResponseHeader(
-      name = "Location", description = "Location of the new video created."
+      name = "Location", description = "Location of the new video created.", response = VideoData.class
     ), code = 201
   )
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response uploadVideo(RestVideoUploadData videoData) {
     Video video = this.service.create(videoData);
-    return Response.created(UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build()).build();
+
+    return Response.created(UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build())
+      .entity(videoMapper.toVideoData(video)).build();
   }
 
 }
