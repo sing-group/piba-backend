@@ -21,8 +21,7 @@
  */
 package org.sing_group.piba.rest.resource.video;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 
 import javax.ws.rs.ext.Provider;
 
@@ -33,24 +32,28 @@ import org.sing_group.piba.rest.entity.RestVideoUploadData;
 public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVideoUploadData> {
 
   private String title, observations;
-  private InputStream videoData;
+  private File videoData;
 
   @Override
-  protected void add(String name, InputStream is) {
-    try {
-      switch (name) {
-        case "title":
-          this.title = new String(super.toByteArray(is));
-          break;
-        case "observations":
-          this.observations = new String(super.toByteArray(is));
-          break;
-        case "video":
-          this.videoData = is;
-          break;
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+  protected void add(String name, String value) {
+    switch (name) {
+      case "title":
+        this.title = value;
+        break;
+      case "observations":
+        this.observations = value;
+        break;
+
+    }
+
+  }
+
+  @Override
+  protected void add(String name, File uploadedFile) {
+    switch (name) {
+      case "video":
+        this.videoData = uploadedFile;
+        break;
     }
 
   }
@@ -61,6 +64,6 @@ public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVi
   }
 
   @Override
-  protected void init() { }
+  protected void init() {}
 
 }

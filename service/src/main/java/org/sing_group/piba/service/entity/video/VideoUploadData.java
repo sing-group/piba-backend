@@ -23,7 +23,7 @@
 
 package org.sing_group.piba.service.entity.video;
 
-import java.io.InputStream;
+import java.io.File;
 
 
 public class VideoUploadData  {
@@ -32,9 +32,9 @@ public class VideoUploadData  {
   
   private String observations;
   
-  private InputStream videoData;
+  private File videoData;
   
-  public VideoUploadData(String title, String observations, InputStream videoData) {
+  public VideoUploadData(String title, String observations, File videoData) {
     this.title = title;
     this.observations = observations;
     this.videoData = videoData;
@@ -48,7 +48,7 @@ public class VideoUploadData  {
     return title;
   }
   
-  public InputStream getVideoData() {
+  public File getVideoData() {
     return videoData;
   }
 }

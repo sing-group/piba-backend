@@ -21,12 +21,9 @@
  */
 package org.sing_group.piba.rest;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,7 +41,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 
 import org.apache.commons.fileupload.MultipartStream;
-import org.apache.commons.fileupload.MultipartStream.MalformedStreamException;
 
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 public abstract class MultipartMessageBodyReader<T> implements MessageBodyReader<T> {
@@ -105,9 +101,24 @@ public abstract class MultipartMessageBodyReader<T> implements MessageBodyReader
         while (nextPart) {
           String header = multipartStream.readHeaders();
           String name = getName(header);
-          InputStream in = createInputStreamForPart(multipartStream, header);
           
-          this.add(name, in);
+          if (header.contains("filename=")) {
+            // it is a file, copy it to a temp file and open an stream to in that when it is closed, the file is 
+            // removed
+            Path tempFile = Files.createTempFile("http_file_uploaded", "data");
+            OutputStream fout = new FileOutputStream(tempFile.toFile());
+            multipartStream.readBodyData(fout);
+            fout.close();
+
+            this.add(name, tempFile.toFile());
+
+          } else {
+            // it is not a file
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            multipartStream.readBodyData(baos);
+            this.add(name, new String(baos.toByteArray()));
+          }
+          
           
           nextPart = multipartStream.readBoundary();
         }
@@ -120,35 +131,6 @@ public abstract class MultipartMessageBodyReader<T> implements MessageBodyReader
     }
 
     return this.build();
-  }
-
-
-  private InputStream createInputStreamForPart(MultipartStream multipartStream, String header)
-    throws IOException, FileNotFoundException, MalformedStreamException {
-    InputStream in = null;
-    if (header.contains("filename=")) {
-      // it is a file, copy it to a temp file and open an stream to in that when it is closed, the file is 
-      // removed
-      Path tempFile = Files.createTempFile("http_file_uploaded", "data");
-      OutputStream fout = new FileOutputStream(tempFile.toFile());
-      multipartStream.readBodyData(fout);
-      fout.close();
-
-      in = new FilterInputStream(new FileInputStream(tempFile.toFile())) {
-        @Override
-        public void close() throws IOException {
-          super.close();
-          Files.delete(tempFile);
-        }
-      };
-
-    } else {
-      // it is not a file
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      multipartStream.readBodyData(baos);
-      in = new ByteArrayInputStream(baos.toByteArray());
-    }
-    return in;
   }
 
   private String getName(String header) {
@@ -164,7 +146,8 @@ public abstract class MultipartMessageBodyReader<T> implements MessageBodyReader
   // Template methods
   protected abstract void init();
 
-  protected abstract void add(String name, InputStream stream);
+  protected abstract void add(String name, String value);
+  protected abstract void add(String name, File uploadedFile);
 
   protected abstract T build();
 }

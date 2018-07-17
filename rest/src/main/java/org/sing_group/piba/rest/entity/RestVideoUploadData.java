@@ -22,7 +22,7 @@
  */
 package org.sing_group.piba.rest.entity;
 
-import java.io.InputStream;
+import java.io.File;
 import java.io.Serializable;
 
 import org.sing_group.piba.service.entity.video.VideoUploadData;
@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel(value = "video-upload-data", description = "Upload data of a video.")
 public class RestVideoUploadData extends VideoUploadData implements Serializable {
-  public RestVideoUploadData(String title, String observations, InputStream videoData) {
+  public RestVideoUploadData(String title, String observations, File videoData) {
     super(title, observations, videoData);
   }
 

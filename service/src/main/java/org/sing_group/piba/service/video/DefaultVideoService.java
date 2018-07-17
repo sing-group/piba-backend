@@ -22,6 +22,7 @@
 
 package org.sing_group.piba.service.video;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.stream.Stream;
 
@@ -58,8 +59,7 @@ public class DefaultVideoService implements VideoService {
   public Video create(VideoUploadData data) {
     try {
       Video video = new Video();
-      videoStorage.store(video.getId() + ".mp4", data.getVideoData());
-      data.getVideoData().close();
+      videoStorage.store(video.getId() + ".mp4", new FileInputStream(data.getVideoData()));
       video.setObservations(data.getObservations());
       video.setTitle(data.getTitle());
       return videoDao.create(video);

@@ -132,7 +132,15 @@ public class DefaultVideoResource implements VideoResource {
           byte[] buf = new byte[8192];
           int len = -1;
           while ((len = videoStream.read(buf)) != -1) {
-            output.write(buf, 0, len);
+            try {
+              output.write(buf, 0, len);
+            } catch (IOException e) {
+              if (e.getMessage().toUpperCase().contains("RESET") || e.getMessage().toUpperCase().contains("BROKEN")) {
+                // catched "Connection reset by peer" or "Broken pipe", which is normal when client closes unilaterally
+              } else {
+                throw e;
+              }
+            }
           }
         }
       })
@@ -158,10 +166,14 @@ public class DefaultVideoResource implements VideoResource {
   )
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response uploadVideo(RestVideoUploadData videoData) {
-    Video video = this.service.create(videoData);
+    try {
+      Video video = this.service.create(videoData);
 
-    return Response.created(UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build())
-      .entity(videoMapper.toVideoData(video)).build();
+      return Response.created(UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build())
+        .entity(videoMapper.toVideoData(video)).build();
+    } finally {
+      videoData.getVideoData().delete();
+    }
   }
 
 }
