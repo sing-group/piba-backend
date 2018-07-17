@@ -91,6 +91,7 @@ public class DefaultVideoResource implements VideoResource {
   public void init() {
     this.videoMapper.setRequestURI(this.uriInfo);
   }
+
   @Path("{id}")
   @GET
   @ApiOperation(
@@ -134,7 +135,9 @@ public class DefaultVideoResource implements VideoResource {
             output.write(buf, 0, len);
           }
         }
-      }).type("video/" + format)
+      })
+      .type("video/" + format)
+      .header("Accept-Ranges", "bytes")
       .build();
   }
 
