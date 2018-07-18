@@ -22,18 +22,21 @@
 
 package org.sing_group.piba.service.video;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.sing_group.piba.domain.dao.spi.video.VideoDAO;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.service.entity.video.VideoUploadData;
 import org.sing_group.piba.service.spi.storage.FileStorage;
+import org.sing_group.piba.service.spi.video.VideoConversionService;
 import org.sing_group.piba.service.spi.video.VideoService;
 
 @Stateless
@@ -45,6 +48,9 @@ public class DefaultVideoService implements VideoService {
   @Inject
   private FileStorage videoStorage;
 
+  @Inject
+  private VideoConversionService conversionService;
+
   @Override
   public Stream<Video> getVideos() {
     return videoDao.getVideos();
@@ -55,14 +61,34 @@ public class DefaultVideoService implements VideoService {
     return videoDao.getVideo(id);
   }
 
+  public void onConversionEvent(@Observes VideoConversionTask task) {
+    // conversion finished
+    System.err.println("event of conversion finished");
+    if (task.getStatus() == VideoConversionTask.ConversionTaskStatus.FINISHED_SUCCESS) {
+      Video video = videoDao.getVideo(task.getId());
+      video.setProcessing(false);
+    }
+  }
+
   @Override
   public Video create(VideoUploadData data) {
     try {
       Video video = new Video();
-      videoStorage.store(video.getId() + ".mp4", new FileInputStream(data.getVideoData()));
       video.setObservations(data.getObservations());
       video.setTitle(data.getTitle());
-      return videoDao.create(video);
+      video.setProcessing(true);
+
+      video = videoDao.create(video);
+
+      videoStorage.store(video.getId() + ".mp4", new FileInputStream(data.getVideoData()));
+
+      // asynchronous conversion
+      File oggFile = new File("/etc/passwd.ogg");
+      conversionService
+        .convertVideo(new VideoConversionTask(video.getId(), "mp4", "ogg", data.getVideoData(), oggFile));
+
+      return video;
+
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -31,10 +31,12 @@ import javax.ejb.Local;
 
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.service.entity.video.VideoUploadData;
+import org.sing_group.piba.service.video.VideoConversionTask;
 
 @Local
 public interface VideoService {
     public Video getVideo(String id);
     public Stream<Video> getVideos();
     public Video create(VideoUploadData data);
+    public void onConversionEvent(VideoConversionTask task);
 }

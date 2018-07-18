@@ -22,6 +22,11 @@
 
 package org.sing_group.piba.rest.entity.mapper.video;
 
+import static java.util.Collections.emptyList;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,16 +54,20 @@ public class DefaultVideoMapper implements VideoMapper {
 
     return new VideoData(
       video.getId(), video.getTitle(), video.getObservations(),
-      Stream.of("mp4")
-        .map(
-          format -> new VideoSource(
-            "video/" + format, requestURI.getBaseUriBuilder().build() + UriBuilder.fromResource(
-              DefaultVideoResource.class
-            ).path(video.getId()).path("stream").queryParam("format", format).build().toString()
-          )
-        )
-        .collect(Collectors.toList())
+      !video.isProcessing() ? videoURLs(video) : emptyList(), video.isProcessing()
     );
+  }
+
+  private List<VideoSource> videoURLs(Video video) {
+    return Stream.of("mp4", "ogg")
+      .map(
+        format -> new VideoSource(
+          "video/" + format, requestURI.getBaseUriBuilder().build() + UriBuilder.fromResource(
+            DefaultVideoResource.class
+          ).path(video.getId()).path("stream").queryParam("format", format).build().toString()
+        )
+      )
+      .collect(Collectors.toList());
   }
 
 }

@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @XmlRootElement(name = "video-data", namespace = "http://entity.resource.rest.piba.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -48,16 +49,21 @@ public class VideoData implements Serializable {
   @XmlElement(name = "observations")
   private String observations;
   
+  @XmlElement(name = "processing")
+  @ApiModelProperty(name = "processing")
+  private boolean isProcessing;
+
   @XmlElement(name = "video_sources")
   private List<VideoSource> urls;
   
   public VideoData() {}
 
-  public VideoData(String id, String title, String observations, List<VideoSource> urls) {
+  public VideoData(String id, String title, String observations, List<VideoSource> urls, boolean isProcessing) {
     this.id = id;
     this.title = title;
     this.observations = observations;
     this.urls = urls;
+    this.isProcessing = isProcessing;
   }
   
   public String getId() {
@@ -74,5 +80,9 @@ public class VideoData implements Serializable {
   
   public List<VideoSource> getUrls() {
     return urls;
+  }
+
+  public boolean isProcessing() {
+    return isProcessing;
   }
 }

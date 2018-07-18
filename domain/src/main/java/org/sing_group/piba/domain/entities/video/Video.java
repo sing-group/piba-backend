@@ -33,34 +33,45 @@ import javax.persistence.Table;
 public class Video {
   @Id
   private String id;
-  
+
   @Column(name = "title")
   private String title;
-  
+
   @Column(name = "observations", length = 3000)
   private String observations;
-  
+
+  @Column(name = "is_processing")
+  private boolean isProcessing = true;
+
   public Video() {
     id = UUID.randomUUID().toString();
   }
-  
+
   public String getId() {
     return id;
   }
-  
+
   public String getTitle() {
     return title;
   }
-  
+
   public void setTitle(String title) {
     this.title = title;
   }
-  
+
   public String getObservations() {
     return observations;
   }
-  
+
   public void setObservations(String observations) {
     this.observations = observations;
+  }
+
+  public void setProcessing(boolean isProcessing) {
+    this.isProcessing = isProcessing;
+  }
+
+  public boolean isProcessing() {
+    return isProcessing;
   }
 }
