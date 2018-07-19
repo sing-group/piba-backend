@@ -24,6 +24,7 @@ package org.sing_group.piba.service.video;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.stream.Stream;
 
@@ -63,10 +64,17 @@ public class DefaultVideoService implements VideoService {
 
   public void onConversionEvent(@Observes VideoConversionTask task) {
     // conversion finished
-    System.err.println("event of conversion finished");
-    if (task.getStatus() == VideoConversionTask.ConversionTaskStatus.FINISHED_SUCCESS) {
-      Video video = videoDao.getVideo(task.getId());
-      video.setProcessing(false);
+    try {
+      videoStorage.store(task.getId() + "." + task.getDestinationFormat(), new FileInputStream(task.getOutput()));
+      task.getOutput().delete();
+
+      if (task.getStatus() == VideoConversionTask.ConversionTaskStatus.FINISHED_SUCCESS) {
+        Video video = videoDao.getVideo(task.getId());
+        video.setProcessing(false);
+        task.getInput().delete();
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -80,10 +88,12 @@ public class DefaultVideoService implements VideoService {
 
       video = videoDao.create(video);
 
-      videoStorage.store(video.getId() + ".mp4", new FileInputStream(data.getVideoData()));
+      try (FileInputStream fis = new FileInputStream(data.getVideoData())) {
+        videoStorage.store(video.getId() + ".mp4", fis);
+      }
 
-      // asynchronous conversion
-      File oggFile = new File("/etc/passwd.ogg");
+      // asynchronous conversion and storage
+      File oggFile = File.createTempFile("piba_converted_video_", ".ogg");
       conversionService
         .convertVideo(new VideoConversionTask(video.getId(), "mp4", "ogg", data.getVideoData(), oggFile));
 
