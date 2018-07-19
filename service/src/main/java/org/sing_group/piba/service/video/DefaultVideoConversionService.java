@@ -87,9 +87,9 @@ public class DefaultVideoConversionService implements VideoConversionService {
   private FFmpegBuilder builder(File from, File to, String toFormat) {
     return new FFmpegBuilder()
       .setInput(from.getAbsolutePath())
-      .setFormat(toFormat)
       .overrideOutputFiles(true)
       .addOutput(to.toString())
+      .setFormat(toFormat)
       .done();
   }
 
