@@ -21,10 +21,13 @@
  */
 package org.sing_group.piba.rest.entity.mapper.polyp;
 
+import javax.enterprise.inject.Default;
+
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 
+@Default
 public class DefaultPolypMapper implements PolypMapper {
 
   @Override

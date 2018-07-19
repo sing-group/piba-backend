@@ -21,6 +21,8 @@
  */
 package org.sing_group.piba.domain.entities.polyp;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -54,6 +56,10 @@ public class Polyp {
   private PARIS paris;
   @Column(name = "histology")
   private String histology;
+
+  public Polyp() {
+    id = UUID.randomUUID().toString();
+  }
 
   public String getId() {
     return id;
