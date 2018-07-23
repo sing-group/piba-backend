@@ -3,6 +3,7 @@ package org.sing_group.piba.rest.resource.exploration;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -11,7 +12,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.mapper.spi.exploration.ExplorationMapper;
@@ -42,6 +45,14 @@ public class DefaultExplorationResource implements ExplorationResource {
 
   @Inject
   private ExplorationMapper explorationMapper;
+
+  @Context
+  private UriInfo uriInfo;
+
+  @PostConstruct
+  public void init() {
+    this.explorationMapper.setRequestURI(this.uriInfo);
+  }
 
   @Path("{id}")
   @GET

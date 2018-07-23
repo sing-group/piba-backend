@@ -26,7 +26,11 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.sing_group.piba.domain.entities.exploration.Exploration;
 
 @Entity
 @Table(name = "video")
@@ -42,6 +46,10 @@ public class Video {
 
   @Column(name = "is_processing")
   private boolean isProcessing = true;
+
+  @ManyToOne
+  @JoinColumn(name="exploration_id")
+  private Exploration exploration;
 
   public Video() {
     id = UUID.randomUUID().toString();
@@ -74,4 +82,13 @@ public class Video {
   public boolean isProcessing() {
     return isProcessing;
   }
+
+  public Exploration getExploration() {
+    return exploration;
+  }
+
+  public void setExploration(Exploration exploration) {
+    this.exploration = exploration;
+  }
+  
 }

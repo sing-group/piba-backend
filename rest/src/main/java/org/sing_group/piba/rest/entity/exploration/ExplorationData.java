@@ -2,11 +2,14 @@ package org.sing_group.piba.rest.entity.exploration;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.sing_group.piba.rest.entity.UuidAndUri;
 
 import io.swagger.annotations.ApiModel;
 
@@ -25,12 +28,16 @@ public class ExplorationData implements Serializable {
   @XmlElement(name = "date", required = true)
   private Date date;
 
+  @XmlElement(name = "videos")
+  private List<UuidAndUri> videos;
+
   public ExplorationData() {}
 
-  public ExplorationData(String id, String location, Date date) {
+  public ExplorationData(String id, String location, Date date, List<UuidAndUri> videos) {
     this.id = id;
     this.location = location;
     this.date = date;
+    this.videos = videos;
   }
 
   public String getId() {
@@ -53,4 +60,7 @@ public class ExplorationData implements Serializable {
     this.date = date;
   }
 
+  public List<UuidAndUri> getVideos() {
+    return videos;
+  }
 }
