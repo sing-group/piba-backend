@@ -24,8 +24,6 @@ package org.sing_group.piba.rest.entity.mapper.video;
 
 import static java.util.Collections.emptyList;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,7 +52,7 @@ public class DefaultVideoMapper implements VideoMapper {
 
     return new VideoData(
       video.getId(), video.getTitle(), video.getObservations(),
-      !video.isProcessing() ? videoURLs(video) : emptyList(), video.isProcessing()
+      !video.isProcessing() ? videoURLs(video) : emptyList(), video.isProcessing(), video.getExploration().getId()
     );
   }
 

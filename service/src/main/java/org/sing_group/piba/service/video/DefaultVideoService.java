@@ -24,7 +24,6 @@ package org.sing_group.piba.service.video;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.stream.Stream;
 
@@ -34,8 +33,10 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.sing_group.piba.domain.dao.spi.video.VideoDAO;
+import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.service.entity.video.VideoUploadData;
+import org.sing_group.piba.service.spi.exploration.ExplorationService;
 import org.sing_group.piba.service.spi.storage.FileStorage;
 import org.sing_group.piba.service.spi.video.VideoConversionService;
 import org.sing_group.piba.service.spi.video.VideoService;
@@ -51,6 +52,9 @@ public class DefaultVideoService implements VideoService {
 
   @Inject
   private VideoConversionService conversionService;
+
+  @Inject
+  private ExplorationService explorationService;
 
   @Override
   public Stream<Video> getVideos() {
@@ -81,11 +85,13 @@ public class DefaultVideoService implements VideoService {
   @Override
   public Video create(VideoUploadData data) {
     try {
+      Exploration exploration = this.explorationService.getExploration(data.getExploration_id());
+      
       Video video = new Video();
       video.setObservations(data.getObservations());
       video.setTitle(data.getTitle());
       video.setProcessing(true);
-
+      video.setExploration(exploration);
       video = videoDao.create(video);
 
       try (FileInputStream fis = new FileInputStream(data.getVideoData())) {

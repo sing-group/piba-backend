@@ -58,6 +58,18 @@ public class Exploration {
     this.date = date;
   }
 
+  public void addVideo(Video video) {
+    video.setExploration(this);
+  }
+
+  public void internalRemoveVideo(Video video) {
+    this.videos.remove(video);
+  }
+
+  public void internalAddVideo(Video video) {
+    this.videos.add(video);
+  }
+
   public List<Video> getVideos() {
     return videos;
   }

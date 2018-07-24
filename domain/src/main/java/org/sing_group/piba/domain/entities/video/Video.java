@@ -48,7 +48,7 @@ public class Video {
   private boolean isProcessing = true;
 
   @ManyToOne
-  @JoinColumn(name="exploration_id")
+  @JoinColumn(name = "exploration_id")
   private Exploration exploration;
 
   public Video() {
@@ -88,7 +88,12 @@ public class Video {
   }
 
   public void setExploration(Exploration exploration) {
+    if (this.exploration != null) {
+      this.exploration.internalRemoveVideo(this);
+    }
     this.exploration = exploration;
+    if (exploration != null) {
+      this.exploration.internalAddVideo(this);
+    }
   }
-  
 }

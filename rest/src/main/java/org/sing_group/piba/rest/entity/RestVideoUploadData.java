@@ -31,8 +31,8 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel(value = "video-upload-data", description = "Upload data of a video.")
 public class RestVideoUploadData extends VideoUploadData implements Serializable {
-  public RestVideoUploadData(String title, String observations, File videoData) {
-    super(title, observations, videoData);
+  public RestVideoUploadData(String title, String observations, File videoData, String exploration_id) {
+    super(title, observations, videoData, exploration_id);
   }
 
   private static final long serialVersionUID = 1L;

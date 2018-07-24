@@ -20,35 +20,41 @@
  * #L%
  */
 
-
 package org.sing_group.piba.service.entity.video;
 
 import java.io.File;
 
-
-public class VideoUploadData  {
+public class VideoUploadData {
 
   private String title;
-  
+
   private String observations;
-  
+
   private File videoData;
-  
-  public VideoUploadData(String title, String observations, File videoData) {
+
+  private String exploration_id;
+
+  public VideoUploadData(String title, String observations, File videoData, String exploration_id) {
     this.title = title;
     this.observations = observations;
     this.videoData = videoData;
+    this.exploration_id = exploration_id;
   }
-  
+
   public String getObservations() {
     return observations;
   }
-  
+
   public String getTitle() {
     return title;
   }
-  
+
   public File getVideoData() {
     return videoData;
   }
+
+  public String getExploration_id() {
+    return exploration_id;
+  }
+
 }
