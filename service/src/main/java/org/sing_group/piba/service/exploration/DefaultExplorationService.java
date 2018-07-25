@@ -1,5 +1,7 @@
 package org.sing_group.piba.service.exploration;
 
+import java.util.stream.Stream;
+
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,6 +20,11 @@ public class DefaultExplorationService implements ExplorationService {
   @Override
   public Exploration getExploration(String id) {
     return explorationDao.getExploration(id);
+  }
+
+  @Override
+  public Stream<Exploration> getExplorations() {
+    return explorationDao.getExplorations();
   }
 
 }

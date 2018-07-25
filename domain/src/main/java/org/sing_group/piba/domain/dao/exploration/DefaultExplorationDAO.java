@@ -1,5 +1,7 @@
 package org.sing_group.piba.domain.dao.exploration;
 
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
@@ -37,6 +39,11 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   public Exploration getExploration(String id) {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown exploration: " + id));
+  }
+
+  @Override
+  public Stream<Exploration> getExplorations() {
+    return dh.list().stream();
   }
 
 }

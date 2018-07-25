@@ -71,4 +71,15 @@ public class DefaultExplorationResource implements ExplorationResource {
       .build();
   }
 
+  @GET
+  @ApiOperation(
+    value = "Return the data of all explorations.", response = ExplorationData.class, responseContainer = "List", code = 200
+  )
+  @Override
+  public Response getExplorations() {
+    return Response.ok(
+      this.service.getExplorations().map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
+    ).build();
+  }
+
 }
