@@ -9,13 +9,16 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.mapper.spi.exploration.ExplorationMapper;
 import org.sing_group.piba.rest.filter.CrossDomain;
@@ -82,4 +85,18 @@ public class DefaultExplorationResource implements ExplorationResource {
     ).build();
   }
 
+  @POST
+  @ApiOperation(
+    value = "Creates a new exploration.", response = ExplorationData.class, code = 201
+  )
+  @Override
+  public Response create(ExplorationData explorationData) {
+    Exploration exploration = new Exploration();
+    exploration.setDate(explorationData.getDate());
+    exploration.setLocation(explorationData.getLocation());
+    exploration = this.service.create(exploration);
+
+    return Response.created(UriBuilder.fromResource(DefaultExplorationResource.class).path(exploration.getId()).build())
+      .entity(explorationMapper.toExplorationData(exploration)).build();
+  }
 }

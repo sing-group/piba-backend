@@ -8,4 +8,5 @@ public interface ExplorationService {
   public Exploration getExploration(String id);
 
   public Stream<Exploration> getExplorations();
+  public Exploration create(Exploration exploration);
 }

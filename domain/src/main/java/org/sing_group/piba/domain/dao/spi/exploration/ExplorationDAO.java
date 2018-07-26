@@ -8,4 +8,6 @@ public interface ExplorationDAO {
   public Exploration getExploration(String id);
 
   public Stream<Exploration> getExplorations();
+
+  public Exploration create(Exploration exploration);
 }

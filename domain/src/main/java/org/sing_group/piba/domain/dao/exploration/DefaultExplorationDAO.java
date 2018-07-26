@@ -46,4 +46,9 @@ public class DefaultExplorationDAO implements ExplorationDAO {
     return dh.list().stream();
   }
 
+  @Override
+  public Exploration create(Exploration exploration) {
+    return this.dh.persist(exploration);
+  }
+
 }

@@ -27,4 +27,9 @@ public class DefaultExplorationService implements ExplorationService {
     return explorationDao.getExplorations();
   }
 
+  @Override
+  public Exploration create(Exploration exploration) {
+    return explorationDao.create(exploration);
+  }
+
 }
