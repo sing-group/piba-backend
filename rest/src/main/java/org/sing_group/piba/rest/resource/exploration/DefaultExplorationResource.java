@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -91,12 +92,20 @@ public class DefaultExplorationResource implements ExplorationResource {
   )
   @Override
   public Response create(ExplorationData explorationData) {
-    Exploration exploration = new Exploration();
-    exploration.setDate(explorationData.getDate());
-    exploration.setLocation(explorationData.getLocation());
+    Exploration exploration = new Exploration(explorationData.getLocation(), explorationData.getDate());
     exploration = this.service.create(exploration);
 
     return Response.created(UriBuilder.fromResource(DefaultExplorationResource.class).path(exploration.getId()).build())
       .entity(explorationMapper.toExplorationData(exploration)).build();
   }
+
+  @PUT
+  @ApiOperation(
+    value = "Modifies an existing exploration", response = ExplorationData.class, code = 200
+  )
+  @Override
+  public Response edit(ExplorationData explorationData) {
+    return Response.ok(this.service.edit(explorationMapper.toExploration(explorationData))).build();
+  }
+
 }

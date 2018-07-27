@@ -7,5 +7,8 @@ import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 
 public interface ExplorationMapper {
   public void setRequestURI(UriInfo requestURI);
+
   public ExplorationData toExplorationData(Exploration exploration);
+
+  public Exploration toExploration(ExplorationData explorationData);
 }

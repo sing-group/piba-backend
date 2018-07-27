@@ -1,5 +1,7 @@
 package org.sing_group.piba.domain.entities.exploration;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,8 +32,19 @@ public class Exploration {
   @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Video> videos = new ArrayList<>();
 
-  public Exploration() {
+  Exploration() {}
+
+  public Exploration(String location, Date date) {
     id = UUID.randomUUID().toString();
+    this.setLocation(location);
+    this.setDate(date);
+  }
+
+  public Exploration(String id, String location, Date date) {
+    requireNonNull(id);
+    this.id = id;
+    this.setLocation(location);
+    this.setDate(date);
   }
 
   public String getId() {
@@ -43,6 +56,7 @@ public class Exploration {
   }
 
   public void setLocation(String location) {
+    requireNonNull(location);
     this.location = location;
   }
 
@@ -51,6 +65,7 @@ public class Exploration {
   }
 
   public void setDate(Date date) {
+    requireNonNull(date);
     this.date = date;
   }
 

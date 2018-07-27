@@ -10,4 +10,6 @@ public interface ExplorationDAO {
   public Stream<Exploration> getExplorations();
 
   public Exploration create(Exploration exploration);
+  
+  public Exploration edit(Exploration exploration);
 }

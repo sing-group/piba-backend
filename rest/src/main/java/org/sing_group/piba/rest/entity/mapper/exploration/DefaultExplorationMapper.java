@@ -34,16 +34,21 @@ public class DefaultExplorationMapper implements ExplorationMapper {
   private List<UuidAndUri> linkVideos(List<Video> videos) {
     List<UuidAndUri> urls = new ArrayList<>();
     for (Video video : videos) {
-        urls.add(
-          new UuidAndUri(
-            video.getId(),
-            requestURI.getBaseUriBuilder().path(
-              UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build().toString())
-            .build()
+      urls.add(
+        new UuidAndUri(
+          video.getId(),
+          requestURI.getBaseUriBuilder().path(
+            UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build().toString()
           )
-        );
-
+            .build()
+        )
+      );
     }
     return urls;
+  }
+
+  @Override
+  public Exploration toExploration(ExplorationData explorationData) {
+    return new Exploration(explorationData.getId(), explorationData.getLocation(), explorationData.getDate());
   }
 }

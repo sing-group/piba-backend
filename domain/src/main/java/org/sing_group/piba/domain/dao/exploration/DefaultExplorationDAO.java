@@ -51,4 +51,10 @@ public class DefaultExplorationDAO implements ExplorationDAO {
     return this.dh.persist(exploration);
   }
 
+  @Override
+  public Exploration edit(Exploration exploration) {
+    this.dh.get(exploration.getId());
+    return this.dh.update(exploration);
+  }
+
 }

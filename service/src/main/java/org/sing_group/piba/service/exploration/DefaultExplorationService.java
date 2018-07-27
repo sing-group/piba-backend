@@ -32,4 +32,9 @@ public class DefaultExplorationService implements ExplorationService {
     return explorationDao.create(exploration);
   }
 
+  @Override
+  public Exploration edit(Exploration exploration) {
+    return explorationDao.edit(exploration);
+  }
+
 }
