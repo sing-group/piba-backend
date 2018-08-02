@@ -24,9 +24,13 @@ package org.sing_group.piba.rest.resource.spi.polyp;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
+
 @Local
 public interface PolypResource {
   public Response getPolyp(String id);
 
   public Response listPolyp();
+  
+  public Response create(PolypEditionData polypData);
 }

@@ -32,14 +32,13 @@ import org.sing_group.piba.domain.entities.polyp.LST;
 import org.sing_group.piba.domain.entities.polyp.NICE;
 import org.sing_group.piba.domain.entities.polyp.PARIS;
 import org.sing_group.piba.domain.entities.polyp.WASP;
-import org.sing_group.piba.rest.entity.UuidAndUri;
 
 import io.swagger.annotations.ApiModel;
 
 @XmlRootElement(name = "polyp-data", namespace = "http://entity.resource.rest.piba.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
 @ApiModel(value = "polyp-data", description = "Information of a polyp.")
-public class PolypData implements Serializable {
+public class PolypEditionData implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @XmlElement(name = "id", required = true)
@@ -61,13 +60,13 @@ public class PolypData implements Serializable {
   @XmlElement(name = "histology")
   private String histology;
   @XmlElement(name = "exploration")
-  private UuidAndUri exploration;
+  private String exploration;
 
-  PolypData() {}
+  PolypEditionData() {}
 
-  public PolypData(
+  public PolypEditionData(
     String id, String name, Integer size, String location, WASP wasp, NICE nice, LST lst,
-    PARIS paris, String histology, UuidAndUri exploration
+    PARIS paris, String histology, String exploration
   ) {
     this.id = id;
     this.name = name;
@@ -117,7 +116,7 @@ public class PolypData implements Serializable {
     return histology;
   }
 
-  public UuidAndUri getExploration() {
+  public String getExploration() {
     return exploration;
   }
 }

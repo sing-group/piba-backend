@@ -47,4 +47,9 @@ public class DefaultPolypService implements PolypService {
   public Stream<Polyp> getPolyps() {
     return polypDao.getPolyps();
   }
+
+  @Override
+  public Polyp create(Polyp polyp) {
+    return polypDao.create(polyp);
+  }
 }

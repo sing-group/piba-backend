@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
@@ -31,6 +32,9 @@ public class Exploration {
 
   @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Video> videos = new ArrayList<>();
+
+  @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Polyp> polyps = new ArrayList<>();
 
   Exploration() {}
 
@@ -83,6 +87,18 @@ public class Exploration {
 
   public List<Video> getVideos() {
     return videos;
+  }
+
+  public void addPolyp(Polyp polyp) {
+    polyp.setExploration(this);
+  }
+
+  public void internalRemovePolyp(Polyp polyp) {
+    this.polyps.remove(polyp);
+  }
+
+  public void internalAddPolyp(Polyp polyp) {
+    this.polyps.add(polyp);
   }
 
 }

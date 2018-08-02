@@ -66,4 +66,9 @@ public class DefaultPolypDAO implements PolypDAO {
   public Polyp getPolyp(String id) {
     return this.dh.get(id).orElseThrow(() -> new IllegalArgumentException("Unknown polyp: " + id));
   }
+
+  @Override
+  public Polyp create(Polyp polyp) {
+    return this.dh.persist(polyp);
+  }
 }

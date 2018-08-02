@@ -30,4 +30,6 @@ public interface PolypDAO {
   public Stream<Polyp> getPolyps();
 
   public Polyp getPolyp(String id);
+
+  public Polyp create(Polyp polyp);
 }

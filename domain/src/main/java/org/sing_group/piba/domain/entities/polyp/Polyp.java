@@ -21,6 +21,7 @@
  */
 package org.sing_group.piba.domain.entities.polyp;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -28,7 +29,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.sing_group.piba.domain.entities.exploration.Exploration;
 
 @Entity
 @Table(name = "polyp")
@@ -36,7 +40,7 @@ public class Polyp {
 
   @Id
   private String id;
-  @Column(name = "name")
+  @Column(name = "name", nullable = false)
   private String name;
   @Column(name = "size")
   private Integer size;
@@ -57,8 +61,25 @@ public class Polyp {
   @Column(name = "histology")
   private String histology;
 
-  public Polyp() {
-    id = UUID.randomUUID().toString();
+  @ManyToOne
+  private Exploration exploration;
+
+  Polyp() {}
+
+  public Polyp(
+    String name, Integer size, String location, WASP wasp, NICE nice, LST lst, PARIS paris, String histology,
+    Exploration exploration
+  ) {
+    this.id = UUID.randomUUID().toString();
+    setName(name);
+    this.size = size;
+    this.location = location;
+    this.wasp = wasp;
+    this.nice = nice;
+    this.lst = lst;
+    this.paris = paris;
+    this.histology = histology;
+    setExploration(exploration);
   }
 
   public String getId() {
@@ -70,6 +91,7 @@ public class Polyp {
   }
 
   public void setName(String name) {
+    Objects.requireNonNull(name);
     this.name = name;
   }
 
@@ -127,5 +149,19 @@ public class Polyp {
 
   public void setHistology(String histology) {
     this.histology = histology;
+  }
+
+  public Exploration getExploration() {
+    return exploration;
+  }
+
+  public void setExploration(Exploration exploration) {
+    if (this.exploration != null) {
+      this.exploration.internalRemovePolyp(this);
+    }
+    this.exploration = exploration;
+    if (exploration != null) {
+      this.exploration.internalAddPolyp(this);
+    }
   }
 }

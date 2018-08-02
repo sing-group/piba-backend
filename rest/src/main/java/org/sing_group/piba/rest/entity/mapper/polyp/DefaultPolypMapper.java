@@ -22,20 +22,41 @@
 package org.sing_group.piba.rest.entity.mapper.polyp;
 
 import javax.enterprise.inject.Default;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
+import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
 
 @Default
 public class DefaultPolypMapper implements PolypMapper {
+
+  private UriInfo requestURI;
+
+  @Override
+  public void setRequestURI(UriInfo requestURI) {
+    this.requestURI = requestURI;
+  }
 
   @Override
   public PolypData toPolypData(Polyp polyp) {
     return new PolypData(
       polyp.getId(), polyp.getName(), polyp.getSize(), polyp.getLocation(), polyp.getWasp(),
-      polyp.getNice(), polyp.getLst(), polyp.getParis(), polyp.getHistology()
+      polyp.getNice(), polyp.getLst(), polyp.getParis(), polyp.getHistology(), linkExploration(polyp.getExploration())
     );
   }
 
+  private UuidAndUri linkExploration(Exploration exploration) {
+    return new UuidAndUri(
+      exploration.getId(),
+      requestURI.getBaseUriBuilder().path(
+        UriBuilder.fromResource(DefaultVideoResource.class).path(exploration.getId()).build().toString()
+      )
+        .build()
+    );
+  }
 }

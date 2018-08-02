@@ -24,20 +24,30 @@ package org.sing_group.piba.rest.resource.polyp;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
+import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.polyp.PolypResource;
+import org.sing_group.piba.service.spi.exploration.ExplorationService;
 import org.sing_group.piba.service.spi.polyp.PolypService;
 
 import io.swagger.annotations.Api;
@@ -62,7 +72,18 @@ public class DefaultPolypResource implements PolypResource {
   private PolypService service;
 
   @Inject
+  private ExplorationService explorationService;
+
+  @Inject
   private PolypMapper polypMapper;
+
+  @Context
+  private UriInfo uriInfo;
+
+  @PostConstruct
+  public void init() {
+    this.polypMapper.setRequestURI(this.uriInfo);
+  }
 
   @Path("{id}")
   @GET
@@ -81,6 +102,26 @@ public class DefaultPolypResource implements PolypResource {
   public Response listPolyp() {
     return Response.ok(this.service.getPolyps().map(this.polypMapper::toPolypData).toArray(PolypData[]::new))
       .build();
+  }
+
+  @POST
+  @ApiOperation(
+    value = "Creates a new polyp.", response = ExplorationData.class, code = 201
+  )
+  @Override
+  public Response create(PolypEditionData polypEditionData) {
+    Exploration exploration = this.explorationService.getExploration(polypEditionData.getExploration());
+    Polyp polyp =
+      new Polyp(
+        polypEditionData.getName(), polypEditionData.getSize(), polypEditionData.getLocation(),
+        polypEditionData.getWasp(), polypEditionData.getNice(),
+        polypEditionData.getLst(), polypEditionData.getParis(),
+        polypEditionData.getHistology(), exploration
+      );
+    polyp = this.service.create(polyp);
+
+    return Response.created(UriBuilder.fromResource(DefaultPolypResource.class).path(polyp.getId()).build())
+      .entity(polypMapper.toPolypData(polyp)).build();
   }
 
 }
