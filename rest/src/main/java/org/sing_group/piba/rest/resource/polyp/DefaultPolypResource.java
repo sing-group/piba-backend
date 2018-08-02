@@ -94,16 +94,6 @@ public class DefaultPolypResource implements PolypResource {
     return Response.ok(this.polypMapper.toPolypData(this.service.getPolyp(id))).build();
   }
 
-  @GET
-  @ApiOperation(
-    value = "Return the data of all polyp.", response = PolypData.class, responseContainer = "List", code = 200
-  )
-  @Override
-  public Response listPolyp() {
-    return Response.ok(this.service.getPolyps().map(this.polypMapper::toPolypData).toArray(PolypData[]::new))
-      .build();
-  }
-
   @POST
   @ApiOperation(
     value = "Creates a new polyp.", response = ExplorationData.class, code = 201

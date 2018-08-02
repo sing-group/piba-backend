@@ -21,8 +21,6 @@
  */
 package org.sing_group.piba.service.polyp;
 
-import java.util.stream.Stream;
-
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,11 +39,6 @@ public class DefaultPolypService implements PolypService {
   @Override
   public Polyp getPolyp(String id) {
     return polypDao.getPolyp(id);
-  }
-
-  @Override
-  public Stream<Polyp> getPolyps() {
-    return polypDao.getPolyps();
   }
 
   @Override

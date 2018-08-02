@@ -30,7 +30,5 @@ import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 public interface PolypResource {
   public Response getPolyp(String id);
 
-  public Response listPolyp();
-  
   public Response create(PolypEditionData polypData);
 }
