@@ -101,4 +101,9 @@ public class Exploration {
     this.polyps.add(polyp);
   }
 
+  public List<Polyp> getPolyps() {
+    return polyps;
+  }
+  
+
 }

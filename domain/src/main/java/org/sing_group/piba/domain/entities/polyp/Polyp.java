@@ -32,11 +32,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 
 @Entity
 @Table(name = "polyp")
-public class Polyp {
+public class Polyp implements Identifiable {
 
   @Id
   private String id;
@@ -82,6 +83,7 @@ public class Polyp {
     setExploration(exploration);
   }
 
+  @Override
   public String getId() {
     return id;
   }

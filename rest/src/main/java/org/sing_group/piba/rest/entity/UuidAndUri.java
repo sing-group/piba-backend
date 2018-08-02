@@ -20,17 +20,21 @@
  * #L%
  */
 
-
-
 package org.sing_group.piba.rest.entity;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.sing_group.piba.domain.entities.Identifiable;
 
 import io.swagger.annotations.ApiModel;
 
@@ -45,7 +49,7 @@ public class UuidAndUri implements Serializable {
 
   @XmlElement(name = "uri", required = true)
   private URI uri;
-  
+
   UuidAndUri() {}
 
   public UuidAndUri(String id, URI uri) {
@@ -98,5 +102,22 @@ public class UuidAndUri implements Serializable {
     } else if (!uri.equals(other.uri))
       return false;
     return true;
+  }
+
+  public static List<UuidAndUri> fromEntities(
+    UriInfo requestURI, List<? extends Identifiable> list, Class<?> resourceClass
+  ) {
+    List<UuidAndUri> urls = new ArrayList<>();
+    for (Identifiable object : list) {
+      urls.add(
+        new UuidAndUri(
+          object.getId(),
+          requestURI.getBaseUriBuilder().path(
+            UriBuilder.fromResource(resourceClass).path((object).getId()).build().toString()
+          ).build()
+        )
+      );
+    }
+    return urls;
   }
 }
