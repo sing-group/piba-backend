@@ -30,6 +30,7 @@ import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
+import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
 
 @Default
@@ -58,5 +59,13 @@ public class DefaultPolypMapper implements PolypMapper {
       )
         .build()
     );
+  }
+
+  @Override
+  public Polyp toPolyp(PolypEditionData polypEditionData, Exploration exploration) {
+    return new Polyp(polypEditionData.getId(), polypEditionData.getName(), polypEditionData.getSize(), 
+      polypEditionData.getLocation(), polypEditionData.getWasp(), polypEditionData.getNice(), 
+      polypEditionData.getLst(), polypEditionData.getParis(), polypEditionData.getHistology(), 
+      exploration);
   }
 }

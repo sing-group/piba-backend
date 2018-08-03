@@ -45,4 +45,9 @@ public class DefaultPolypService implements PolypService {
   public Polyp create(Polyp polyp) {
     return polypDao.create(polyp);
   }
+
+  @Override
+  public Polyp edit(Polyp polyp) {
+    return polypDao.edit(polyp);
+  }
 }

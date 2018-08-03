@@ -83,6 +83,22 @@ public class Polyp implements Identifiable {
     setExploration(exploration);
   }
 
+  public Polyp(
+    String id, String name, Integer size, String location, WASP wasp, NICE nice, LST lst, PARIS paris, String histology,
+    Exploration exploration
+  ) {
+    this.id = id;
+    setName(name);
+    this.size = size;
+    this.location = location;
+    this.wasp = wasp;
+    this.nice = nice;
+    this.lst = lst;
+    this.paris = paris;
+    this.histology = histology;
+    setExploration(exploration);
+  }
+
   @Override
   public String getId() {
     return id;

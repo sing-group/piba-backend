@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -41,7 +42,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
-import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
@@ -70,7 +70,7 @@ public class DefaultPolypResource implements PolypResource {
 
   @Inject
   private PolypService service;
-
+  
   @Inject
   private ExplorationService explorationService;
 
@@ -96,22 +96,35 @@ public class DefaultPolypResource implements PolypResource {
 
   @POST
   @ApiOperation(
-    value = "Creates a new polyp.", response = ExplorationData.class, code = 201
+    value = "Creates a new polyp.", response = PolypData.class, code = 201
   )
   @Override
   public Response create(PolypEditionData polypEditionData) {
-    Exploration exploration = this.explorationService.getExploration(polypEditionData.getExploration());
     Polyp polyp =
       new Polyp(
         polypEditionData.getName(), polypEditionData.getSize(), polypEditionData.getLocation(),
         polypEditionData.getWasp(), polypEditionData.getNice(),
         polypEditionData.getLst(), polypEditionData.getParis(),
-        polypEditionData.getHistology(), exploration
+        polypEditionData.getHistology(), getExploration(polypEditionData)
       );
     polyp = this.service.create(polyp);
 
     return Response.created(UriBuilder.fromResource(DefaultPolypResource.class).path(polyp.getId()).build())
       .entity(polypMapper.toPolypData(polyp)).build();
+  }
+
+  @PUT
+  @ApiOperation(
+    value = "Modifies an existing polyp", response = PolypData.class, code = 200
+  )
+  @Override
+  public Response edit(PolypEditionData polypEditionData) {
+    return Response.ok(this.polypMapper.toPolypData(this.service.edit(polypMapper.toPolyp(polypEditionData, getExploration(polypEditionData)))))
+      .build();
+  }
+
+  private Exploration getExploration(PolypEditionData polypEditionData) {
+    return this.explorationService.getExploration(polypEditionData.getExploration());
   }
 
 }

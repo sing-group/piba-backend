@@ -71,4 +71,10 @@ public class DefaultPolypDAO implements PolypDAO {
   public Polyp create(Polyp polyp) {
     return this.dh.persist(polyp);
   }
+
+  @Override
+  public Polyp edit(Polyp polyp) {
+    return this.dh.update(polyp);
+  }
+
 }

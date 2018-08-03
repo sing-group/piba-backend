@@ -23,11 +23,15 @@ package org.sing_group.piba.rest.entity.mapper.spi.polyp;
 
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
+import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 
 public interface PolypMapper {
   public void setRequestURI(UriInfo requestURI);
 
   public PolypData toPolypData(Polyp polyp);
+
+  public Polyp toPolyp(PolypEditionData polypEditionData, Exploration exploration);
 }

@@ -32,4 +32,6 @@ public interface PolypDAO {
   public Polyp getPolyp(String id);
 
   public Polyp create(Polyp polyp);
+
+  public Polyp edit(Polyp polyp);
 }
