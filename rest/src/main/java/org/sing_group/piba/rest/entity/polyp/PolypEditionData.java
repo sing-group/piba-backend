@@ -35,9 +35,9 @@ import org.sing_group.piba.domain.entities.polyp.WASP;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "polyp-data", namespace = "http://entity.resource.rest.piba.sing-group.org")
+@XmlRootElement(name = "polyp-edition-data", namespace = "http://entity.resource.rest.piba.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "polyp-data", description = "Information of a polyp.")
+@ApiModel(value = "polyp-edition-data", description = "Information of a polyp for edition.")
 public class PolypEditionData implements Serializable {
   private static final long serialVersionUID = 1L;
 

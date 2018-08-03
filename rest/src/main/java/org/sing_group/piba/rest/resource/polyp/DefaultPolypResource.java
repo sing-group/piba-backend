@@ -119,7 +119,9 @@ public class DefaultPolypResource implements PolypResource {
   )
   @Override
   public Response edit(PolypEditionData polypEditionData) {
-    return Response.ok(this.polypMapper.toPolypData(this.service.edit(polypMapper.toPolyp(polypEditionData, getExploration(polypEditionData)))))
+    Polyp polyp = this.service.getPolyp(polypEditionData.getId());
+    this.polypMapper.assignPolypEditionData(polyp, polypEditionData);
+    return Response.ok(this.polypMapper.toPolypData(this.service.edit(polyp)))
       .build();
   }
 

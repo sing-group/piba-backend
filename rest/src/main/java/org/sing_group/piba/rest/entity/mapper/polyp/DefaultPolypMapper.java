@@ -22,6 +22,7 @@
 package org.sing_group.piba.rest.entity.mapper.polyp;
 
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
@@ -32,11 +33,15 @@ import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
+import org.sing_group.piba.service.spi.exploration.ExplorationService;
 
 @Default
 public class DefaultPolypMapper implements PolypMapper {
 
   private UriInfo requestURI;
+
+  @Inject
+  private ExplorationService explorationService;
 
   @Override
   public void setRequestURI(UriInfo requestURI) {
@@ -52,20 +57,31 @@ public class DefaultPolypMapper implements PolypMapper {
   }
 
   private UuidAndUri linkExploration(Exploration exploration) {
-    return new UuidAndUri(
-      exploration.getId(),
-      requestURI.getBaseUriBuilder().path(
-        UriBuilder.fromResource(DefaultVideoResource.class).path(exploration.getId()).build().toString()
-      )
-        .build()
-    );
+    return exploration == null ? null
+      : new UuidAndUri(
+        exploration.getId(),
+        requestURI.getBaseUriBuilder().path(
+          UriBuilder.fromResource(DefaultVideoResource.class).path(exploration.getId()).build().toString()
+        )
+          .build()
+      );
   }
 
   @Override
-  public Polyp toPolyp(PolypEditionData polypEditionData, Exploration exploration) {
-    return new Polyp(polypEditionData.getId(), polypEditionData.getName(), polypEditionData.getSize(), 
-      polypEditionData.getLocation(), polypEditionData.getWasp(), polypEditionData.getNice(), 
-      polypEditionData.getLst(), polypEditionData.getParis(), polypEditionData.getHistology(), 
-      exploration);
+  public void assignPolypEditionData(Polyp polyp, PolypEditionData polypEditionData) {
+    polyp.setHistology(polypEditionData.getHistology());
+    polyp.setLocation(polypEditionData.getLocation());
+    polyp.setLst(polypEditionData.getLst());
+    polyp.setName(polypEditionData.getName());
+    polyp.setNice(polypEditionData.getNice());
+    polyp.setParis(polypEditionData.getParis());
+    polyp.setWasp(polypEditionData.getWasp());
+    polyp.setSize(polypEditionData.getSize());
+
+    polyp.setExploration(
+      polypEditionData.getExploration() == null ? null
+        : this.explorationService.getExploration(polypEditionData.getExploration())
+    );
+
   }
 }

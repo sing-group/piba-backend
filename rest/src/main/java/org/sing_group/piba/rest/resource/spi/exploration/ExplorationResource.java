@@ -4,6 +4,7 @@ import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
+import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 
 @Local
 public interface ExplorationResource {
@@ -13,5 +14,5 @@ public interface ExplorationResource {
 
   public Response create(ExplorationData explorationData);
 
-  public Response edit(ExplorationData explorationData);
+  public Response edit(ExplorationEditionData explorationData);
 }

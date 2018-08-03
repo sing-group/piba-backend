@@ -21,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
+import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 import org.sing_group.piba.rest.entity.mapper.spi.exploration.ExplorationMapper;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.exploration.ExplorationResource;
@@ -104,8 +105,10 @@ public class DefaultExplorationResource implements ExplorationResource {
     value = "Modifies an existing exploration", response = ExplorationData.class, code = 200
   )
   @Override
-  public Response edit(ExplorationData explorationData) {
-    return Response.ok(this.service.edit(explorationMapper.toExploration(explorationData))).build();
+  public Response edit(ExplorationEditionData explorationEditionData) {
+    Exploration exploration = this.service.getExploration(explorationEditionData.getId());
+    explorationMapper.assignExplorationEditData(exploration, explorationEditionData);
+    return Response.ok(this.explorationMapper.toExplorationData(this.service.edit(exploration))).build();
   }
 
 }

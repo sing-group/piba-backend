@@ -7,6 +7,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
+import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 import org.sing_group.piba.rest.entity.mapper.spi.exploration.ExplorationMapper;
 import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
@@ -20,7 +21,7 @@ public class DefaultExplorationMapper implements ExplorationMapper {
   public void setRequestURI(UriInfo requestURI) {
     this.requestURI = requestURI;
   }
-
+  
   @Override
   public ExplorationData toExplorationData(Exploration exploration) {
     return new ExplorationData(
@@ -31,7 +32,8 @@ public class DefaultExplorationMapper implements ExplorationMapper {
   }
 
   @Override
-  public Exploration toExploration(ExplorationData explorationData) {
-    return new Exploration(explorationData.getId(), explorationData.getLocation(), explorationData.getDate());
+  public void assignExplorationEditData(Exploration exploration, ExplorationEditionData explorationEditionData) {
+    exploration.setDate(explorationEditionData.getDate());
+    exploration.setLocation(explorationEditionData.getLocation());
   }
 }
