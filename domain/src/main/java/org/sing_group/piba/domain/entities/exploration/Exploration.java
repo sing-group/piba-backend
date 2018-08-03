@@ -30,10 +30,10 @@ public class Exploration {
   @Column(name = "date", nullable = false)
   private Date date;
 
-  @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<Video> videos = new ArrayList<>();
 
-  @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<Polyp> polyps = new ArrayList<>();
 
   Exploration() {}
@@ -104,6 +104,5 @@ public class Exploration {
   public List<Polyp> getPolyps() {
     return polyps;
   }
-  
 
 }
