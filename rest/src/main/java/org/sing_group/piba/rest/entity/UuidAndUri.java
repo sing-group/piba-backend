@@ -120,4 +120,15 @@ public class UuidAndUri implements Serializable {
     }
     return urls;
   }
+
+  public static UuidAndUri fromEntity(UriInfo requestURI, Identifiable entity, Class<?> resourceClass) {
+    return entity == null ? null
+      : new UuidAndUri(
+        entity.getId(),
+        requestURI.getBaseUriBuilder().path(
+          UriBuilder.fromResource(resourceClass).path(entity.getId()).build().toString()
+        )
+          .build()
+      );
+  }
 }

@@ -21,17 +21,24 @@
  */
 package org.sing_group.piba.domain.entities.video;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 
 @Entity
 @Table(name = "video")
@@ -51,6 +58,9 @@ public class Video implements Identifiable {
   @ManyToOne
   @JoinColumn(name = "exploration_id")
   private Exploration exploration;
+
+  @OneToMany(mappedBy = "video", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<PolypRecording> polypRecordings = new HashSet<>();
 
   public Video() {
     id = UUID.randomUUID().toString();
@@ -98,4 +108,9 @@ public class Video implements Identifiable {
       this.exploration.internalAddVideo(this);
     }
   }
+
+  public Set<PolypRecording> getPolypRecordings() {
+    return Collections.unmodifiableSet(polypRecordings);
+  }
+  
 }
