@@ -3,6 +3,8 @@ package org.sing_group.piba.rest.resource.exploration;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
@@ -20,9 +22,12 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 import org.sing_group.piba.rest.entity.mapper.spi.exploration.ExplorationMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
+import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.exploration.ExplorationResource;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
@@ -51,12 +56,16 @@ public class DefaultExplorationResource implements ExplorationResource {
   @Inject
   private ExplorationMapper explorationMapper;
 
+  @Inject
+  private PolypMapper polypMapper;
+
   @Context
   private UriInfo uriInfo;
 
   @PostConstruct
   public void init() {
     this.explorationMapper.setRequestURI(this.uriInfo);
+    this.polypMapper.setRequestURI(this.uriInfo);
   }
 
   @Path("{id}")
@@ -109,6 +118,21 @@ public class DefaultExplorationResource implements ExplorationResource {
     Exploration exploration = this.service.getExploration(explorationEditionData.getId());
     explorationMapper.assignExplorationEditData(exploration, explorationEditionData);
     return Response.ok(this.explorationMapper.toExplorationData(this.service.edit(exploration))).build();
+  }
+
+  @GET
+  @Path("{id}/polyps")
+  @ApiOperation(value = "Returns the polyps of a specifies exploration.", response = PolypData.class, code = 200)
+  @ApiResponses(@ApiResponse(code = 400, message = "Unknown exploration: {id}"))
+  @Override
+  public Response getPolyps(@PathParam("id") String id) {
+    Exploration exploration = this.service.getExploration(id);
+    if (exploration != null) {
+      final Stream<Polyp> list = this.service.getPolyps(exploration);
+      final PolypData[] polyps = list.map(this.polypMapper::toPolypData).toArray(PolypData[]::new);
+      return Response.ok(polyps).build();
+    }
+    throw new IllegalArgumentException("Unknown exploration: " + id);
   }
 
 }

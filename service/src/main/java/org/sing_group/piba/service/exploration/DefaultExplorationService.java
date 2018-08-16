@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.sing_group.piba.domain.dao.spi.exploration.ExplorationDAO;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
 
 @Stateless
@@ -35,6 +36,11 @@ public class DefaultExplorationService implements ExplorationService {
   @Override
   public Exploration edit(Exploration exploration) {
     return explorationDao.edit(exploration);
+  }
+
+  @Override
+  public Stream<Polyp> getPolyps(Exploration exploration) {
+    return explorationDao.getPolyps(exploration);
   }
 
 }
