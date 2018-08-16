@@ -23,10 +23,8 @@ package org.sing_group.piba.rest.entity.mapper.polyp;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
@@ -52,19 +50,9 @@ public class DefaultPolypMapper implements PolypMapper {
   public PolypData toPolypData(Polyp polyp) {
     return new PolypData(
       polyp.getId(), polyp.getName(), polyp.getSize(), polyp.getLocation(), polyp.getWasp(),
-      polyp.getNice(), polyp.getLst(), polyp.getParis(), polyp.getHistology(), linkExploration(polyp.getExploration())
+      polyp.getNice(), polyp.getLst(), polyp.getParis(), polyp.getHistology(),
+      UuidAndUri.fromEntity(requestURI, polyp.getExploration(), DefaultVideoResource.class)
     );
-  }
-
-  private UuidAndUri linkExploration(Exploration exploration) {
-    return exploration == null ? null
-      : new UuidAndUri(
-        exploration.getId(),
-        requestURI.getBaseUriBuilder().path(
-          UriBuilder.fromResource(DefaultVideoResource.class).path(exploration.getId()).build().toString()
-        )
-          .build()
-      );
   }
 
   @Override
