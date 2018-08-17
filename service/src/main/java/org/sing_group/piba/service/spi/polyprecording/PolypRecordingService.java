@@ -32,4 +32,6 @@ import org.sing_group.piba.domain.entities.video.Video;
 @Local
 public interface PolypRecordingService {
   public Stream<PolypRecording> get(Video video);
+
+  public PolypRecording create(PolypRecording polypRecording);
 }

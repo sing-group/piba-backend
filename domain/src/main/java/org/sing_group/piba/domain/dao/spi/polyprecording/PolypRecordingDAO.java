@@ -31,4 +31,5 @@ public interface PolypRecordingDAO {
 
   public Stream<PolypRecording> get(Video video);
 
+  public PolypRecording create(PolypRecording polypRecording);
 }

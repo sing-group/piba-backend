@@ -31,21 +31,30 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
+import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.rest.entity.mapper.spi.polyprecording.PolypRecordingMapper;
 import org.sing_group.piba.rest.entity.polyptrecording.PolypRecordingData;
+import org.sing_group.piba.rest.entity.polyptrecording.PolypRecordingEditicionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
+import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.spi.polyprecording.PolypRecordingResource;
+import org.sing_group.piba.service.spi.polyp.PolypService;
 import org.sing_group.piba.service.spi.polyprecording.PolypRecordingService;
 import org.sing_group.piba.service.spi.video.VideoService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @Path("polyprecording")
 @Api(value = "polyprecording")
@@ -67,6 +76,9 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   private VideoService videoService;
 
   @Inject
+  private PolypService polypService;
+
+  @Inject
   private PolypRecordingMapper polypRecordingMapper;
 
   @Context
@@ -78,11 +90,32 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   }
 
   @GET
+  @ApiOperation(value = "Returns the polyps recorded in that video.", response = PolypRecordingData.class, code = 200)
   @Override
   public Response getPolypResource(@QueryParam("id") String video_id) {
+    Video video = this.videoService.getVideo(video_id);
     return Response.ok(
-      this.polypRecordingService.get(this.videoService.getVideo(video_id)).map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
+      this.polypRecordingService.get(video).map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
     ).build();
+  }
+
+  @POST
+  @ApiOperation(value = "Creates a new relationship between a polyp and a video.", response = PolypRecordingData.class, code = 200)
+  @Override
+  public Response create(PolypRecordingEditicionData polypRecordingEditicionData) {
+    Polyp polyp = this.polypService.getPolyp(polypRecordingEditicionData.getPolyp());
+    Video video = this.videoService.getVideo(polypRecordingEditicionData.getVideo());
+    if(polyp.getExploration().getId() != video.getExploration().getId()) {
+      throw new IllegalArgumentException("Do not belong to the same exploration");
+    }
+    PolypRecording polypRecording =
+      new PolypRecording(
+        polyp, video, polypRecordingEditicionData.getStart(), polypRecordingEditicionData.getEnd()
+      );
+    this.polypRecordingService.create(polypRecording);
+
+    return Response.created(UriBuilder.fromResource(DefaultPolypResource.class).build())
+      .entity(polypRecordingMapper.toPolypRecordingData(polypRecording)).build();
   }
 
 }

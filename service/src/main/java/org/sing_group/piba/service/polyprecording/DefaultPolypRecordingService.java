@@ -45,4 +45,9 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
     return this.polypRecordingDAO.get(video);
   }
 
+  @Override
+  public PolypRecording create(PolypRecording polypRecording) {
+    return this.polypRecordingDAO.create(polypRecording);
+  }
+
 }

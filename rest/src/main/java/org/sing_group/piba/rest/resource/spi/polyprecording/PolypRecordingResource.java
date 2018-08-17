@@ -25,7 +25,11 @@ package org.sing_group.piba.rest.resource.spi.polyprecording;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.piba.rest.entity.polyptrecording.PolypRecordingEditicionData;
+
 @Local
 public interface PolypRecordingResource {
   public Response getPolypResource(String video_id);
+
+  public Response create(PolypRecordingEditicionData polypRecordingEditicionData);
 }

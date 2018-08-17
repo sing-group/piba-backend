@@ -63,4 +63,9 @@ public class DefaultPolypRecordingDAO implements PolypRecordingDAO {
     return this.dh.listBy("video", video).stream();
   }
 
+  @Override
+  public PolypRecording create(PolypRecording polypRecording) {
+    return this.dh.persist(polypRecording);
+  }
+
 }
