@@ -105,13 +105,12 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   public Response create(PolypRecordingEditicionData polypRecordingEditicionData) {
     Polyp polyp = this.polypService.getPolyp(polypRecordingEditicionData.getPolyp());
     Video video = this.videoService.getVideo(polypRecordingEditicionData.getVideo());
-    if(polyp.getExploration().getId() != video.getExploration().getId()) {
-      throw new IllegalArgumentException("Do not belong to the same exploration");
-    }
+   
     PolypRecording polypRecording =
       new PolypRecording(
         polyp, video, polypRecordingEditicionData.getStart(), polypRecordingEditicionData.getEnd()
       );
+    
     this.polypRecordingService.create(polypRecording);
 
     return Response.created(UriBuilder.fromResource(DefaultPolypResource.class).build())

@@ -22,8 +22,11 @@
  */
 package org.sing_group.piba.domain.entities.polyprecording;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -48,7 +51,9 @@ public class PolypRecording implements Serializable {
   @ManyToOne
   private Video video;
 
+  @Column(nullable = false)
   private Integer start;
+  @Column(nullable = false)
   private Integer end;
 
   PolypRecording() {}
@@ -56,8 +61,9 @@ public class PolypRecording implements Serializable {
   public PolypRecording(Polyp polyp, Video video, Integer start, Integer end) {
     this.polyp = polyp;
     this.video = video;
-    this.start = start;
-    this.end = end;
+    setStart(start);
+    setEnd(end);
+    checkInterval(start, end);
   }
 
   public Polyp getPolyp() {
@@ -81,6 +87,7 @@ public class PolypRecording implements Serializable {
   }
 
   public void setStart(Integer start) {
+    requireNonNull(start, "start of polyp can not be null");
     this.start = start;
   }
 
@@ -89,7 +96,14 @@ public class PolypRecording implements Serializable {
   }
 
   public void setEnd(Integer end) {
+    requireNonNull(end, "end of polyp can not be null");
     this.end = end;
+  }
+
+  private void checkInterval(Integer start, Integer end) {
+    if (start > end) {
+      throw new IllegalArgumentException("start can not be lower than final");
+    }
   }
 
   public static class PolypRecordingId implements Serializable {

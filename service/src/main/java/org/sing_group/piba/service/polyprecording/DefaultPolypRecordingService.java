@@ -47,6 +47,9 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
 
   @Override
   public PolypRecording create(PolypRecording polypRecording) {
+    if(polypRecording.getPolyp().getExploration().getId() != polypRecording.getVideo().getExploration().getId()) {
+      throw new IllegalArgumentException("Do not belong to the same exploration");
+    }
     return this.polypRecordingDAO.create(polypRecording);
   }
 
