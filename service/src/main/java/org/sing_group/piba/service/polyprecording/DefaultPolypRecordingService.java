@@ -29,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.piba.domain.dao.spi.polyprecording.PolypRecordingDAO;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.service.spi.polyprecording.PolypRecordingService;
@@ -47,10 +48,15 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
 
   @Override
   public PolypRecording create(PolypRecording polypRecording) {
-    if(polypRecording.getPolyp().getExploration().getId() != polypRecording.getVideo().getExploration().getId()) {
+    if (polypRecording.getPolyp().getExploration().getId() != polypRecording.getVideo().getExploration().getId()) {
       throw new IllegalArgumentException("Do not belong to the same exploration");
     }
     return this.polypRecordingDAO.create(polypRecording);
+  }
+
+  @Override
+  public void delete(Video video, Polyp polyp) {
+    this.polypRecordingDAO.delete(video, polyp);
   }
 
 }

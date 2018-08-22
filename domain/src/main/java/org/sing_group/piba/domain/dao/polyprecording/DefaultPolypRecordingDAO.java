@@ -33,6 +33,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.polyprecording.PolypRecordingDAO;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.domain.entities.video.Video;
 
@@ -66,6 +67,16 @@ public class DefaultPolypRecordingDAO implements PolypRecordingDAO {
   @Override
   public PolypRecording create(PolypRecording polypRecording) {
     return this.dh.persist(polypRecording);
+  }
+
+  @Override
+  public void delete(Video video, Polyp polyp) {
+    PolypRecording polypRecording =
+      this.em.createQuery("SELECT p FROM PolypRecording p WHERE p.video=:video and p.polyp=:polyp", PolypRecording.class)
+        .setParameter("video", video)
+        .setParameter("polyp", polyp)
+        .getSingleResult();
+    this.dh.remove(polypRecording);
   }
 
 }

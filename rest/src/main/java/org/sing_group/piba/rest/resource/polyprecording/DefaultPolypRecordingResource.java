@@ -30,9 +30,11 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -100,21 +102,36 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   }
 
   @POST
-  @ApiOperation(value = "Creates a new relationship between a polyp and a video.", response = PolypRecordingData.class, code = 200)
+  @ApiOperation(
+    value = "Creates a new relationship between a polyp and a video.", response = PolypRecordingData.class, code = 200
+  )
   @Override
   public Response create(PolypRecordingEditicionData polypRecordingEditicionData) {
     Polyp polyp = this.polypService.getPolyp(polypRecordingEditicionData.getPolyp());
     Video video = this.videoService.getVideo(polypRecordingEditicionData.getVideo());
-   
+
     PolypRecording polypRecording =
       new PolypRecording(
         polyp, video, polypRecordingEditicionData.getStart(), polypRecordingEditicionData.getEnd()
       );
-    
+
     this.polypRecordingService.create(polypRecording);
 
     return Response.created(UriBuilder.fromResource(DefaultPolypResource.class).build())
       .entity(polypRecordingMapper.toPolypRecordingData(polypRecording)).build();
+  }
+
+  @DELETE
+  @Path("{video_id}/{polyp_id}")
+  @ApiOperation(
+    value = "Deletes an existing polyp recording.", code = 200
+  )
+  @Override
+  public Response delete(@PathParam("video_id") String video_id, @PathParam("polyp_id") String polyp_id) {
+    Video video = this.videoService.getVideo(video_id);
+    Polyp polyp = this.polypService.getPolyp(polyp_id);
+    this.polypRecordingService.delete(video, polyp);
+    return Response.ok().build();
   }
 
 }

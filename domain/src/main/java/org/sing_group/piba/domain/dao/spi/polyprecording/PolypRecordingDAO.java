@@ -24,6 +24,7 @@ package org.sing_group.piba.domain.dao.spi.polyprecording;
 
 import java.util.stream.Stream;
 
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.domain.entities.video.Video;
 
@@ -32,4 +33,6 @@ public interface PolypRecordingDAO {
   public Stream<PolypRecording> get(Video video);
 
   public PolypRecording create(PolypRecording polypRecording);
+
+  public void delete(Video video, Polyp polyp);
 }

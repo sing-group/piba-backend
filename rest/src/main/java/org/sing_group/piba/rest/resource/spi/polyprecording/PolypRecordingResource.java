@@ -32,4 +32,6 @@ public interface PolypRecordingResource {
   public Response getPolypResource(String video_id);
 
   public Response create(PolypRecordingEditicionData polypRecordingEditicionData);
+
+  public Response delete(String video_id, String polyp_id);
 }
