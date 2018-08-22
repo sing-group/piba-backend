@@ -32,4 +32,6 @@ public interface PolypService {
   public Polyp create(Polyp polyp);
 
   public Polyp edit(Polyp polyp);
+
+  public void delete(Polyp polyp);
 }

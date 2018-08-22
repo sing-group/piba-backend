@@ -77,4 +77,9 @@ public class DefaultPolypDAO implements PolypDAO {
     return this.dh.update(polyp);
   }
 
+  @Override
+  public void delete(Polyp polyp) {
+    this.dh.remove(polyp);
+  }
+
 }

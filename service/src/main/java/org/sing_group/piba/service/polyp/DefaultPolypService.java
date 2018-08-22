@@ -50,4 +50,9 @@ public class DefaultPolypService implements PolypService {
   public Polyp edit(Polyp polyp) {
     return polypDao.edit(polyp);
   }
+
+  @Override
+  public void delete(Polyp polyp) {
+    polypDao.delete(polyp);
+  }
 }

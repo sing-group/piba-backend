@@ -29,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -70,7 +71,7 @@ public class DefaultPolypResource implements PolypResource {
 
   @Inject
   private PolypService service;
-  
+
   @Inject
   private ExplorationService explorationService;
 
@@ -123,6 +124,21 @@ public class DefaultPolypResource implements PolypResource {
     this.polypMapper.assignPolypEditionData(polyp, polypEditionData);
     return Response.ok(this.polypMapper.toPolypData(this.service.edit(polyp)))
       .build();
+  }
+
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Deletes an existing polyp.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown polyp: {id}")
+  )
+  @Override
+  public Response delete(@PathParam("id") String id) {
+    Polyp polyp = this.service.getPolyp(id);
+    this.service.delete(polyp);
+    return Response.ok().build();
   }
 
   private Exploration getExploration(PolypEditionData polypEditionData) {
