@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -133,6 +134,21 @@ public class DefaultExplorationResource implements ExplorationResource {
       return Response.ok(polyps).build();
     }
     throw new IllegalArgumentException("Unknown exploration: " + id);
+  }
+
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Deletes an existing exploration.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown exploration: {id}")
+  )
+  @Override
+  public Response delete(@PathParam("id") String id) {
+    Exploration exploration = this.service.getExploration(id);
+    this.service.delete(exploration);
+    return Response.ok().build();
   }
 
 }

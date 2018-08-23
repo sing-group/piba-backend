@@ -43,4 +43,9 @@ public class DefaultExplorationService implements ExplorationService {
     return explorationDao.getPolyps(exploration);
   }
 
+  @Override
+  public void delete(Exploration exploration) {
+    explorationDao.delete(exploration);
+  }
+
 }

@@ -15,4 +15,6 @@ public interface ExplorationDAO {
   public Exploration edit(Exploration exploration);
 
   public Stream<Polyp> getPolyps(Exploration exploration);
+
+  public void delete(Exploration exploration);
 }

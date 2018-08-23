@@ -65,4 +65,9 @@ public class DefaultExplorationDAO implements ExplorationDAO {
     return this.dhPolyp.listBy("exploration", exploration).stream();
   }
 
+  @Override
+  public void delete(Exploration exploration) {
+    this.dh.remove(exploration);
+  }
+
 }

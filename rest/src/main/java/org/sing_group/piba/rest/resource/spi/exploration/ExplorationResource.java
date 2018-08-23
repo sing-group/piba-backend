@@ -17,4 +17,6 @@ public interface ExplorationResource {
   public Response edit(ExplorationEditionData explorationData);
   
   public Response getPolyps(String id);
+  
+  public Response delete(String id);
 }
