@@ -86,7 +86,7 @@ public class DefaultVideoService implements VideoService {
   public Video create(VideoUploadData data) {
     try {
       Exploration exploration = this.explorationService.getExploration(data.getExploration_id());
-      
+
       Video video = new Video();
       video.setObservations(data.getObservations());
       video.setTitle(data.getTitle());
@@ -108,5 +108,10 @@ public class DefaultVideoService implements VideoService {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public void delete(Video video) {
+    this.videoDao.delete(video);
   }
 }

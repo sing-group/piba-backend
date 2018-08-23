@@ -20,9 +20,6 @@
  * #L%
  */
 
-
-
-
 package org.sing_group.piba.domain.dao.spi.video;
 
 import java.util.stream.Stream;
@@ -31,6 +28,10 @@ import org.sing_group.piba.domain.entities.video.Video;
 
 public interface VideoDAO {
   public Stream<Video> getVideos();
+
   public Video getVideo(String id);
+
   public Video create(Video video);
+
+  public void delete(Video video);
 }

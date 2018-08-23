@@ -20,8 +20,6 @@
  * #L%
  */
 
-
-
 package org.sing_group.piba.rest.resource.spi.video;
 
 import javax.ejb.Local;
@@ -32,7 +30,12 @@ import org.sing_group.piba.rest.entity.RestVideoUploadData;
 @Local
 public interface VideoResource {
   public Response getVideo(String id);
+
   public Response getVideoStream(String id, String format);
+
   public Response listVideos();
+
   public Response uploadVideo(RestVideoUploadData video);
+
+  public Response delete(String id);
 }

@@ -34,6 +34,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -172,5 +173,21 @@ public class DefaultVideoResource implements VideoResource {
     return Response.created(UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build())
       .entity(videoMapper.toVideoData(video)).build();
   }
+  
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Deletes an existing video.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown video: {id}")
+  )
+  @Override
+  public Response delete(@PathParam("id") String id) {
+    Video video = this.service.getVideo(id);
+    this.service.delete(video);
+    return Response.ok().build();
+  }
+
 
 }

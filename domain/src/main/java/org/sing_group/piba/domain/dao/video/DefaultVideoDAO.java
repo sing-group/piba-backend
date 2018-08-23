@@ -20,9 +20,6 @@
  * #L%
  */
 
-
-
-
 package org.sing_group.piba.domain.dao.video;
 
 import java.util.stream.Stream;
@@ -74,5 +71,10 @@ public class DefaultVideoDAO implements VideoDAO {
   @Override
   public Video create(Video video) {
     return this.dh.persist(video);
+  }
+
+  @Override
+  public void delete(Video video) {
+    this.dh.remove(video);
   }
 }

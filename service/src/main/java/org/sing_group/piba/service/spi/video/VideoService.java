@@ -20,9 +20,6 @@
  * #L%
  */
 
-
-
-
 package org.sing_group.piba.service.spi.video;
 
 import java.util.stream.Stream;
@@ -35,8 +32,13 @@ import org.sing_group.piba.service.video.VideoConversionTask;
 
 @Local
 public interface VideoService {
-    public Video getVideo(String id);
-    public Stream<Video> getVideos();
-    public Video create(VideoUploadData data);
-    public void onConversionEvent(VideoConversionTask task);
+  public Video getVideo(String id);
+
+  public Stream<Video> getVideos();
+
+  public Video create(VideoUploadData data);
+
+  public void onConversionEvent(VideoConversionTask task);
+
+  public void delete(Video video);
 }
