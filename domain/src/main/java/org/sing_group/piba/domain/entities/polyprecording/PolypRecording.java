@@ -118,6 +118,11 @@ public class PolypRecording implements Serializable {
       this.polyp = polyp;
       this.video = video;
     }
+    
+    public PolypRecordingId(Polyp polyp, Video video) {
+      this.polyp = polyp.getId();
+      this.video = video.getId();
+    }
 
     @Override
     public int hashCode() {

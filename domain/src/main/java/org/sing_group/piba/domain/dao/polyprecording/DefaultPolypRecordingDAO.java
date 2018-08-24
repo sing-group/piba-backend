@@ -72,10 +72,7 @@ public class DefaultPolypRecordingDAO implements PolypRecordingDAO {
   @Override
   public void delete(Video video, Polyp polyp) {
     PolypRecording polypRecording =
-      this.em.createQuery("SELECT p FROM PolypRecording p WHERE p.video=:video and p.polyp=:polyp", PolypRecording.class)
-        .setParameter("video", video)
-        .setParameter("polyp", polyp)
-        .getSingleResult();
+      this.em.find(PolypRecording.class, new PolypRecording.PolypRecordingId(polyp, video));
     this.dh.remove(polypRecording);
   }
 
