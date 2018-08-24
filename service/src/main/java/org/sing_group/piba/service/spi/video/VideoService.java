@@ -40,5 +40,7 @@ public interface VideoService {
 
   public void onConversionEvent(VideoConversionTask task);
 
+  public Video edit(Video video);
+
   public void delete(Video video);
 }

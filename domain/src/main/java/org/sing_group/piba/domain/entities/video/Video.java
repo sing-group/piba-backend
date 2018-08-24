@@ -66,6 +66,14 @@ public class Video implements Identifiable {
     id = UUID.randomUUID().toString();
   }
 
+  public Video(String id, String title, String observations, boolean isProcessing, Exploration exploration) {
+    this.id = id;
+    this.title = title;
+    this.observations = observations;
+    this.isProcessing = isProcessing;
+    setExploration(exploration);
+  }
+
   @Override
   public String getId() {
     return id;
@@ -112,5 +120,5 @@ public class Video implements Identifiable {
   public Set<PolypRecording> getPolypRecordings() {
     return Collections.unmodifiableSet(polypRecordings);
   }
-  
+
 }

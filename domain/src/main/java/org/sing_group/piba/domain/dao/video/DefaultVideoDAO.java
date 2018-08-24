@@ -74,7 +74,13 @@ public class DefaultVideoDAO implements VideoDAO {
   }
 
   @Override
+  public Video edit(Video video) {
+    return this.dh.update(video);
+  }
+
+  @Override
   public void delete(Video video) {
     this.dh.remove(video);
   }
+
 }

@@ -26,6 +26,7 @@ import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.piba.rest.entity.RestVideoUploadData;
+import org.sing_group.piba.rest.entity.video.VideoEditionData;
 
 @Local
 public interface VideoResource {
@@ -37,5 +38,8 @@ public interface VideoResource {
 
   public Response uploadVideo(RestVideoUploadData video);
 
+  public Response edit(VideoEditionData videoEditionData);
+
   public Response delete(String id);
+
 }

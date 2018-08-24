@@ -114,4 +114,9 @@ public class DefaultVideoService implements VideoService {
   public void delete(Video video) {
     this.videoDao.delete(video);
   }
+
+  @Override
+  public Video edit(Video video) {
+    return this.videoDao.edit(video);
+  }
 }

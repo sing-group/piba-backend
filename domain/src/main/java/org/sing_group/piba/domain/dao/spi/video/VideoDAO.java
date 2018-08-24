@@ -33,5 +33,7 @@ public interface VideoDAO {
 
   public Video create(Video video);
 
+  public Video edit(Video video);
+
   public void delete(Video video);
 }

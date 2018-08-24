@@ -20,15 +20,18 @@
  * #L%
  */
 
-
 package org.sing_group.piba.rest.entity.mapper.spi.video;
 
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.rest.entity.video.VideoData;
+import org.sing_group.piba.rest.entity.video.VideoEditionData;
 
 public interface VideoMapper {
   public void setRequestURI(UriInfo requestURI);
+
   public VideoData toVideoData(Video video);
+
+  public void assignVideoEditionData(Video video, VideoEditionData videoEditionData);
 }

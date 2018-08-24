@@ -29,19 +29,27 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.video.Video;
+import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.mapper.spi.video.VideoMapper;
 import org.sing_group.piba.rest.entity.video.VideoData;
+import org.sing_group.piba.rest.entity.video.VideoEditionData;
 import org.sing_group.piba.rest.entity.video.VideoSource;
+import org.sing_group.piba.rest.resource.exploration.DefaultExplorationResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
+import org.sing_group.piba.service.spi.exploration.ExplorationService;
 
 @Default
 public class DefaultVideoMapper implements VideoMapper {
 
   private UriInfo requestURI;
+
+  @Inject
+  private ExplorationService explorationService;
 
   public void setRequestURI(UriInfo requestURI) {
     this.requestURI = requestURI;
@@ -49,10 +57,10 @@ public class DefaultVideoMapper implements VideoMapper {
 
   @Override
   public VideoData toVideoData(Video video) {
-
     return new VideoData(
       video.getId(), video.getTitle(), video.getObservations(),
-      !video.isProcessing() ? videoURLs(video) : emptyList(), video.isProcessing(), video.getExploration().getId()
+      !video.isProcessing() ? videoURLs(video) : emptyList(), video.isProcessing(),
+      UuidAndUri.fromEntity(requestURI, video.getExploration(), DefaultExplorationResource.class)
     );
   }
 
@@ -66,6 +74,17 @@ public class DefaultVideoMapper implements VideoMapper {
         )
       )
       .collect(Collectors.toList());
+  }
+
+  @Override
+  public void assignVideoEditionData(Video video, VideoEditionData videoEditionData) {
+    video.setTitle(videoEditionData.getTitle());
+    video.setObservations(videoEditionData.getObservations());
+    video.setProcessing(videoEditionData.isProcessing());
+    video.setExploration(
+      videoEditionData.getExploration() == null ? null
+        : this.explorationService.getExploration(videoEditionData.getExploration())
+    );
   }
 
 }

@@ -30,6 +30,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.sing_group.piba.rest.entity.UuidAndUri;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -55,18 +57,18 @@ public class VideoData implements Serializable {
   @XmlElement(name = "video_sources")
   private List<VideoSource> urls;
 
-  @XmlElement(name = "exploration_id")
-  private String exploration_id;
+  @XmlElement(name = "exploration")
+  private UuidAndUri exploration;
 
   public VideoData() {}
 
-  public VideoData(String id, String title, String observations, List<VideoSource> urls, boolean isProcessing, String exploration_id) {
+  public VideoData(String id, String title, String observations, List<VideoSource> urls, boolean isProcessing, UuidAndUri exploration) {
     this.id = id;
     this.title = title;
     this.observations = observations;
     this.urls = urls;
     this.isProcessing = isProcessing;
-    this.exploration_id = exploration_id;
+    this.exploration = exploration;
   }
 
   public String getId() {
@@ -89,8 +91,8 @@ public class VideoData implements Serializable {
     return isProcessing;
   }
 
-  public String getExploration_id() {
-    return exploration_id;
+  public UuidAndUri getExploration() {
+    return exploration;
   }
   
 }

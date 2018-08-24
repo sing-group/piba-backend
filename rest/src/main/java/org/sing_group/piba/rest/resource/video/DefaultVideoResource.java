@@ -37,6 +37,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -53,6 +54,7 @@ import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.rest.entity.RestVideoUploadData;
 import org.sing_group.piba.rest.entity.mapper.spi.video.VideoMapper;
 import org.sing_group.piba.rest.entity.video.VideoData;
+import org.sing_group.piba.rest.entity.video.VideoEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.video.VideoResource;
 import org.sing_group.piba.service.spi.storage.FileStorage;
@@ -174,6 +176,19 @@ public class DefaultVideoResource implements VideoResource {
       .entity(videoMapper.toVideoData(video)).build();
   }
   
+  @PUT
+  @ApiOperation(
+    value = "Modifies an existing video", response = VideoEditionData.class, code = 200
+  )
+  @Override
+  public Response edit(VideoEditionData videoEditionData) {
+    Video video = this.service.getVideo(videoEditionData.getId());
+    this.videoMapper.assignVideoEditionData(video, videoEditionData);
+    return Response.ok(this.videoMapper.toVideoData(this.service.edit(video))
+      )
+      .build();
+  }
+  
   @DELETE
   @Path("{id}")
   @ApiOperation(
@@ -188,6 +203,4 @@ public class DefaultVideoResource implements VideoResource {
     this.service.delete(video);
     return Response.ok().build();
   }
-
-
 }
