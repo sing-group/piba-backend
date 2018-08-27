@@ -12,10 +12,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.sing_group.piba.domain.entities.Identifiable;
+import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.video.Video;
 
@@ -36,6 +38,9 @@ public class Exploration implements Identifiable {
 
   @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Polyp> polyps = new ArrayList<>();
+
+  @ManyToOne
+  private Patient patient;
 
   Exploration() {}
 
@@ -98,6 +103,20 @@ public class Exploration implements Identifiable {
 
   public List<Polyp> getPolyps() {
     return polyps;
+  }
+
+  public Patient getPatient() {
+    return patient;
+  }
+
+  public void setPatient(Patient patient) {
+    if (this.patient != null) {
+      this.patient.internalRemoveExploration(this);
+    }
+    this.patient = patient;
+    if (patient != null) {
+      this.patient.internalAddExploration(this);
+    }
   }
 
 }
