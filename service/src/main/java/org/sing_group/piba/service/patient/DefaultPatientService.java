@@ -32,4 +32,9 @@ public class DefaultPatientService implements PatientService {
     return patientDAO.searchBy(value);
   }
 
+  @Override
+  public Patient get(String id) {
+    return patientDAO.get(id);
+  }
+
 }

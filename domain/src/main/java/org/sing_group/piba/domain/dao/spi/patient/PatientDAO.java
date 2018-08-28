@@ -11,5 +11,7 @@ public interface PatientDAO {
   public Stream<Patient> getPatients();
 
   public Stream<Patient> searchBy(String value);
+  
+  public Patient get(String id);
 
 }

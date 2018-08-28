@@ -27,7 +27,8 @@ public class DefaultExplorationMapper implements ExplorationMapper {
     return new ExplorationData(
       exploration.getId(), exploration.getLocation(), exploration.getDate(),
       fromEntities(requestURI, exploration.getVideos(), DefaultVideoResource.class),
-      fromEntities(requestURI, exploration.getPolyps(), DefaultPolypResource.class)
+      fromEntities(requestURI, exploration.getPolyps(), DefaultPolypResource.class),
+      exploration.getPatient().getId()
     );
   }
 

@@ -54,4 +54,9 @@ public class DefaultPatientDAO implements PatientDAO {
     return patients.stream();
   }
 
+  @Override
+  public Patient get(String id) {
+    return this.dh.getBy("id", id);
+  }
+
 }

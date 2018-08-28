@@ -44,10 +44,11 @@ public class Exploration implements Identifiable {
 
   Exploration() {}
 
-  public Exploration(String location, Date date) {
+  public Exploration(String location, Date date, Patient patient) {
     id = UUID.randomUUID().toString();
     this.setLocation(location);
     this.setDate(date);
+    setPatient(patient);
   }
 
   @Override

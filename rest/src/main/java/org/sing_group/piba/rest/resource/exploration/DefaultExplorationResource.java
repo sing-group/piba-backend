@@ -23,6 +23,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
@@ -32,6 +33,7 @@ import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.exploration.ExplorationResource;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
+import org.sing_group.piba.service.spi.patient.PatientService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,6 +55,9 @@ public class DefaultExplorationResource implements ExplorationResource {
 
   @Inject
   private ExplorationService service;
+  
+  @Inject
+  private PatientService patientService;
 
   @Inject
   private ExplorationMapper explorationMapper;
@@ -103,7 +108,8 @@ public class DefaultExplorationResource implements ExplorationResource {
   )
   @Override
   public Response create(ExplorationData explorationData) {
-    Exploration exploration = new Exploration(explorationData.getLocation(), explorationData.getDate());
+    Patient patient = this.patientService.get(explorationData.getPatient());
+    Exploration exploration = new Exploration(explorationData.getLocation(), explorationData.getDate(), patient);
     exploration = this.service.create(exploration);
 
     return Response.created(UriBuilder.fromResource(DefaultExplorationResource.class).path(exploration.getId()).build())
