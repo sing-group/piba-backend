@@ -1,5 +1,7 @@
 package org.sing_group.piba.domain.dao.patient;
 
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
@@ -36,6 +38,11 @@ public class DefaultPatientDAO implements PatientDAO {
   @Override
   public Patient create(Patient patient) {
     return this.dh.persist(patient);
+  }
+
+  @Override
+  public Stream<Patient> getPatients() {
+    return this.dh.list().stream();
   }
 
 }

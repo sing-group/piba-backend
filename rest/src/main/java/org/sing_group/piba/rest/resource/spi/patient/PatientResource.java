@@ -9,4 +9,6 @@ import org.sing_group.piba.rest.entity.patient.PatientData;
 public interface PatientResource {
   public Response create(PatientData patientData);
 
+  public Response getPatients();
+
 }

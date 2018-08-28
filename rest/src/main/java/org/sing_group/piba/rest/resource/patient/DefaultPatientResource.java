@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -64,6 +65,16 @@ public class DefaultPatientResource implements PatientResource {
 
     return Response.created(UriBuilder.fromResource(DefaultPatientResource.class).path(patient.getId()).build())
       .entity(patientMapper.toPatientData(patient)).build();
+  }
+
+  @GET
+  @ApiOperation(
+    value = "Return the data of all patients.", response = PatientData.class, responseContainer = "List", code = 200
+  )
+  @Override
+  public Response getPatients() {
+    return Response.ok(this.service.getPatients().map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
+      .build();
   }
 
 }
