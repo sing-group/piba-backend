@@ -12,6 +12,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -74,6 +75,17 @@ public class DefaultPatientResource implements PatientResource {
   @Override
   public Response getPatients() {
     return Response.ok(this.service.getPatients().map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
+      .build();
+  }
+
+  @GET
+  @Path("search/")
+  @ApiOperation(
+    value = "Returns patients whose public id corresponds to the value.", response = PatientData.class, code = 200
+  )
+  @Override
+  public Response searchBy(@QueryParam("value") String value) {
+    return Response.ok(this.service.searchBy(value).map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
       .build();
   }
 

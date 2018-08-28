@@ -11,5 +11,7 @@ public interface PatientService {
   public Patient create(Patient patient);
 
   public Stream<Patient> getPatients();
+  
+  public Stream<Patient> searchBy(String value);
 
 }

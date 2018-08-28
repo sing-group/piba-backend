@@ -1,5 +1,6 @@
 package org.sing_group.piba.domain.dao.patient;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -43,6 +44,14 @@ public class DefaultPatientDAO implements PatientDAO {
   @Override
   public Stream<Patient> getPatients() {
     return this.dh.list().stream();
+  }
+
+  @Override
+  public Stream<Patient> searchBy(String value) {
+    List<Patient> patients =
+      this.em.createQuery("SELECT p FROM Patient p WHERE p.publicID LIKE :value", Patient.class)
+        .setParameter("value", value + "%").getResultList();
+    return patients.stream();
   }
 
 }

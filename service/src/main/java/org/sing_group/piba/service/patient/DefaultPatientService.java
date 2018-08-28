@@ -27,4 +27,9 @@ public class DefaultPatientService implements PatientService {
     return patientDAO.getPatients();
   }
 
+  @Override
+  public Stream<Patient> searchBy(String value) {
+    return patientDAO.searchBy(value);
+  }
+
 }

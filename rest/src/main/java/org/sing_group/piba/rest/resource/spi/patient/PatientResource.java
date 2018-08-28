@@ -10,5 +10,7 @@ public interface PatientResource {
   public Response create(PatientData patientData);
 
   public Response getPatients();
+  
+  public Response searchBy(String value);
 
 }
