@@ -24,6 +24,9 @@ public class ExplorationEditionData implements Serializable {
 
   @XmlElement(name = "date", required = true)
   private Date date;
+  
+  @XmlElement(name="patient")
+  private String patient;
 
 
   public ExplorationEditionData() {}
@@ -54,5 +57,12 @@ public class ExplorationEditionData implements Serializable {
     this.date = date;
   }
 
-  
+  public String getPatient() {
+    return patient;
+  }
+
+  public void setPatient(String patient) {
+    this.patient = patient;
+  }
+   
 }

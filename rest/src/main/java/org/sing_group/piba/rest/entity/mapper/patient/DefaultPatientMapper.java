@@ -21,7 +21,7 @@ public class DefaultPatientMapper implements PatientMapper {
   @Override
   public PatientData toPatientData(Patient patient) {
     return new PatientData(
-      patient.getId(), patient.getPublicID(), patient.getSex(), patient.getBirthdate(),
+      patient.getId(), patient.getPatientID(), patient.getSex(), patient.getBirthdate(),
       fromEntities(requestURI, patient.getExplorations(), DefaultPatientResource.class)
     );
   }

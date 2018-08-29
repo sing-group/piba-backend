@@ -12,7 +12,7 @@ public interface PatientService {
 
   public Stream<Patient> getPatients();
   
-  public Stream<Patient> searchBy(String value);
+  public Stream<Patient> searchBy(String patientIdStartsWith);
   
   public Patient get(String id);
 

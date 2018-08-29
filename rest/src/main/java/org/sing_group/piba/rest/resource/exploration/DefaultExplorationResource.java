@@ -107,9 +107,9 @@ public class DefaultExplorationResource implements ExplorationResource {
     value = "Creates a new exploration.", response = ExplorationData.class, code = 201
   )
   @Override
-  public Response create(ExplorationData explorationData) {
-    Patient patient = this.patientService.get(explorationData.getPatient());
-    Exploration exploration = new Exploration(explorationData.getLocation(), explorationData.getDate(), patient);
+  public Response create(ExplorationEditionData explorationEditionData) {
+    Patient patient = this.patientService.get(explorationEditionData.getPatient());
+    Exploration exploration = new Exploration(explorationEditionData.getLocation(), explorationEditionData.getDate(), patient);
     exploration = this.service.create(exploration);
 
     return Response.created(UriBuilder.fromResource(DefaultExplorationResource.class).path(exploration.getId()).build())

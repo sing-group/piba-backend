@@ -1,6 +1,7 @@
 package org.sing_group.piba.rest.entity.mapper.exploration;
 
 import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntities;
+import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntity;
 
 import javax.enterprise.inject.Default;
 import javax.ws.rs.core.UriInfo;
@@ -9,6 +10,7 @@ import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 import org.sing_group.piba.rest.entity.mapper.spi.exploration.ExplorationMapper;
+import org.sing_group.piba.rest.resource.patient.DefaultPatientResource;
 import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
 
@@ -28,7 +30,7 @@ public class DefaultExplorationMapper implements ExplorationMapper {
       exploration.getId(), exploration.getLocation(), exploration.getDate(),
       fromEntities(requestURI, exploration.getVideos(), DefaultVideoResource.class),
       fromEntities(requestURI, exploration.getPolyps(), DefaultPolypResource.class),
-      exploration.getPatient().getId()
+      fromEntity(requestURI, exploration.getPatient(), DefaultPatientResource.class)
     );
   }
 

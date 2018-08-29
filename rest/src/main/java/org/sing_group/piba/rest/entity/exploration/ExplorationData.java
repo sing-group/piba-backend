@@ -35,12 +35,12 @@ public class ExplorationData implements Serializable {
   private List<UuidAndUri> polyps;
 
   @XmlElement(name = "patient")
-  private String patient;
+  private UuidAndUri patient;
 
   public ExplorationData() {}
 
   public ExplorationData(
-    String id, String location, Date date, List<UuidAndUri> videos, List<UuidAndUri> polyps, String patient
+    String id, String location, Date date, List<UuidAndUri> videos, List<UuidAndUri> polyps, UuidAndUri patient
   ) {
     this.id = id;
     this.location = location;
@@ -78,7 +78,7 @@ public class ExplorationData implements Serializable {
     return polyps;
   }
 
-  public String getPatient() {
+  public UuidAndUri getPatient() {
     return patient;
   }
 

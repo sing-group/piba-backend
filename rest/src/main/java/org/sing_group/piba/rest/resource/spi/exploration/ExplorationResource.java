@@ -3,7 +3,6 @@ package org.sing_group.piba.rest.resource.spi.exploration;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
-import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 
 @Local
@@ -12,9 +11,9 @@ public interface ExplorationResource {
 
   public Response getExplorations();
 
-  public Response create(ExplorationData explorationData);
+  public Response create(ExplorationEditionData explorationEditionData);
 
-  public Response edit(ExplorationEditionData explorationData);
+  public Response edit(ExplorationEditionData explorationEditionData);
   
   public Response getPolyps(String id);
   

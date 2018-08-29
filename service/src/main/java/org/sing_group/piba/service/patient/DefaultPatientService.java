@@ -28,8 +28,8 @@ public class DefaultPatientService implements PatientService {
   }
 
   @Override
-  public Stream<Patient> searchBy(String value) {
-    return patientDAO.searchBy(value);
+  public Stream<Patient> searchBy(String patientIdStartsWith) {
+    return patientDAO.searchBy(patientIdStartsWith);
   }
 
   @Override

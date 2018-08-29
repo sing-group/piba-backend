@@ -70,23 +70,18 @@ public class DefaultPatientResource implements PatientResource {
 
   @GET
   @ApiOperation(
-    value = "Return the data of all patients.", response = PatientData.class, responseContainer = "List", code = 200
+    value = "Return the data of all patients or those whose id starts with an specified prefix.", response = PatientData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getPatients() {
-    return Response.ok(this.service.getPatients().map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
-      .build();
+  public Response getPatients(@QueryParam("patientIdStartsWith") String patientIdStartsWith) {
+    if (patientIdStartsWith == null) {
+      return Response.ok(this.service.getPatients().map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
+        .build();
+    } else {
+      return Response.ok(
+        this.service.searchBy(patientIdStartsWith).map(this.patientMapper::toPatientData).toArray(PatientData[]::new)
+      )
+        .build();
+    }
   }
-
-  @GET
-  @Path("search/")
-  @ApiOperation(
-    value = "Returns patients whose public id corresponds to the value.", response = PatientData.class, code = 200
-  )
-  @Override
-  public Response searchBy(@QueryParam("value") String value) {
-    return Response.ok(this.service.searchBy(value).map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
-      .build();
-  }
-
 }

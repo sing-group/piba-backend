@@ -17,17 +17,18 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 
 @Entity
 @Table(name = "patient")
-public class Patient {
+public class Patient implements Identifiable {
 
   @Id
   @Column(name = "id")
   private String id;
-  @Column(name = "publicID", nullable = false)
-  private String publicID;
+  @Column(name = "patientID", nullable = false)
+  private String patientID;
   @Enumerated(EnumType.STRING)
   @Column(name = "sex")
   private SEX sex;
@@ -44,24 +45,25 @@ public class Patient {
 
   Patient() {}
 
-  public Patient(String publicID, SEX sex, Date birthdate) {
+  public Patient(String patientID, SEX sex, Date birthdate) {
     this.id = UUID.randomUUID().toString();
-    setPublicID(publicID);
+    setPatientID(patientID);
     this.sex = sex;
     this.birthdate = birthdate;
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
-  public String getPublicID() {
-    return publicID;
+  public String getPatientID() {
+    return patientID;
   }
 
-  public void setPublicID(String publicID) {
+  public void setPatientID(String publicID) {
     requireNonNull(publicID);
-    this.publicID = publicID;
+    this.patientID = publicID;
   }
 
   public SEX getSex() {

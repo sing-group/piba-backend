@@ -47,10 +47,10 @@ public class DefaultPatientDAO implements PatientDAO {
   }
 
   @Override
-  public Stream<Patient> searchBy(String value) {
+  public Stream<Patient> searchBy(String patientIdStartsWith) {
     List<Patient> patients =
-      this.em.createQuery("SELECT p FROM Patient p WHERE p.publicID LIKE :value", Patient.class)
-        .setParameter("value", value + "%").getResultList();
+      this.em.createQuery("SELECT p FROM Patient p WHERE p.patientID LIKE :value", Patient.class)
+        .setParameter("value", patientIdStartsWith + "%").getResultList();
     return patients.stream();
   }
 
