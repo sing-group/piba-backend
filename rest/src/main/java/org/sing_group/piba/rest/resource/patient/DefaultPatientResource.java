@@ -11,6 +11,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -67,7 +68,17 @@ public class DefaultPatientResource implements PatientResource {
     return Response.created(UriBuilder.fromResource(DefaultPatientResource.class).path(patient.getId()).build())
       .entity(patientMapper.toPatientData(patient)).build();
   }
-
+  
+  @GET
+  @Path("{id}")
+  @ApiOperation(
+    value = "Return the data of a patient.", response = PatientData.class, code = 200
+  )
+  @Override
+  public Response getPatient(@PathParam("id") String id) {
+    return Response.ok(this.patientMapper.toPatientData(this.service.get(id))).build();
+  }
+  
   @GET
   @ApiOperation(
     value = "Return the data of all patients or those whose id starts with an specified prefix.", response = PatientData.class, responseContainer = "List", code = 200
