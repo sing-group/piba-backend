@@ -22,6 +22,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.rest.entity.mapper.spi.patient.PatientMapper;
 import org.sing_group.piba.rest.entity.patient.PatientData;
+import org.sing_group.piba.rest.entity.patient.PatientEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.patient.PatientResource;
 import org.sing_group.piba.service.spi.patient.PatientService;
@@ -61,9 +62,11 @@ public class DefaultPatientResource implements PatientResource {
     value = "Creates a new patient.", response = PatientData.class, code = 201
   )
   @Override
-  public Response create(PatientData patientData) {
+  public Response create(PatientEditionData patientEditionData) {
     Patient patient =
-      this.service.create(new Patient(patientData.getPatientID(), patientData.getSex(), patientData.getBirthdate()));
+      this.service.create(
+        new Patient(patientEditionData.getPatientID(), patientEditionData.getSex(), patientEditionData.getBirthdate())
+      );
 
     return Response.created(UriBuilder.fromResource(DefaultPatientResource.class).path(patient.getId()).build())
       .entity(patientMapper.toPatientData(patient)).build();
@@ -105,4 +108,5 @@ public class DefaultPatientResource implements PatientResource {
   public Response getPatientID(@PathParam("patientID") String patientID) {
     return Response.ok(this.patientMapper.toPatientData(this.service.getPatientID(patientID))).build();
   }
+
 }
