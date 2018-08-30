@@ -14,5 +14,7 @@ public interface PatientResource {
   public Response getPatient(String id);
 
   public Response getPatientID(String patientID);
+  
+  public Response edit(PatientEditionData patientEditionData);
 
 }

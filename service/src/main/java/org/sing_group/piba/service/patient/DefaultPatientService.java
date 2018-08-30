@@ -42,4 +42,9 @@ public class DefaultPatientService implements PatientService {
     return patientDAO.getPatientID(patientID);
   }
 
+  @Override
+  public Patient edit(Patient patient) {
+    return patientDAO.edit(patient);
+  }
+
 }

@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -107,6 +108,17 @@ public class DefaultPatientResource implements PatientResource {
   @Override
   public Response getPatientID(@PathParam("patientID") String patientID) {
     return Response.ok(this.patientMapper.toPatientData(this.service.getPatientID(patientID))).build();
+  }
+
+  @PUT
+  @ApiOperation(
+    value = "Modifies an existing patient", response = PatientData.class, code = 200
+  )
+  @Override
+  public Response edit(PatientEditionData patientEditionData) {
+    Patient patient = this.service.get(patientEditionData.getId());
+    this.patientMapper.assignPatientEditionData(patient, patientEditionData);
+    return Response.ok(this.patientMapper.toPatientData(this.service.edit(patient))).build();
   }
 
 }

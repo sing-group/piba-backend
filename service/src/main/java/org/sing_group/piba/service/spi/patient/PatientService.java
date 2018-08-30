@@ -18,4 +18,6 @@ public interface PatientService {
 
   public Patient getPatientID(String patientID);
 
+  public Patient edit(Patient patient);
+
 }
