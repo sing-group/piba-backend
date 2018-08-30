@@ -69,4 +69,9 @@ public class DefaultPatientDAO implements PatientDAO {
     return this.dh.update(patient);
   }
 
+  @Override
+  public void delete(Patient patient) {
+    this.dh.remove(patient);
+  }
+
 }

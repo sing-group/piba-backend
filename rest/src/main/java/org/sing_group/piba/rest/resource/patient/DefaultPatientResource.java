@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,6 +31,8 @@ import org.sing_group.piba.service.spi.patient.PatientService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @Path("patient")
 @Api(value = "patient")
@@ -119,6 +122,21 @@ public class DefaultPatientResource implements PatientResource {
     Patient patient = this.service.get(patientEditionData.getId());
     this.patientMapper.assignPatientEditionData(patient, patientEditionData);
     return Response.ok(this.patientMapper.toPatientData(this.service.edit(patient))).build();
+  }
+
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Deletes an existing patient.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown patient: {id}")
+  )
+  @Override
+  public Response delete(@PathParam("id") String id) {
+    Patient patient = this.service.get(id);
+    this.service.delete(patient);
+    return Response.ok().build();
   }
 
 }

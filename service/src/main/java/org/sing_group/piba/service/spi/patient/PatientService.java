@@ -20,4 +20,6 @@ public interface PatientService {
 
   public Patient edit(Patient patient);
 
+  public void delete(Patient patient);
+
 }

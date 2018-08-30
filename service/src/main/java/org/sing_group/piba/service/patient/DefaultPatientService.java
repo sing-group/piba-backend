@@ -47,4 +47,9 @@ public class DefaultPatientService implements PatientService {
     return patientDAO.edit(patient);
   }
 
+  @Override
+  public void delete(Patient patient) {
+    patientDAO.delete(patient);
+  }
+
 }

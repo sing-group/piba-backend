@@ -18,4 +18,5 @@ public interface PatientDAO {
 
   public Patient edit(Patient patient);
 
+  public void delete(Patient patient);
 }
