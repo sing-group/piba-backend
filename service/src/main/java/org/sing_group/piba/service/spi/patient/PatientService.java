@@ -11,9 +11,11 @@ public interface PatientService {
   public Patient create(Patient patient);
 
   public Stream<Patient> getPatients();
-  
+
   public Stream<Patient> searchBy(String patientIdStartsWith);
-  
+
   public Patient get(String id);
+
+  public Patient getPatientID(String patientID);
 
 }

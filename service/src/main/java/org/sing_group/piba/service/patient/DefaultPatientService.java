@@ -37,4 +37,9 @@ public class DefaultPatientService implements PatientService {
     return patientDAO.get(id);
   }
 
+  @Override
+  public Patient getPatientID(String patientID) {
+    return patientDAO.getPatientID(patientID);
+  }
+
 }

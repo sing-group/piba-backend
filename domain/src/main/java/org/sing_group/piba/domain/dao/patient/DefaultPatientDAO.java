@@ -59,4 +59,9 @@ public class DefaultPatientDAO implements PatientDAO {
     return this.dh.getBy("id", id);
   }
 
+  @Override
+  public Patient getPatientID(String patientID) {
+    return this.dh.getBy("patientID", patientID);
+  }
+
 }

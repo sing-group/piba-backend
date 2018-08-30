@@ -12,5 +12,7 @@ public interface PatientResource {
   public Response getPatients(String patientIdStartsWith);
 
   public Response getPatient(String id);
-  
+
+  public Response getPatientID(String patientID);
+
 }

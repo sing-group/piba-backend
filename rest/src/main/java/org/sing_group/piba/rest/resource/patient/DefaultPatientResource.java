@@ -68,7 +68,7 @@ public class DefaultPatientResource implements PatientResource {
     return Response.created(UriBuilder.fromResource(DefaultPatientResource.class).path(patient.getId()).build())
       .entity(patientMapper.toPatientData(patient)).build();
   }
-  
+
   @GET
   @Path("{id}")
   @ApiOperation(
@@ -78,7 +78,7 @@ public class DefaultPatientResource implements PatientResource {
   public Response getPatient(@PathParam("id") String id) {
     return Response.ok(this.patientMapper.toPatientData(this.service.get(id))).build();
   }
-  
+
   @GET
   @ApiOperation(
     value = "Return the data of all patients or those whose id starts with an specified prefix.", response = PatientData.class, responseContainer = "List", code = 200
@@ -94,5 +94,15 @@ public class DefaultPatientResource implements PatientResource {
       )
         .build();
     }
+  }
+
+  @GET
+  @Path("patientID/{patientID}")
+  @ApiOperation(
+    value = "Return the data of a patient with the patientId received.", response = PatientData.class, code = 200
+  )
+  @Override
+  public Response getPatientID(@PathParam("patientID") String patientID) {
+    return Response.ok(this.patientMapper.toPatientData(this.service.getPatientID(patientID))).build();
   }
 }
