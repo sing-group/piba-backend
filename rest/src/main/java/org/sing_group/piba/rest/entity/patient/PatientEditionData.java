@@ -26,6 +26,8 @@ public class PatientEditionData implements Serializable {
   private SEX sex;
   @XmlElement(name = "birthdate")
   private Date birthdate;
+  @XmlElement(name = "idSpace")
+  private String idSpace;
 
   public String getId() {
     return id;
@@ -41,6 +43,10 @@ public class PatientEditionData implements Serializable {
 
   public Date getBirthdate() {
     return birthdate;
+  }
+
+  public String getIdSpace() {
+    return idSpace;
   }
 
 }

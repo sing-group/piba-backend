@@ -21,12 +21,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.idspace.IdSpace;
 import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.rest.entity.mapper.spi.patient.PatientMapper;
 import org.sing_group.piba.rest.entity.patient.PatientData;
 import org.sing_group.piba.rest.entity.patient.PatientEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.patient.PatientResource;
+import org.sing_group.piba.service.spi.idspace.IdSpaceService;
 import org.sing_group.piba.service.spi.patient.PatientService;
 
 import io.swagger.annotations.Api;
@@ -51,6 +53,9 @@ public class DefaultPatientResource implements PatientResource {
   private PatientService service;
 
   @Inject
+  private IdSpaceService idSpaceService;
+
+  @Inject
   private PatientMapper patientMapper;
 
   @Context
@@ -67,11 +72,13 @@ public class DefaultPatientResource implements PatientResource {
   )
   @Override
   public Response create(PatientEditionData patientEditionData) {
+    IdSpace idSpace = idSpaceService.get(patientEditionData.getIdSpace());
     Patient patient =
       this.service.create(
-        new Patient(patientEditionData.getPatientID(), patientEditionData.getSex(), patientEditionData.getBirthdate())
+        new Patient(
+          patientEditionData.getPatientID(), patientEditionData.getSex(), patientEditionData.getBirthdate(), idSpace
+        )
       );
-
     return Response.created(UriBuilder.fromResource(DefaultPatientResource.class).path(patient.getId()).build())
       .entity(patientMapper.toPatientData(patient)).build();
   }

@@ -14,14 +14,20 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.idspace.IdSpace;
 
 @Entity
-@Table(name = "patient")
+@Table(name = "patient", uniqueConstraints = @UniqueConstraint(columnNames = {
+  "patientID", "idSpace_id"
+}))
 public class Patient implements Identifiable {
 
   @Id
@@ -43,13 +49,18 @@ public class Patient implements Identifiable {
   @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Exploration> explorations = new ArrayList<>();
 
+  @ManyToOne
+  @JoinColumn(name = "idSpace_id")
+  private IdSpace idSpace;
+
   Patient() {}
 
-  public Patient(String patientID, SEX sex, Date birthdate) {
+  public Patient(String patientID, SEX sex, Date birthdate, IdSpace idSpace) {
     this.id = UUID.randomUUID().toString();
     setPatientID(patientID);
     this.sex = sex;
     this.birthdate = birthdate;
+    setIdSpace(idSpace);
   }
 
   @Override
@@ -100,6 +111,15 @@ public class Patient implements Identifiable {
 
   public void removeExploration(Exploration exploration) {
     exploration.setPatient(null);
+  }
+
+  public IdSpace getIdSpace() {
+    return idSpace;
+  }
+
+  public void setIdSpace(IdSpace idSpace) {
+    requireNonNull(idSpace.getId());
+    this.idSpace = idSpace;
   }
 
 }

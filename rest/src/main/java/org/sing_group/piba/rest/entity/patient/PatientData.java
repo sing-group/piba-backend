@@ -28,15 +28,18 @@ public class PatientData {
   private Date birthdate;
   @XmlElement(name = "explorations")
   private List<UuidAndUri> explorations;
+  @XmlElement(name="idSpace")
+  private UuidAndUri idSpace;
 
   public PatientData() {}
 
-  public PatientData(String id, String patientID, SEX sex, Date birthdate, List<UuidAndUri> explorations) {
+  public PatientData(String id, String patientID, SEX sex, Date birthdate, List<UuidAndUri> explorations, UuidAndUri idSpace) {
     this.id = id;
     this.patientID = patientID;
     this.sex = sex;
     this.birthdate = birthdate;
     this.explorations = explorations;
+    this.idSpace = idSpace;
   }
 
   public String getId() {
@@ -57,6 +60,10 @@ public class PatientData {
 
   public List<UuidAndUri> getExplorations() {
     return explorations;
+  }
+
+  public UuidAndUri getIdSpace() {
+    return idSpace;
   }
 
 }
