@@ -4,6 +4,7 @@ import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntities;
 import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntity;
 
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.patient.Patient;
@@ -12,11 +13,16 @@ import org.sing_group.piba.rest.entity.patient.PatientData;
 import org.sing_group.piba.rest.entity.patient.PatientEditionData;
 import org.sing_group.piba.rest.resource.idspace.DefaultIdSpaceResource;
 import org.sing_group.piba.rest.resource.patient.DefaultPatientResource;
+import org.sing_group.piba.service.spi.idspace.IdSpaceService;
 
 @Default
 public class DefaultPatientMapper implements PatientMapper {
 
   private UriInfo requestURI;
+  
+
+  @Inject
+  private IdSpaceService idSpaceService;
 
   @Override
   public void setRequestURI(UriInfo requestURI) {
@@ -37,6 +43,7 @@ public class DefaultPatientMapper implements PatientMapper {
     patient.setBirthdate(patientEditionData.getBirthdate());
     patient.setPatientID(patientEditionData.getPatientID());
     patient.setSex(patientEditionData.getSex());
+    patient.setIdSpace(this.idSpaceService.get(patientEditionData.getIdSpace()));
   }
 
 }
