@@ -62,8 +62,11 @@ public class DefaultPatientDAO implements PatientDAO {
   }
 
   @Override
-  public Patient getPatientID(String patientID) {
-    return this.dh.getBy("patientID", patientID);
+  public Patient getPatientBy(String patientID, String idSpace) {
+    return this.em
+      .createQuery("SELECT p FROM Patient p WHERE p.patientID=:patientID and p.idSpace.id=:idSpace", Patient.class)
+      .setParameter("patientID", patientID).setParameter("idSpace", idSpace).getSingleResult();
+
   }
 
   @Override

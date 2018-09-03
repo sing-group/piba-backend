@@ -95,7 +95,7 @@ public class DefaultPatientResource implements PatientResource {
 
   @GET
   @ApiOperation(
-    value = "Return the data of all patients or those whose id starts with an specified prefix.", response = PatientData.class, responseContainer = "List", code = 200
+    value = "Return the data of all patients or those whose id starts with an prefix and space identifier specified.", response = PatientData.class, responseContainer = "List", code = 200
   )
   @Override
   public Response getPatients(
@@ -113,13 +113,13 @@ public class DefaultPatientResource implements PatientResource {
   }
 
   @GET
-  @Path("patientID/{patientID}")
+  @Path("{patientID}/{idSpace}")
   @ApiOperation(
-    value = "Return the data of a patient with the patientId received.", response = PatientData.class, code = 200
+    value = "Return the data of a patient with the identifier of patient and space received.", response = PatientData.class, code = 200
   )
   @Override
-  public Response getPatientID(@PathParam("patientID") String patientID) {
-    return Response.ok(this.patientMapper.toPatientData(this.service.getPatientID(patientID))).build();
+  public Response getPatientBy(@PathParam("patientID") String patientID, @PathParam("idSpace") String idSpace) {
+    return Response.ok(this.patientMapper.toPatientData(this.service.getPatientBy(patientID, idSpace))).build();
   }
 
   @PUT

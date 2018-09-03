@@ -38,8 +38,8 @@ public class DefaultPatientService implements PatientService {
   }
 
   @Override
-  public Patient getPatientID(String patientID) {
-    return patientDAO.getPatientID(patientID);
+  public Patient getPatientBy(String patientID, String idSpace) {
+    return patientDAO.getPatientBy(patientID, idSpace);
   }
 
   @Override

@@ -14,7 +14,7 @@ public interface PatientDAO {
 
   public Patient get(String id);
 
-  public Patient getPatientID(String patientID);
+  public Patient getPatientBy(String patientID, String idSpace);
 
   public Patient edit(Patient patient);
 
