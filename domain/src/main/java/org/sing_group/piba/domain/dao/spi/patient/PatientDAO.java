@@ -10,7 +10,7 @@ public interface PatientDAO {
 
   public Stream<Patient> getPatients();
 
-  public Stream<Patient> searchBy(String patientIdStartsWith);
+  public Stream<Patient> searchBy(String patientIdStartsWith, String idSpace);
 
   public Patient get(String id);
 

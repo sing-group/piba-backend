@@ -9,7 +9,7 @@ import org.sing_group.piba.rest.entity.patient.PatientEditionData;
 public interface PatientResource {
   public Response create(PatientEditionData patientEditionData);
 
-  public Response getPatients(String patientIdStartsWith);
+  public Response getPatients(String patientIdStartsWith, String idSpace);
 
   public Response getPatient(String id);
 

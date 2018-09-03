@@ -98,13 +98,15 @@ public class DefaultPatientResource implements PatientResource {
     value = "Return the data of all patients or those whose id starts with an specified prefix.", response = PatientData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getPatients(@QueryParam("patientIdStartsWith") String patientIdStartsWith) {
+  public Response getPatients(
+    @QueryParam("patientIdStartsWith") String patientIdStartsWith, @QueryParam("idSpace") String idSpace
+  ) {
     if (patientIdStartsWith == null) {
       return Response.ok(this.service.getPatients().map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
         .build();
     } else {
       return Response.ok(
-        this.service.searchBy(patientIdStartsWith).map(this.patientMapper::toPatientData).toArray(PatientData[]::new)
+        this.service.searchBy(patientIdStartsWith, idSpace).map(this.patientMapper::toPatientData).toArray(PatientData[]::new)
       )
         .build();
     }
