@@ -22,17 +22,15 @@
  */
 package org.sing_group.piba.domain.entities.polyprecording;
 
-import static java.util.Objects.requireNonNull;
-
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.sing_group.piba.domain.entities.VideoInterval;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording.PolypRecordingId;
 import org.sing_group.piba.domain.entities.video.Video;
@@ -40,7 +38,7 @@ import org.sing_group.piba.domain.entities.video.Video;
 @Entity
 @Table(name = "polyprecording")
 @IdClass(PolypRecordingId.class)
-public class PolypRecording implements Serializable {
+public class PolypRecording extends VideoInterval implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -50,11 +48,6 @@ public class PolypRecording implements Serializable {
   @Id
   @ManyToOne
   private Video video;
-
-  @Column(nullable = false)
-  private Integer start;
-  @Column(nullable = false)
-  private Integer end;
 
   PolypRecording() {}
 
@@ -82,30 +75,6 @@ public class PolypRecording implements Serializable {
     this.video = video;
   }
 
-  public Integer getStart() {
-    return start;
-  }
-
-  public void setStart(Integer start) {
-    requireNonNull(start, "start of polyp can not be null");
-    this.start = start;
-  }
-
-  public Integer getEnd() {
-    return end;
-  }
-
-  public void setEnd(Integer end) {
-    requireNonNull(end, "end of polyp can not be null");
-    this.end = end;
-  }
-
-  private void checkInterval(Integer start, Integer end) {
-    if (start > end) {
-      throw new IllegalArgumentException("start can not be lower than final");
-    }
-  }
-
   public static class PolypRecordingId implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -118,7 +87,7 @@ public class PolypRecording implements Serializable {
       this.polyp = polyp;
       this.video = video;
     }
-    
+
     public PolypRecordingId(Polyp polyp, Video video) {
       this.polyp = polyp.getId();
       this.video = video.getId();
