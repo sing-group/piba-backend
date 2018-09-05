@@ -7,4 +7,6 @@ import javax.ws.rs.core.Response;
 public interface ModifierResource {
   public Response getModifiers();
 
+  public Response getModifier(String id);
+
 }
