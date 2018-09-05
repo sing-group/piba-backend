@@ -49,7 +49,6 @@ import org.sing_group.piba.rest.entity.mapper.spi.polyprecording.PolypRecordingM
 import org.sing_group.piba.rest.entity.polyptrecording.PolypRecordingData;
 import org.sing_group.piba.rest.entity.polyptrecording.PolypRecordingEditicionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
-import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.spi.polyprecording.PolypRecordingResource;
 import org.sing_group.piba.service.spi.polyp.PolypService;
 import org.sing_group.piba.service.spi.polyprecording.PolypRecordingService;
@@ -117,7 +116,7 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
 
     this.polypRecordingService.create(polypRecording);
 
-    return Response.created(UriBuilder.fromResource(DefaultPolypResource.class).build())
+    return Response.created(UriBuilder.fromResource(DefaultPolypRecordingResource.class).build())
       .entity(polypRecordingMapper.toPolypRecordingData(polypRecording)).build();
   }
 
