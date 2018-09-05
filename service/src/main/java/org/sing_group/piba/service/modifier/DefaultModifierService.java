@@ -22,4 +22,9 @@ public class DefaultModifierService implements ModifierService {
     return modifierDAO.getModifiers();
   }
 
+  @Override
+  public Modifier get(String id) {
+    return modifierDAO.get(id);
+  }
+
 }

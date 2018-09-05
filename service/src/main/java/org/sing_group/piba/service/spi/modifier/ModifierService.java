@@ -10,4 +10,6 @@ import org.sing_group.piba.domain.entities.modifier.Modifier;
 public interface ModifierService {
   public Stream<Modifier> getModifiers();
 
+  public Modifier get(String id);
+
 }

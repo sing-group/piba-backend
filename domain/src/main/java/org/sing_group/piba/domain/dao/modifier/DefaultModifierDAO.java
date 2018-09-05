@@ -40,4 +40,9 @@ public class DefaultModifierDAO implements ModifierDAO {
     return this.dh.list().stream();
   }
 
+  @Override
+  public Modifier get(String id) {
+    return this.dh.get(id).orElseThrow(() -> new IllegalArgumentException("Unknown modifier: " + id));
+  }
+
 }

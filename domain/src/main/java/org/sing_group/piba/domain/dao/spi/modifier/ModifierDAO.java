@@ -8,4 +8,6 @@ public interface ModifierDAO {
 
   public Stream<Modifier> getModifiers();
 
+  public Modifier get(String id);
+
 }
