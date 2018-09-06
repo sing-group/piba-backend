@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.piba.domain.dao.spi.videomodification.VideoModificationDAO;
+import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 import org.sing_group.piba.service.spi.videomodification.VideoModificationService;
@@ -26,6 +27,11 @@ public class DefaultVideoModificationService implements VideoModificationService
   @Override
   public Stream<VideoModification> getVideoModification(Video video) {
     return videoModificationDAO.getVideoModification(video);
+  }
+
+  @Override
+  public void delete(Video video, Modifier modifier) {
+    videoModificationDAO.delete(video, modifier);
   }
 
 }

@@ -66,6 +66,11 @@ public class VideoModification extends VideoInterval implements Serializable {
       this.modifier = modifier;
     }
 
+    public VideoModificationId(Video video, Modifier modifier) {
+      this.video = video.getId();
+      this.modifier = modifier.getId();
+    }
+
     @Override
     public int hashCode() {
       final int prime = 31;

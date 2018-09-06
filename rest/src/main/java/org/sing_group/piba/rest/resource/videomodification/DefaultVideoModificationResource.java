@@ -8,9 +8,11 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -94,6 +96,19 @@ public class DefaultVideoModificationResource implements VideoModificationResour
     return Response.ok(
       this.service.getVideoModification(video).map(this.videoModificationMapper::toVideoModificationData).toArray(VideoModificationData[]::new)
     ).build();
+  }
+
+  @DELETE
+  @Path("{video_id}/{modifier_id}")
+  @ApiOperation(
+    value = "Deletes an existing video modification.", code = 200
+  )
+  @Override
+  public Response delete(@PathParam("video_id") String video_id, @PathParam("modifier_id") String modifier_id) {
+    Video video = this.videoService.getVideo(video_id);
+    Modifier modifier = this.modifierService.get(modifier_id);
+    this.service.delete(video, modifier);
+    return Response.ok().build();
   }
 
 }

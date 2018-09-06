@@ -11,6 +11,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.videomodification.VideoModificationDAO;
+import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 
@@ -44,6 +45,13 @@ public class DefaultVideoModificationDAO implements VideoModificationDAO {
   @Override
   public Stream<VideoModification> getVideoModification(Video video) {
     return this.dh.listBy("video", video).stream();
+  }
+
+  @Override
+  public void delete(Video video, Modifier modifier) {
+    VideoModification videoModification =
+      this.em.find(VideoModification.class, new VideoModification.VideoModificationId(video, modifier));
+    this.dh.remove(videoModification);
   }
 
 }
