@@ -9,4 +9,6 @@ import org.sing_group.piba.rest.entity.videomodification.VideoModificationEditio
 public interface VideoModificationResource {
   public Response create(VideoModificationEditionData videoModificationEditionData);
 
+  public Response getVideoModification(String video_id);
+
 }

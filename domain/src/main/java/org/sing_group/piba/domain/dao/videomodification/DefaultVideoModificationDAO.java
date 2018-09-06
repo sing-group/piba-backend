@@ -1,5 +1,7 @@
 package org.sing_group.piba.domain.dao.videomodification;
 
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
@@ -9,6 +11,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.videomodification.VideoModificationDAO;
+import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 
 @Default
@@ -36,6 +39,11 @@ public class DefaultVideoModificationDAO implements VideoModificationDAO {
   @Override
   public VideoModification create(VideoModification videoModification) {
     return this.dh.persist(videoModification);
+  }
+
+  @Override
+  public Stream<VideoModification> getVideoModification(Video video) {
+    return this.dh.listBy("video", video).stream();
   }
 
 }

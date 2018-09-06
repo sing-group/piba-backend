@@ -8,9 +8,11 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -82,6 +84,16 @@ public class DefaultVideoModificationResource implements VideoModificationResour
 
     return Response.created(UriBuilder.fromResource(DefaultVideoModificationResource.class).build())
       .entity(videoModificationMapper.toVideoModificationData(videoModification)).build();
+  }
+
+  @GET
+  @ApiOperation(value = "Returns the modifiers in that video.", response = VideoModificationData.class, code = 200)
+  @Override
+  public Response getVideoModification(@QueryParam("id") String video_id) {
+    Video video = this.videoService.getVideo(video_id);
+    return Response.ok(
+      this.service.getVideoModification(video).map(this.videoModificationMapper::toVideoModificationData).toArray(VideoModificationData[]::new)
+    ).build();
   }
 
 }
