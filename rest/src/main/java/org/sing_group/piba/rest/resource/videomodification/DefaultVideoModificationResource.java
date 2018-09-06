@@ -99,15 +99,13 @@ public class DefaultVideoModificationResource implements VideoModificationResour
   }
 
   @DELETE
-  @Path("{video_id}/{modifier_id}")
+  @Path("{id}")
   @ApiOperation(
     value = "Deletes an existing video modification.", code = 200
   )
   @Override
-  public Response delete(@PathParam("video_id") String video_id, @PathParam("modifier_id") String modifier_id) {
-    Video video = this.videoService.getVideo(video_id);
-    Modifier modifier = this.modifierService.get(modifier_id);
-    this.service.delete(video, modifier);
+  public Response delete(@PathParam("id") int id) {
+    this.service.delete(this.service.get(id));
     return Response.ok().build();
   }
 

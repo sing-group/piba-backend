@@ -1,4 +1,4 @@
-package org.sing_group.piba.rest.entity.mapper.video;
+package org.sing_group.piba.rest.entity.mapper.videomodification;
 
 import javax.ws.rs.core.UriInfo;
 
@@ -21,6 +21,7 @@ public class DefaultVideoModificationMapper implements VideoModificationMapper {
   @Override
   public VideoModificationData toVideoModificationData(VideoModification videoModification) {
     return new VideoModificationData(
+      videoModification.getId(),
       UuidAndUri.fromEntity(requestURI, videoModification.getVideo(), DefaultVideoResource.class),
       UuidAndUri.fromEntity(requestURI, videoModification.getModifier(), DefaultModifierResource.class),
       videoModification.getStart(), videoModification.getEnd()

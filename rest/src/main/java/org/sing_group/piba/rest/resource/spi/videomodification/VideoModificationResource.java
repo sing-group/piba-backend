@@ -11,6 +11,6 @@ public interface VideoModificationResource {
 
   public Response getVideoModification(String video_id);
 
-  public Response delete(String video_id, String modifier_id);
+  public Response delete(int id);
 
 }

@@ -17,6 +17,9 @@ import io.swagger.annotations.ApiModel;
 public class VideoModificationEditionData implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  @XmlElement(name = "id")
+  private int id;
+
   @XmlElement(name = "video")
   private String video;
 
@@ -31,12 +34,17 @@ public class VideoModificationEditionData implements Serializable {
 
   VideoModificationEditionData() {}
 
-  public VideoModificationEditionData(String video, String modifier, Integer start, Integer end) {
+  public VideoModificationEditionData(int id, String video, String modifier, Integer start, Integer end) {
     super();
+    this.id = id;
     this.video = video;
     this.modifier = modifier;
     this.start = start;
     this.end = end;
+  }
+
+  public int getId() {
+    return id;
   }
 
   public String getVideo() {

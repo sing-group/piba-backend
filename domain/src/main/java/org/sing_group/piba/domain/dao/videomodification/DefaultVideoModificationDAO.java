@@ -11,7 +11,6 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.videomodification.VideoModificationDAO;
-import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 
@@ -21,7 +20,7 @@ public class DefaultVideoModificationDAO implements VideoModificationDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<String, VideoModification> dh;
+  protected DAOHelper<Integer, VideoModification> dh;
 
   public DefaultVideoModificationDAO() {
     super();
@@ -34,7 +33,7 @@ public class DefaultVideoModificationDAO implements VideoModificationDAO {
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(String.class, VideoModification.class, this.em);
+    this.dh = DAOHelper.of(Integer.class, VideoModification.class, this.em);
   }
 
   @Override
@@ -48,10 +47,13 @@ public class DefaultVideoModificationDAO implements VideoModificationDAO {
   }
 
   @Override
-  public void delete(Video video, Modifier modifier) {
-    VideoModification videoModification =
-      this.em.find(VideoModification.class, new VideoModification.VideoModificationId(video, modifier));
+  public void delete(VideoModification videoModification) {
     this.dh.remove(videoModification);
+  }
+
+  @Override
+  public VideoModification get(int id) {
+    return this.dh.get(id).orElseThrow(() -> new IllegalArgumentException("Unknown video modification: " + id));
   }
 
 }
