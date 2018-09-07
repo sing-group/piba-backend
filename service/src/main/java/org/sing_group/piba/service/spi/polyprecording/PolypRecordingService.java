@@ -34,6 +34,8 @@ import org.sing_group.piba.domain.entities.video.Video;
 public interface PolypRecordingService {
   public Stream<PolypRecording> get(Video video);
 
+  public Stream<PolypRecording> get(Polyp polyp);
+
   public PolypRecording create(PolypRecording polypRecording);
 
   public void delete(Video video, Polyp polyp);

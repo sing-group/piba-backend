@@ -29,9 +29,12 @@ import org.sing_group.piba.rest.entity.polyptrecording.PolypRecordingEditicionDa
 
 @Local
 public interface PolypRecordingResource {
-  public Response getPolypResource(String video_id);
+  public Response getPolypResourceByVideo(String video_id);
+
+  public Response getPolypResourceByPolyp(String polyp_id);
 
   public Response create(PolypRecordingEditicionData polypRecordingEditicionData);
 
   public Response delete(String video_id, String polyp_id);
+
 }

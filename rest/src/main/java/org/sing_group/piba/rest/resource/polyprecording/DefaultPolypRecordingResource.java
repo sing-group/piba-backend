@@ -36,7 +36,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -91,12 +90,24 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   }
 
   @GET
+  @Path("/video/{video_id}")
   @ApiOperation(value = "Returns the polyps recorded in that video.", response = PolypRecordingData.class, code = 200)
   @Override
-  public Response getPolypResource(@QueryParam("id") String video_id) {
+  public Response getPolypResourceByVideo(@PathParam("video_id") String video_id) {
     Video video = this.videoService.getVideo(video_id);
     return Response.ok(
       this.polypRecordingService.get(video).map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
+    ).build();
+  }
+
+  @GET
+  @Path("/polyp/{polyp_id}")
+  @ApiOperation(value = "Returns the polyps recorded in that polyp.", response = PolypRecordingData.class, code = 200)
+  @Override
+  public Response getPolypResourceByPolyp(@PathParam("polyp_id") String polyp_id) {
+    Polyp polyp = this.polypService.getPolyp(polyp_id);
+    return Response.ok(
+      this.polypRecordingService.get(polyp).map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
     ).build();
   }
 
