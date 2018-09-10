@@ -55,6 +55,8 @@ import org.sing_group.piba.service.spi.video.VideoService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @Path("polyprecording")
 @Api(value = "polyprecording")
@@ -91,7 +93,10 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
 
   @GET
   @Path("/video/{video_id}")
-  @ApiOperation(value = "Returns the polyps recorded in that video.", response = PolypRecordingData.class, code = 200)
+  @ApiOperation(
+    value = "Returns the polyps recorded in that video.", response = PolypRecordingData.class, responseContainer = "List", code = 200
+  )
+  @ApiResponses(@ApiResponse(code = 400, message = "Unknown video: {video_id}"))
   @Override
   public Response getPolypResourceByVideo(@PathParam("video_id") String video_id) {
     Video video = this.videoService.getVideo(video_id);
@@ -102,7 +107,10 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
 
   @GET
   @Path("/polyp/{polyp_id}")
-  @ApiOperation(value = "Returns the polyps recorded in that polyp.", response = PolypRecordingData.class, code = 200)
+  @ApiOperation(
+    value = "Returns the polyps recorded in that polyp.", response = PolypRecordingData.class, responseContainer = "List", code = 200
+  )
+  @ApiResponses(@ApiResponse(code = 400, message = "Unknown polyp: {polyp_id}"))
   @Override
   public Response getPolypResourceByPolyp(@PathParam("polyp_id") String polyp_id) {
     Polyp polyp = this.polypService.getPolyp(polyp_id);
@@ -115,6 +123,10 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   @ApiOperation(
     value = "Creates a new relationship between a polyp and a video.", response = PolypRecordingData.class, code = 200
   )
+  @ApiResponses(value = {
+    @ApiResponse(code = 400, message = "Unknown polyp."),
+    @ApiResponse(code = 400, message = "Unknown video.")
+  })
   @Override
   public Response create(PolypRecordingEditicionData polypRecordingEditicionData) {
     Polyp polyp = this.polypService.getPolyp(polypRecordingEditicionData.getPolyp());
@@ -133,6 +145,10 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
 
   @DELETE
   @Path("{video_id}/{polyp_id}")
+  @ApiResponses(value = {
+    @ApiResponse(code = 400, message = "Unknown video: {video_id}"),
+    @ApiResponse(code = 400, message = "Unknown polyp: {polyp_id}")
+  })
   @ApiOperation(
     value = "Deletes an existing polyp recording.", code = 200
   )

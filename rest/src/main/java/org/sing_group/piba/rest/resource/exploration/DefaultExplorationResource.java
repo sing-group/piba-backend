@@ -55,7 +55,7 @@ public class DefaultExplorationResource implements ExplorationResource {
 
   @Inject
   private ExplorationService service;
-  
+
   @Inject
   private PatientService patientService;
 
@@ -106,10 +106,14 @@ public class DefaultExplorationResource implements ExplorationResource {
   @ApiOperation(
     value = "Creates a new exploration.", response = ExplorationData.class, code = 201
   )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown exploration: {id}")
+  )
   @Override
   public Response create(ExplorationEditionData explorationEditionData) {
     Patient patient = this.patientService.get(explorationEditionData.getPatient());
-    Exploration exploration = new Exploration(explorationEditionData.getLocation(), explorationEditionData.getDate(), patient);
+    Exploration exploration =
+      new Exploration(explorationEditionData.getLocation(), explorationEditionData.getDate(), patient);
     exploration = this.service.create(exploration);
 
     return Response.created(UriBuilder.fromResource(DefaultExplorationResource.class).path(exploration.getId()).build())
@@ -120,6 +124,9 @@ public class DefaultExplorationResource implements ExplorationResource {
   @ApiOperation(
     value = "Modifies an existing exploration", response = ExplorationData.class, code = 200
   )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown exploration: {id}")
+  )
   @Override
   public Response edit(ExplorationEditionData explorationEditionData) {
     Exploration exploration = this.service.getExploration(explorationEditionData.getId());
@@ -129,8 +136,12 @@ public class DefaultExplorationResource implements ExplorationResource {
 
   @GET
   @Path("{id}/polyps")
-  @ApiOperation(value = "Returns the polyps of a specifies exploration.", response = PolypData.class, code = 200)
-  @ApiResponses(@ApiResponse(code = 400, message = "Unknown exploration: {id}"))
+  @ApiOperation(
+    value = "Returns the polyps of a specifies exploration.", responseContainer = "List", response = PolypData.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown exploration: {id}")
+  )
   @Override
   public Response getPolyps(@PathParam("id") String id) {
     Exploration exploration = this.service.getExploration(id);

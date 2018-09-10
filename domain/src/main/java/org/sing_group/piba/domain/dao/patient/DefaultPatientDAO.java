@@ -58,7 +58,8 @@ public class DefaultPatientDAO implements PatientDAO {
 
   @Override
   public Patient get(String id) {
-    return this.dh.getBy("id", id);
+    return this.dh.get(id)
+      .orElseThrow(() -> new IllegalArgumentException("Unknown patient: " + id));
   }
 
   @Override

@@ -34,6 +34,8 @@ import org.sing_group.piba.service.spi.videomodification.VideoModificationServic
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @Path("videomodification")
 @Api(value = "videomodification")
@@ -72,6 +74,10 @@ public class DefaultVideoModificationResource implements VideoModificationResour
   @ApiOperation(
     value = "Creates a new relationship between a video and a modifier.", response = VideoModificationData.class, code = 200
   )
+  @ApiResponses(value = {
+    @ApiResponse(code = 400, message = "Unknown video"),
+    @ApiResponse(code = 400, message = "Unknown modifier")
+  })
   @Override
   public Response create(VideoModificationEditionData videoModificationEditionData) {
     Video video = this.videoService.getVideo(videoModificationEditionData.getVideo());
@@ -89,7 +95,12 @@ public class DefaultVideoModificationResource implements VideoModificationResour
   }
 
   @GET
-  @ApiOperation(value = "Returns the modifiers in that video.", response = VideoModificationData.class, code = 200)
+  @ApiOperation(
+    value = "Returns the modifiers in that video.", response = VideoModificationData.class, responseContainer = "List", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown video: {id}")
+  )
   @Override
   public Response getVideoModification(@QueryParam("id") String video_id) {
     Video video = this.videoService.getVideo(video_id);
@@ -102,6 +113,9 @@ public class DefaultVideoModificationResource implements VideoModificationResour
   @Path("{id}")
   @ApiOperation(
     value = "Deletes an existing video modification.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown video modification: {id}")
   )
   @Override
   public Response delete(@PathParam("id") int id) {

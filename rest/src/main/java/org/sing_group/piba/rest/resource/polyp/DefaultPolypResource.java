@@ -118,6 +118,7 @@ public class DefaultPolypResource implements PolypResource {
   @ApiOperation(
     value = "Modifies an existing polyp", response = PolypData.class, code = 200
   )
+  @ApiResponses(@ApiResponse(code = 400, message = "Unknown polyp: {id}"))
   @Override
   public Response edit(PolypEditionData polypEditionData) {
     Polyp polyp = this.service.getPolyp(polypEditionData.getId());
