@@ -2,7 +2,6 @@ package org.sing_group.piba.domain.dao.patient;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -47,17 +46,6 @@ public class DefaultPatientDAO implements PatientDAO {
   @Override
   public Stream<Patient> getPatients() {
     return this.dh.list().stream();
-  }
-
-  @Override
-  public Stream<Patient> searchBy(String patientIdStartsWith, String idSpace) {
-    patientIdStartsWith = encrypt(patientIdStartsWith);
-    List<Patient> patients =
-      this.em.createQuery(
-        "SELECT p FROM Patient p WHERE p.patientID LIKE :patientIdStartsWith and p.idSpace.id=:idSpace", Patient.class
-      )
-        .setParameter("patientIdStartsWith", patientIdStartsWith + "%").setParameter("idSpace", idSpace).getResultList();
-    return patients.stream();
   }
 
   @Override

@@ -15,7 +15,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -95,21 +94,12 @@ public class DefaultPatientResource implements PatientResource {
 
   @GET
   @ApiOperation(
-    value = "Return the data of all patients or those whose id starts with an prefix and space identifier specified.", response = PatientData.class, responseContainer = "List", code = 200
+    value = "Return the data of all patients.", response = PatientData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getPatients(
-    @QueryParam("patientIdStartsWith") String patientIdStartsWith, @QueryParam("idSpace") String idSpace
-  ) {
-    if (patientIdStartsWith == null) {
-      return Response.ok(this.service.getPatients().map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
-        .build();
-    } else {
-      return Response.ok(
-        this.service.searchBy(patientIdStartsWith, idSpace).map(this.patientMapper::toPatientData).toArray(PatientData[]::new)
-      )
-        .build();
-    }
+  public Response getPatients() {
+    return Response.ok(this.service.getPatients().map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
+      .build();
   }
 
   @GET
