@@ -1,5 +1,7 @@
 package org.sing_group.piba.domain.dao.patient;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -38,6 +40,7 @@ public class DefaultPatientDAO implements PatientDAO {
 
   @Override
   public Patient create(Patient patient) {
+    patient.setPatientID(encrypt(patient.getPatientID()));
     return this.dh.persist(patient);
   }
 
@@ -48,6 +51,7 @@ public class DefaultPatientDAO implements PatientDAO {
 
   @Override
   public Stream<Patient> searchBy(String patientIdStartsWith, String idSpace) {
+    patientIdStartsWith = encrypt(patientIdStartsWith);
     List<Patient> patients =
       this.em.createQuery(
         "SELECT p FROM Patient p WHERE p.patientID LIKE :patientIdStartsWith and p.idSpace.id=:idSpace", Patient.class
@@ -64,6 +68,7 @@ public class DefaultPatientDAO implements PatientDAO {
 
   @Override
   public Patient getPatientBy(String patientID, String idSpace) {
+    patientID = encrypt(patientID);
     return this.em
       .createQuery("SELECT p FROM Patient p WHERE p.patientID=:patientID and p.idSpace.id=:idSpace", Patient.class)
       .setParameter("patientID", patientID).setParameter("idSpace", idSpace).getSingleResult();
@@ -72,12 +77,32 @@ public class DefaultPatientDAO implements PatientDAO {
 
   @Override
   public Patient edit(Patient patient) {
+    patient.setPatientID(encrypt(patient.getPatientID()));
     return this.dh.update(patient);
   }
 
   @Override
   public void delete(Patient patient) {
     this.dh.remove(patient);
+  }
+
+  private String encrypt(String patientID) {
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA-1");
+      byte[] array = md.digest(patientID.getBytes());
+      StringBuffer sb = new StringBuffer();
+      for (int i = 0; i < array.length; ++i) {
+        sb.append(
+          Integer.toHexString((array[i] & 0xFF) | 0x100)
+            .substring(1, 3)
+        );
+      }
+      return sb.toString();
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+      return null;
+    }
+
   }
 
 }
