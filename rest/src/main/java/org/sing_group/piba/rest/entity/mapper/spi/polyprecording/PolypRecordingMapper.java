@@ -25,7 +25,7 @@ package org.sing_group.piba.rest.entity.mapper.spi.polyprecording;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
-import org.sing_group.piba.rest.entity.polyptrecording.PolypRecordingData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 
 public interface PolypRecordingMapper {
   

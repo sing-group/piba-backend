@@ -1,4 +1,4 @@
-package org.sing_group.piba.rest.entity.polyptrecording;
+package org.sing_group.piba.rest.entity.polyprecording;
 
 import java.io.Serializable;
 

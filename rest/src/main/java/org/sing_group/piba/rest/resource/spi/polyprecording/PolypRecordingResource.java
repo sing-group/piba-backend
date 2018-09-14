@@ -25,7 +25,7 @@ package org.sing_group.piba.rest.resource.spi.polyprecording;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
-import org.sing_group.piba.rest.entity.polyptrecording.PolypRecordingEditicionData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditicionData;
 
 @Local
 public interface PolypRecordingResource {
