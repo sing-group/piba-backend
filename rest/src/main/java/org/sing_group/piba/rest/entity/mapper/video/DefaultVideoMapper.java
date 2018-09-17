@@ -40,7 +40,7 @@ import org.sing_group.piba.rest.entity.video.VideoData;
 import org.sing_group.piba.rest.entity.video.VideoEditionData;
 import org.sing_group.piba.rest.entity.video.VideoSource;
 import org.sing_group.piba.rest.resource.exploration.DefaultExplorationResource;
-import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
+import org.sing_group.piba.rest.resource.video.DefaultStreamResource;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
 
 @Default
@@ -69,8 +69,8 @@ public class DefaultVideoMapper implements VideoMapper {
       .map(
         format -> new VideoSource(
           "video/" + format, requestURI.getBaseUriBuilder().build() + UriBuilder.fromResource(
-            DefaultVideoResource.class
-          ).path(video.getId()).path("stream").queryParam("format", format).build().toString()
+            DefaultStreamResource.class
+          ).path(video.getId()).queryParam("format", format).build().toString()
         )
       )
       .collect(Collectors.toList());

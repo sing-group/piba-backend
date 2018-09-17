@@ -32,8 +32,6 @@ import org.sing_group.piba.rest.entity.video.VideoEditionData;
 public interface VideoResource {
   public Response getVideo(String id);
 
-  public Response getVideoStream(String id, String format);
-
   public Response listVideos();
 
   public Response uploadVideo(RestVideoUploadData video);

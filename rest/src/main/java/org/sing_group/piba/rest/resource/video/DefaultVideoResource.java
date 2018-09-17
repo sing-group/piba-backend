@@ -25,10 +25,6 @@ package org.sing_group.piba.rest.resource.video;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
@@ -41,12 +37,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
@@ -57,7 +50,6 @@ import org.sing_group.piba.rest.entity.video.VideoData;
 import org.sing_group.piba.rest.entity.video.VideoEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.video.VideoResource;
-import org.sing_group.piba.service.spi.storage.FileStorage;
 import org.sing_group.piba.service.spi.video.VideoService;
 
 import io.swagger.annotations.Api;
@@ -84,9 +76,6 @@ public class DefaultVideoResource implements VideoResource {
   @Inject
   private VideoMapper videoMapper;
 
-  @Inject
-  private FileStorage fileStorage;
-
   @Context
   private UriInfo uriInfo;
 
@@ -112,47 +101,6 @@ public class DefaultVideoResource implements VideoResource {
       .build();
   }
 
-  @Path("{id}/stream")
-  @GET
-  @ApiOperation(
-    value = "Return the stream of a video.", response = StreamingOutput.class, code = 200
-  )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown video: {id}")
-  )
-  @Override
-  public Response getVideoStream(
-    @PathParam(
-      "id"
-    ) String id,
-    @QueryParam("format") String format
-  ) {
-    final InputStream videoStream = this.fileStorage.retrieve(id + "." + format);
-    return Response
-      .ok(new StreamingOutput() {
-        @Override
-        public void write(OutputStream output) throws IOException, WebApplicationException {
-          byte[] buf = new byte[8192];
-          int len = -1;
-          while ((len = videoStream.read(buf)) != -1) {
-            try {
-              output.write(buf, 0, len);
-            } catch (IOException e) {
-              if (e.getMessage().toUpperCase().contains("RESET") || e.getMessage().toUpperCase().contains("BROKEN")) {
-                // catched "Connection reset by peer" or "Broken pipe", which is
-                // normal when client closes unilaterally
-              } else {
-                throw e;
-              }
-            }
-          }
-        }
-      })
-      .type("video/" + format)
-      .header("Accept-Ranges", "bytes")
-      .build();
-  }
-
   @GET
   @ApiOperation(
     value = "Return the data of all videos.", response = VideoData.class, responseContainer = "List", code = 200
@@ -175,7 +123,7 @@ public class DefaultVideoResource implements VideoResource {
     return Response.created(UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build())
       .entity(videoMapper.toVideoData(video)).build();
   }
-  
+
   @PUT
   @ApiOperation(
     value = "Modifies an existing video", response = VideoEditionData.class, code = 200
@@ -184,11 +132,12 @@ public class DefaultVideoResource implements VideoResource {
   public Response edit(VideoEditionData videoEditionData) {
     Video video = this.service.getVideo(videoEditionData.getId());
     this.videoMapper.assignVideoEditionData(video, videoEditionData);
-    return Response.ok(this.videoMapper.toVideoData(this.service.edit(video))
-      )
+    return Response.ok(
+      this.videoMapper.toVideoData(this.service.edit(video))
+    )
       .build();
   }
-  
+
   @DELETE
   @Path("{id}")
   @ApiOperation(
