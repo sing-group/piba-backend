@@ -55,4 +55,9 @@ public class DefaultIdSpaceDAO implements IdSpaceDAO {
     return this.dh.update(idSpace);
   }
 
+  @Override
+  public void delete(IdSpace idSpace) {
+    this.dh.remove(idSpace);
+  }
+
 }

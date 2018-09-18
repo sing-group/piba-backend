@@ -4,6 +4,7 @@ import java.util.stream.Stream;
 
 import javax.ejb.Local;
 
+import org.sing_group.piba.domain.entities.idspace.IdSpace;
 import org.sing_group.piba.domain.entities.patient.Patient;
 
 @Local
@@ -19,5 +20,7 @@ public interface PatientService {
   public Patient edit(Patient patient);
 
   public void delete(Patient patient);
+  
+  public Stream<Patient> getPatientsBy(IdSpace idSpace);
 
 }

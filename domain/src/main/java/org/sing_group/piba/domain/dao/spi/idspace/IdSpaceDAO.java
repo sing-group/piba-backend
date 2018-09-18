@@ -13,4 +13,6 @@ public interface IdSpaceDAO {
   public IdSpace create(IdSpace idSpace);
 
   public IdSpace edit(IdSpace idSpace);
+
+  public void delete(IdSpace idSpace);
 }

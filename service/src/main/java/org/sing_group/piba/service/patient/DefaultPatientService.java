@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.piba.domain.dao.spi.patient.PatientDAO;
+import org.sing_group.piba.domain.entities.idspace.IdSpace;
 import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.service.spi.patient.PatientService;
 
@@ -45,6 +46,11 @@ public class DefaultPatientService implements PatientService {
   @Override
   public void delete(Patient patient) {
     patientDAO.delete(patient);
+  }
+
+  @Override
+  public Stream<Patient> getPatientsBy(IdSpace idSpace) {
+    return patientDAO.getPatientsBy(idSpace);
   }
 
 }

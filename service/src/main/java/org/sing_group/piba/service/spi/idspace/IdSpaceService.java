@@ -16,4 +16,6 @@ public interface IdSpaceService {
 
   public IdSpace edit(IdSpace idSpace);
 
+  public void delete(IdSpace idSpace);
+
 }

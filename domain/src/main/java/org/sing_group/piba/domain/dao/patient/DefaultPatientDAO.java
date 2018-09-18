@@ -13,6 +13,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.patient.PatientDAO;
+import org.sing_group.piba.domain.entities.idspace.IdSpace;
 import org.sing_group.piba.domain.entities.patient.Patient;
 
 @Default
@@ -91,6 +92,11 @@ public class DefaultPatientDAO implements PatientDAO {
       return null;
     }
 
+  }
+
+  @Override
+  public Stream<Patient> getPatientsBy(IdSpace idSpace) {
+    return this.dh.listBy("idSpace", idSpace).stream();
   }
 
 }

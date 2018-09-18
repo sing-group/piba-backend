@@ -2,6 +2,7 @@ package org.sing_group.piba.domain.dao.spi.patient;
 
 import java.util.stream.Stream;
 
+import org.sing_group.piba.domain.entities.idspace.IdSpace;
 import org.sing_group.piba.domain.entities.patient.Patient;
 
 public interface PatientDAO {
@@ -17,4 +18,6 @@ public interface PatientDAO {
   public Patient edit(Patient patient);
 
   public void delete(Patient patient);
+
+  public Stream<Patient> getPatientsBy(IdSpace idSpace);
 }

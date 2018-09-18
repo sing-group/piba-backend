@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -114,6 +115,22 @@ public class DefaultIdSpaceResource implements IdSpaceResource {
     this.idSpaceMapper.assignIdSpaceEditionData(idSpace, idSpaceEditionData);
     return Response.ok(this.idSpaceMapper.toIDSpaceData(this.service.edit(idSpace)))
       .build();
+  }
+
+  @RolesAllowed("ADMIN")
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Deletes an existing ID Space.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown ID Space: {id}")
+  )
+  @Override
+  public Response delete(@PathParam("id") String id) {
+    IdSpace idSpace = this.service.get(id);
+    this.service.delete(idSpace);
+    return Response.ok().build();
   }
 
 }
