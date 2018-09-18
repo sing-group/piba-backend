@@ -11,12 +11,8 @@ import org.sing_group.piba.rest.entity.mapper.spi.idspace.IdSpaceMapper;
 @Default
 public class DefaultIdSpaceMapper implements IdSpaceMapper {
 
-  private UriInfo requestURI;
-
   @Override
-  public void setRequestURI(UriInfo requestURI) {
-    this.requestURI = requestURI;
-  }
+  public void setRequestURI(UriInfo requestURI) {}
 
   @Override
   public IdSpaceData toIDSpaceData(IdSpace idSpace) {

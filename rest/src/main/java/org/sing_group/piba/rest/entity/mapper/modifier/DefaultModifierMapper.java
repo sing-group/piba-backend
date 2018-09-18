@@ -10,12 +10,8 @@ import org.sing_group.piba.rest.entity.modifier.ModifierData;
 @Default
 public class DefaultModifierMapper implements ModifierMapper {
 
-  private UriInfo requestURI;
-
   @Override
-  public void setRequestURI(UriInfo requestURI) {
-    this.requestURI = requestURI;
-  }
+  public void setRequestURI(UriInfo requestURI) {}
 
   @Override
   public ModifierData toModifierData(Modifier modifier) {
