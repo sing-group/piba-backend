@@ -11,4 +11,6 @@ public interface IdSpaceDAO {
   public Stream<IdSpace> getIDSpaces();
 
   public IdSpace create(IdSpace idSpace);
+
+  public IdSpace edit(IdSpace idSpace);
 }

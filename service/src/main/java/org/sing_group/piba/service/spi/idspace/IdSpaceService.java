@@ -14,4 +14,6 @@ public interface IdSpaceService {
 
   public IdSpace create(IdSpace idSpace);
 
+  public IdSpace edit(IdSpace idSpace);
+
 }

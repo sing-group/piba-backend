@@ -32,4 +32,9 @@ public class DefaultIdSpaceService implements IdSpaceService {
     return idSpaceDAO.create(idSpace);
   }
 
+  @Override
+  public IdSpace edit(IdSpace idSpace) {
+    return idSpaceDAO.edit(idSpace);
+  }
+
 }

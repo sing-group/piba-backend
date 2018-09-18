@@ -12,4 +12,6 @@ public interface IdSpaceResource {
   public Response getIDSpaces();
 
   public Response create(IdSpaceEditionData idSpaceEditionData);
+
+  public Response edit(IdSpaceEditionData idSpaceEditionData);
 }

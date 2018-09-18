@@ -50,4 +50,9 @@ public class DefaultIdSpaceDAO implements IdSpaceDAO {
     return this.dh.persist(idSpace);
   }
 
+  @Override
+  public IdSpace edit(IdSpace idSpace) {
+    return this.dh.update(idSpace);
+  }
+
 }
