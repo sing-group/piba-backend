@@ -45,4 +45,9 @@ public class DefaultIdSpaceDAO implements IdSpaceDAO {
     return this.dh.list().stream();
   }
 
+  @Override
+  public IdSpace create(IdSpace idSpace) {
+    return this.dh.persist(idSpace);
+  }
+
 }

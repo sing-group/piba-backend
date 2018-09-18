@@ -27,4 +27,9 @@ public class DefaultIdSpaceService implements IdSpaceService {
     return idSpaceDAO.getIDSpaces();
   }
 
+  @Override
+  public IdSpace create(IdSpace idSpace) {
+    return idSpaceDAO.create(idSpace);
+  }
+
 }

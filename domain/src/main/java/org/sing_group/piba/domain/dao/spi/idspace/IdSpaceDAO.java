@@ -7,7 +7,8 @@ import org.sing_group.piba.domain.entities.idspace.IdSpace;
 public interface IdSpaceDAO {
 
   public IdSpace get(String id);
-  
+
   public Stream<IdSpace> getIDSpaces();
 
+  public IdSpace create(IdSpace idSpace);
 }
