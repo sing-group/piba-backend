@@ -7,4 +7,6 @@ import org.sing_group.piba.domain.entities.user.User;
 @Local
 public interface UserService {
   public User getCurrentUser();
+
+  public User create(User user);
 }

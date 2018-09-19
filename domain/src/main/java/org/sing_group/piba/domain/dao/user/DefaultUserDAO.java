@@ -38,4 +38,9 @@ public class DefaultUserDAO implements UserDAO {
       .orElseThrow(() -> new IllegalArgumentException("Unknown user: " + login));
   }
 
+  @Override
+  public User create(User user) {
+    return this.dh.persist(user);
+  }
+
 }
