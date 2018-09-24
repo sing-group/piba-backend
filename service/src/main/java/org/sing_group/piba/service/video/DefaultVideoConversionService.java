@@ -90,6 +90,7 @@ public class DefaultVideoConversionService implements VideoConversionService {
       .overrideOutputFiles(true)
       .addOutput(to.toString())
       .setFormat(toFormat)
+      .addExtraArgs("-qscale:v", "6")
       .done();
   }
 
