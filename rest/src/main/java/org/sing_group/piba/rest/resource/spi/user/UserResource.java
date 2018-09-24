@@ -11,4 +11,6 @@ public interface UserResource {
 
   public Response create(UserEditionData userEditionData);
 
+  public Response getUsers();
+
 }
