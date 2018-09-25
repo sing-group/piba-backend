@@ -26,5 +26,8 @@ import java.io.InputStream;
 
 public interface FileStorage {
   public void store(String id, InputStream data);
+
   public InputStream retrieve(String id);
+
+  public void delete(String id);
 }

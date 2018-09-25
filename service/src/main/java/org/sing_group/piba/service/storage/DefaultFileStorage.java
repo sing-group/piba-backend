@@ -26,6 +26,7 @@ import static java.nio.file.Files.copy;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isDirectory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,13 +43,14 @@ import org.sing_group.piba.service.spi.storage.FileStorage;
 public class DefaultFileStorage implements FileStorage {
 
   private static final String PATH_CONFIG_NAME = "java:global/piba/defaultfilestorage/path";
+  private static final String[] EXTENSIONS = {
+    ".mp4", ".ogg"
+  };
 
   @Resource(name = PATH_CONFIG_NAME)
   private String path;
 
-  public DefaultFileStorage() {
-
-  }
+  public DefaultFileStorage() {}
 
   public DefaultFileStorage(String path) {
     this.path = path;
@@ -97,6 +99,14 @@ public class DefaultFileStorage implements FileStorage {
       return new FileInputStream(file.toFile());
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void delete(String id) {
+    final Path file = getFileForId(id);
+    for (String extension : EXTENSIONS) {
+      new File(file + extension).delete();
     }
   }
 

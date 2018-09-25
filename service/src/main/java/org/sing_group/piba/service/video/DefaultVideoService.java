@@ -112,7 +112,11 @@ public class DefaultVideoService implements VideoService {
 
   @Override
   public void delete(Video video) {
+    if (video.isProcessing()) {
+      throw new IllegalArgumentException("Can not be deleted until the conversion is completed");
+    }
     this.videoDao.delete(video);
+    this.videoStorage.delete(video.getId());
   }
 
   @Override
