@@ -34,6 +34,7 @@ import javax.transaction.Transactional.TxType;
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.video.VideoDAO;
 import org.sing_group.piba.domain.entities.video.Video;
+import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
@@ -42,6 +43,7 @@ public class DefaultVideoDAO implements VideoDAO {
   @PersistenceContext
   protected EntityManager em;
   protected DAOHelper<String, Video> dh;
+  protected DAOHelper<Integer, VideoModification> dhVideoModification;
 
   public DefaultVideoDAO() {
     super();
@@ -55,6 +57,7 @@ public class DefaultVideoDAO implements VideoDAO {
   @PostConstruct
   protected void createDAOHelper() {
     this.dh = DAOHelper.of(String.class, Video.class, this.em);
+    this.dhVideoModification = DAOHelper.of(Integer.class, VideoModification.class, this.em);
   }
 
   @Override
@@ -85,6 +88,9 @@ public class DefaultVideoDAO implements VideoDAO {
 
   @Override
   public void delete(Video video) {
+    for (VideoModification videoModification : this.dhVideoModification.listBy("video", video)) {
+      this.dhVideoModification.remove(videoModification);
+    }
     this.dh.remove(video);
   }
 
