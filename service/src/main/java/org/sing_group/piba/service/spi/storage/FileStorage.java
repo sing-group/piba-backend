@@ -23,6 +23,7 @@
 package org.sing_group.piba.service.spi.storage;
 
 import java.io.InputStream;
+import java.util.Set;
 
 public interface FileStorage {
   public void store(String id, InputStream data);
@@ -30,4 +31,6 @@ public interface FileStorage {
   public InputStream retrieve(String id);
 
   public void delete(String id);
+
+  public Set<String> getAllIds();
 }

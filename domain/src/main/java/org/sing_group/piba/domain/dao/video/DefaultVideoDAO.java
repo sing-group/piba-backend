@@ -67,6 +67,11 @@ public class DefaultVideoDAO implements VideoDAO {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown video: " + id));
   }
+  
+  @Override
+  public boolean existsVideo(String id) {
+    return this.dh.get(id).isPresent();
+  }
 
   @Override
   public Video create(Video video) {

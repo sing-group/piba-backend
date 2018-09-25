@@ -34,6 +34,8 @@ import org.sing_group.piba.service.video.VideoConversionTask;
 public interface VideoService {
   public Video getVideo(String id);
 
+  public boolean existsVideo(String id);
+  
   public Stream<Video> getVideos();
 
   public Video create(VideoUploadData data);

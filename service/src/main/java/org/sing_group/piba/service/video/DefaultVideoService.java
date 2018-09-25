@@ -65,6 +65,11 @@ public class DefaultVideoService implements VideoService {
   public Video getVideo(String id) {
     return videoDao.getVideo(id);
   }
+  
+  @Override
+  public boolean existsVideo(String id) {
+    return videoDao.existsVideo(id);
+  }
 
   public void onConversionEvent(@Observes VideoConversionTask task) {
     // conversion finished

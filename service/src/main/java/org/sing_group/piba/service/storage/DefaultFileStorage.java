@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.enterprise.inject.Default;
@@ -108,6 +110,16 @@ public class DefaultFileStorage implements FileStorage {
     for (String extension : EXTENSIONS) {
       new File(file + extension).delete();
     }
+  }
+
+  @Override
+  public Set<String> getAllIds() {
+    Set<String> ids = new HashSet<String>();
+    String[] files = new File(getBasePath().toString()).list();
+    for (String file : files) {
+      ids.add(file.split("\\.")[0]);
+    }
+    return ids;
   }
 
 }
