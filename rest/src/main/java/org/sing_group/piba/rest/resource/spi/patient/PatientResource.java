@@ -15,7 +15,7 @@ public interface PatientResource {
 
   public Response getPatientBy(String patientID, String idSpace);
 
-  public Response edit(PatientEditionData patientEditionData);
+  public Response edit(String id, PatientEditionData patientEditionData);
 
   public Response delete(String id);
 

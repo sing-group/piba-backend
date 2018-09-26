@@ -120,6 +120,7 @@ public class DefaultExplorationResource implements ExplorationResource {
       .entity(explorationMapper.toExplorationData(exploration)).build();
   }
 
+  @Path("{id}")
   @PUT
   @ApiOperation(
     value = "Modifies an existing exploration", response = ExplorationData.class, code = 200
@@ -128,8 +129,8 @@ public class DefaultExplorationResource implements ExplorationResource {
     @ApiResponse(code = 400, message = "Unknown exploration: {id}")
   )
   @Override
-  public Response edit(ExplorationEditionData explorationEditionData) {
-    Exploration exploration = this.service.getExploration(explorationEditionData.getId());
+  public Response edit(@PathParam("id") String id, ExplorationEditionData explorationEditionData) {
+    Exploration exploration = this.service.getExploration(id);
     explorationMapper.assignExplorationEditData(exploration, explorationEditionData);
     return Response.ok(this.explorationMapper.toExplorationData(this.service.edit(exploration))).build();
   }

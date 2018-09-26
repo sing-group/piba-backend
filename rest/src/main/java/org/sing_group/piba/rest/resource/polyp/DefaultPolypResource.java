@@ -114,14 +114,15 @@ public class DefaultPolypResource implements PolypResource {
       .entity(polypMapper.toPolypData(polyp)).build();
   }
 
+  @Path("{id}")
   @PUT
   @ApiOperation(
     value = "Modifies an existing polyp", response = PolypData.class, code = 200
   )
   @ApiResponses(@ApiResponse(code = 400, message = "Unknown polyp: {id}"))
   @Override
-  public Response edit(PolypEditionData polypEditionData) {
-    Polyp polyp = this.service.getPolyp(polypEditionData.getId());
+  public Response edit(@PathParam("id") String id, PolypEditionData polypEditionData) {
+    Polyp polyp = this.service.getPolyp(id);
     this.polypMapper.assignPolypEditionData(polyp, polypEditionData);
     return Response.ok(this.polypMapper.toPolypData(this.service.edit(polyp)))
       .build();

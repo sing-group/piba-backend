@@ -112,13 +112,14 @@ public class DefaultPatientResource implements PatientResource {
     return Response.ok(this.patientMapper.toPatientData(this.service.getPatientBy(patientID, idSpace))).build();
   }
 
+  @Path("{id}")
   @PUT
   @ApiOperation(
     value = "Modifies an existing patient", response = PatientData.class, code = 200
   )
   @Override
-  public Response edit(PatientEditionData patientEditionData) {
-    Patient patient = this.service.get(patientEditionData.getId());
+  public Response edit(@PathParam("id") String id, PatientEditionData patientEditionData) {
+    Patient patient = this.service.get(id);
     this.patientMapper.assignPatientEditionData(patient, patientEditionData);
     return Response.ok(this.patientMapper.toPatientData(this.service.edit(patient))).build();
   }

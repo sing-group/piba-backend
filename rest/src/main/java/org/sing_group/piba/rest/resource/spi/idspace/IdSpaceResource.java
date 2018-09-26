@@ -13,7 +13,7 @@ public interface IdSpaceResource {
 
   public Response create(IdSpaceEditionData idSpaceEditionData);
 
-  public Response edit(IdSpaceEditionData idSpaceEditionData);
+  public Response edit(String id, IdSpaceEditionData idSpaceEditionData);
 
   public Response delete(String id);
 }

@@ -124,13 +124,14 @@ public class DefaultVideoResource implements VideoResource {
       .entity(videoMapper.toVideoData(video)).build();
   }
 
+  @Path("{id}")
   @PUT
   @ApiOperation(
     value = "Modifies an existing video", response = VideoEditionData.class, code = 200
   )
   @Override
-  public Response edit(VideoEditionData videoEditionData) {
-    Video video = this.service.getVideo(videoEditionData.getId());
+  public Response edit(@PathParam("id") String id, VideoEditionData videoEditionData) {
+    Video video = this.service.getVideo(id);
     this.videoMapper.assignVideoEditionData(video, videoEditionData);
     return Response.ok(
       this.videoMapper.toVideoData(this.service.edit(video))

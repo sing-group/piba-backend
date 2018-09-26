@@ -104,14 +104,15 @@ public class DefaultIdSpaceResource implements IdSpaceResource {
   }
 
   @RolesAllowed("ADMIN")
+  @Path("{id}")
   @PUT
   @ApiOperation(
     value = "Modifies an existing space", response = IdSpaceData.class, code = 200
   )
   @ApiResponses(@ApiResponse(code = 400, message = "Unknown ID Space: {id}"))
   @Override
-  public Response edit(IdSpaceEditionData idSpaceEditionData) {
-    IdSpace idSpace = this.service.get(idSpaceEditionData.getId());
+  public Response edit(@PathParam("id") String id, IdSpaceEditionData idSpaceEditionData) {
+    IdSpace idSpace = this.service.get(id);
     this.idSpaceMapper.assignIdSpaceEditionData(idSpace, idSpaceEditionData);
     return Response.ok(this.idSpaceMapper.toIDSpaceData(this.service.edit(idSpace)))
       .build();

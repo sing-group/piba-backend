@@ -36,7 +36,7 @@ public interface VideoResource {
 
   public Response uploadVideo(RestVideoUploadData video);
 
-  public Response edit(VideoEditionData videoEditionData);
+  public Response edit(String id, VideoEditionData videoEditionData);
 
   public Response delete(String id);
 
