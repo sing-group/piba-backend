@@ -11,8 +11,8 @@ import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.rest.entity.mapper.spi.patient.PatientMapper;
 import org.sing_group.piba.rest.entity.patient.PatientData;
 import org.sing_group.piba.rest.entity.patient.PatientEditionData;
+import org.sing_group.piba.rest.resource.exploration.DefaultExplorationResource;
 import org.sing_group.piba.rest.resource.idspace.DefaultIdSpaceResource;
-import org.sing_group.piba.rest.resource.patient.DefaultPatientResource;
 import org.sing_group.piba.service.spi.idspace.IdSpaceService;
 
 @Default
@@ -33,7 +33,7 @@ public class DefaultPatientMapper implements PatientMapper {
   public PatientData toPatientData(Patient patient) {
     return new PatientData(
       patient.getId(), patient.getPatientID(), patient.getSex(), patient.getBirthdate(),
-      fromEntities(requestURI, patient.getExplorations(), DefaultPatientResource.class),
+      fromEntities(requestURI, patient.getExplorations(), DefaultExplorationResource.class),
       fromEntity(requestURI, patient.getIdSpace(), DefaultIdSpaceResource.class)
     );
   }
