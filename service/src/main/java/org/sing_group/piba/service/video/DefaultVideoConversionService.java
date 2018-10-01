@@ -15,6 +15,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.sing_group.piba.service.spi.video.VideoConversionService;
+import org.sing_group.piba.service.video.VideoConversionTask.FileAndFormat;
 
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
@@ -36,42 +37,19 @@ public class DefaultVideoConversionService implements VideoConversionService {
   @Asynchronous
   @Override
   public void convertVideo(VideoConversionTask task) {
-    switch (task.getSourceFormat()) {
-      case "mp4":
-        if (task.getDestinationFormat().equals("ogg")) {
-          convertMp4ToOgg(task.getInput(), task.getOutput());
-        }
-        break;
-      case "ogg":
-        if (task.getDestinationFormat().equals("mp4")) {
-          convertOggToMp4(task.getInput(), task.getOutput());
-        }
-        break;
-      default:
-        break;
+    final File input = task.getInput();
+    
+    if (!input.isFile() || ! input.canRead()) {
+      throw new IllegalArgumentException("File " + input.getAbsolutePath() + " not found.");
     }
+    
+    for (FileAndFormat output : task.getOutputs()) {
+      this.convert(input, output.getFile(), output.getFormat());
+    }
+    
     task.setStatus(VideoConversionTask.ConversionTaskStatus.FINISHED_SUCCESS);
+    
     conversionEvent.fire(task);
-
-  }
-
-  public void convertOggToMp4(File ogg, File mp4) {
-    if (exists(ogg)) {
-      convert(ogg, mp4, "mp4");
-    }
-  }
-
-  public void convertMp4ToOgg(File mp4, File ogg) {
-    if (exists(mp4)) {
-      convert(mp4, ogg, "ogg");
-    }
-  }
-
-  private boolean exists(File file) {
-    if (!file.exists()) {
-      throw new IllegalArgumentException("File " + file.getAbsolutePath() + " not found.");
-    }
-    return true;
   }
 
   private void convert(File from, File to, String toFormat) {

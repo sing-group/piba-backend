@@ -40,6 +40,7 @@ import org.sing_group.piba.service.spi.exploration.ExplorationService;
 import org.sing_group.piba.service.spi.storage.FileStorage;
 import org.sing_group.piba.service.spi.video.VideoConversionService;
 import org.sing_group.piba.service.spi.video.VideoService;
+import org.sing_group.piba.service.video.VideoConversionTask.FileAndFormat;
 
 @Stateless
 @PermitAll
@@ -65,7 +66,7 @@ public class DefaultVideoService implements VideoService {
   public Video getVideo(String id) {
     return videoDao.getVideo(id);
   }
-  
+
   @Override
   public boolean existsVideo(String id) {
     return videoDao.existsVideo(id);
@@ -74,8 +75,13 @@ public class DefaultVideoService implements VideoService {
   public void onConversionEvent(@Observes VideoConversionTask task) {
     // conversion finished
     try {
-      videoStorage.store(task.getId() + "." + task.getDestinationFormat(), new FileInputStream(task.getOutput()));
-      task.getOutput().delete();
+      for (FileAndFormat output : task.getOutputs()) {
+        try (FileInputStream input = new FileInputStream(output.getFile())) {
+          videoStorage.store(task.getId() + "." + output.getFormat(), input);
+        }
+        
+        output.getFile().delete();
+      }
 
       if (task.getStatus() == VideoConversionTask.ConversionTaskStatus.FINISHED_SUCCESS) {
         Video video = videoDao.getVideo(task.getId());
@@ -99,17 +105,15 @@ public class DefaultVideoService implements VideoService {
       video.setExploration(exploration);
       video = videoDao.create(video);
 
-      try (FileInputStream fis = new FileInputStream(data.getVideoData())) {
-        videoStorage.store(video.getId() + ".mp4", fis);
-      }
-
       // asynchronous conversion and storage
-      File oggFile = File.createTempFile("piba_converted_video_", ".ogg");
-      conversionService
-        .convertVideo(new VideoConversionTask(video.getId(), "mp4", "ogg", data.getVideoData(), oggFile));
+      final FileAndFormat[] output = {
+        new FileAndFormat("ogg", File.createTempFile("piba_converted_video_", ".ogg")),
+        new FileAndFormat("mp4", File.createTempFile("piba_converted_video_", ".mp4"))
+      };
+
+      conversionService.convertVideo(new VideoConversionTask(video.getId(), data.getVideoData(), output));
 
       return video;
-
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
