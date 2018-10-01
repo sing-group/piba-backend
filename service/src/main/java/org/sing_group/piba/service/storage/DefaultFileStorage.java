@@ -122,4 +122,8 @@ public class DefaultFileStorage implements FileStorage {
     return ids;
   }
 
+  @Override
+  public long getLength(String id) {
+    return getFileForId(id).toFile().length();
+  }
 }

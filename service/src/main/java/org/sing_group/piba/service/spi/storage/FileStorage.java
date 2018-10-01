@@ -33,4 +33,6 @@ public interface FileStorage {
   public void delete(String id);
 
   public Set<String> getAllIds();
+
+  public long getLength(String id);
 }
