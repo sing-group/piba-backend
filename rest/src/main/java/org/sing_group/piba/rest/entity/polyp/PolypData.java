@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.sing_group.piba.domain.entities.polyp.LST;
+import org.sing_group.piba.domain.entities.polyp.Location;
 import org.sing_group.piba.domain.entities.polyp.NICE;
 import org.sing_group.piba.domain.entities.polyp.PARIS;
 import org.sing_group.piba.domain.entities.polyp.WASP;
@@ -49,7 +50,7 @@ public class PolypData implements Serializable {
   @XmlElement(name = "size")
   private Integer size;
   @XmlElement(name = "location")
-  private String location;
+  private Location location;
   @XmlElement(name = "wasp")
   private WASP wasp;
   @XmlElement(name = "nice")
@@ -68,7 +69,7 @@ public class PolypData implements Serializable {
   PolypData() {}
 
   public PolypData(
-    String id, String name, Integer size, String location, WASP wasp, NICE nice, LST lst,
+    String id, String name, Integer size, Location location, WASP wasp, NICE nice, LST lst,
     PARIS paris, String histology, String observation, UuidAndUri exploration
   ) {
     this.id = id;
@@ -96,7 +97,7 @@ public class PolypData implements Serializable {
     return size;
   }
 
-  public String getLocation() {
+  public Location getLocation() {
     return location;
   }
 

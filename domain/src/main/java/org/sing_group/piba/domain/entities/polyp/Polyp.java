@@ -51,8 +51,9 @@ public class Polyp implements Identifiable {
   private String name;
   @Column(name = "size")
   private Integer size;
+  @Enumerated(EnumType.STRING)
   @Column(name = "location")
-  private String location;
+  private Location location;
   @Enumerated(EnumType.STRING)
   @Column(name = "wasp")
   private WASP wasp;
@@ -79,7 +80,7 @@ public class Polyp implements Identifiable {
   Polyp() {}
 
   public Polyp(
-    String name, Integer size, String location, WASP wasp, NICE nice, LST lst, PARIS paris, String histology,
+    String name, Integer size, Location location, WASP wasp, NICE nice, LST lst, PARIS paris, String histology,
     String observation, Exploration exploration
   ) {
     this.id = UUID.randomUUID().toString();
@@ -117,11 +118,11 @@ public class Polyp implements Identifiable {
     this.size = size;
   }
 
-  public String getLocation() {
+  public Location getLocation() {
     return location;
   }
 
-  public void setLocation(String location) {
+  public void setLocation(Location location) {
     this.location = location;
   }
 
