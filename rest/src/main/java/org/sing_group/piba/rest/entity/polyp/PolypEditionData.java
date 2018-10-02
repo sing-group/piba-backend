@@ -59,6 +59,9 @@ public class PolypEditionData implements Serializable {
   private PARIS paris;
   @XmlElement(name = "histology")
   private String histology;
+  @XmlElement(name = "observation")
+  private String observation;
+
   @XmlElement(name = "exploration")
   private String exploration;
 
@@ -66,7 +69,7 @@ public class PolypEditionData implements Serializable {
 
   public PolypEditionData(
     String id, String name, Integer size, String location, WASP wasp, NICE nice, LST lst,
-    PARIS paris, String histology, String exploration
+    PARIS paris, String histology, String observation, String exploration
   ) {
     this.id = id;
     this.name = name;
@@ -77,6 +80,7 @@ public class PolypEditionData implements Serializable {
     this.lst = lst;
     this.paris = paris;
     this.histology = histology;
+    this.observation = observation;
     this.exploration = exploration;
   }
 
@@ -114,6 +118,10 @@ public class PolypEditionData implements Serializable {
 
   public String getHistology() {
     return histology;
+  }
+
+  public String getObservation() {
+    return observation;
   }
 
   public String getExploration() {

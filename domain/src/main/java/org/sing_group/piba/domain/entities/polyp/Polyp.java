@@ -67,6 +67,8 @@ public class Polyp implements Identifiable {
   private PARIS paris;
   @Column(name = "histology")
   private String histology;
+  @Column(name = "observation")
+  private String observation;
 
   @ManyToOne
   private Exploration exploration;
@@ -78,7 +80,7 @@ public class Polyp implements Identifiable {
 
   public Polyp(
     String name, Integer size, String location, WASP wasp, NICE nice, LST lst, PARIS paris, String histology,
-    Exploration exploration
+    String observation, Exploration exploration
   ) {
     this.id = UUID.randomUUID().toString();
     setName(name);
@@ -89,6 +91,7 @@ public class Polyp implements Identifiable {
     this.lst = lst;
     this.paris = paris;
     this.histology = histology;
+    this.observation = observation;
     setExploration(exploration);
   }
 
@@ -160,6 +163,14 @@ public class Polyp implements Identifiable {
 
   public void setHistology(String histology) {
     this.histology = histology;
+  }
+
+  public String getObservation() {
+    return observation;
+  }
+
+  public void setObservation(String observation) {
+    this.observation = observation;
   }
 
   public Exploration getExploration() {
