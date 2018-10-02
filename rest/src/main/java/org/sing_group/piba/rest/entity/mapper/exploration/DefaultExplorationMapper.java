@@ -45,11 +45,11 @@ public class DefaultExplorationMapper implements ExplorationMapper {
   public void setRequestURI(UriInfo requestURI) {
     this.requestURI = requestURI;
   }
-  
+
   @Override
   public ExplorationData toExplorationData(Exploration exploration) {
     return new ExplorationData(
-      exploration.getId(), exploration.getLocation(), exploration.getDate(),
+      exploration.getId(), exploration.getTitle(), exploration.getLocation(), exploration.getDate(),
       fromEntities(requestURI, exploration.getVideos(), DefaultVideoResource.class),
       fromEntities(requestURI, exploration.getPolyps(), DefaultPolypResource.class),
       fromEntity(requestURI, exploration.getPatient(), DefaultPatientResource.class)
@@ -58,6 +58,7 @@ public class DefaultExplorationMapper implements ExplorationMapper {
 
   @Override
   public void assignExplorationEditData(Exploration exploration, ExplorationEditionData explorationEditionData) {
+    exploration.setTitle(explorationEditionData.getTitle());
     exploration.setDate(explorationEditionData.getDate());
     exploration.setLocation(explorationEditionData.getLocation());
   }

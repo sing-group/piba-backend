@@ -135,7 +135,10 @@ public class DefaultExplorationResource implements ExplorationResource {
   public Response create(ExplorationEditionData explorationEditionData) {
     Patient patient = this.patientService.get(explorationEditionData.getPatient());
     Exploration exploration =
-      new Exploration(explorationEditionData.getLocation(), explorationEditionData.getDate(), patient);
+      new Exploration(
+        explorationEditionData.getTitle(), explorationEditionData.getLocation(), explorationEditionData.getDate(),
+        patient
+      );
     exploration = this.service.create(exploration);
 
     return Response.created(UriBuilder.fromResource(DefaultExplorationResource.class).path(exploration.getId()).build())

@@ -49,6 +49,9 @@ public class Exploration implements Identifiable {
   @Id
   private String id;
 
+  @Column(name = "title", nullable = false)
+  private String title;
+
   @Column(name = "location", nullable = false)
   private String location;
 
@@ -66,8 +69,9 @@ public class Exploration implements Identifiable {
 
   Exploration() {}
 
-  public Exploration(String location, Date date, Patient patient) {
+  public Exploration(String title, String location, Date date, Patient patient) {
     id = UUID.randomUUID().toString();
+    this.setTitle(title);
     this.setLocation(location);
     this.setDate(date);
     setPatient(patient);
@@ -76,6 +80,15 @@ public class Exploration implements Identifiable {
   @Override
   public String getId() {
     return id;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    requireNonNull(title);
+    this.title = title;
   }
 
   public String getLocation() {

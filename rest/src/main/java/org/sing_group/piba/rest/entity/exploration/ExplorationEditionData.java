@@ -41,26 +41,33 @@ public class ExplorationEditionData implements Serializable {
   @XmlElement(name = "id", required = true)
   private String id;
 
+  @XmlElement(name = "title", required = true)
+  private String title;
+
   @XmlElement(name = "location", required = true)
   private String location;
 
   @XmlElement(name = "date", required = true)
   private Date date;
-  
-  @XmlElement(name="patient")
-  private String patient;
 
+  @XmlElement(name = "patient")
+  private String patient;
 
   public ExplorationEditionData() {}
 
-  public ExplorationEditionData(String id, String location, Date date) {
+  public ExplorationEditionData(String id, String title, String location, Date date) {
     this.id = id;
+    this.title = title;
     this.location = location;
     this.date = date;
   }
 
   public String getId() {
     return id;
+  }
+
+  public String getTitle() {
+    return title;
   }
 
   public String getLocation() {
@@ -86,5 +93,5 @@ public class ExplorationEditionData implements Serializable {
   public void setPatient(String patient) {
     this.patient = patient;
   }
-   
+
 }
