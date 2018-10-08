@@ -31,7 +31,7 @@ import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 public interface ExplorationResource {
   public Response getExploration(String id);
 
-  public Response getExplorations();
+  public Response getExplorations(String patientID, String idSpace);
 
   public Response create(ExplorationEditionData explorationEditionData);
 

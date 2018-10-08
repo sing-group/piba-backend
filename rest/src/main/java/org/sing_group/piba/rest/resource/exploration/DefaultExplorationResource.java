@@ -39,6 +39,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -115,12 +116,18 @@ public class DefaultExplorationResource implements ExplorationResource {
 
   @GET
   @ApiOperation(
-    value = "Return the data of all explorations.", response = ExplorationData.class, responseContainer = "List", code = 200
+    value = "Return the data of all explorations or explorations of a specified patient and ID Space.", response = ExplorationData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getExplorations() {
+  public Response getExplorations(@QueryParam("patient") String patientID, @QueryParam("idspace") String idSpace) {
+    if (patientID == null || patientID.equals("") || idSpace == null || idSpace.equals("")) {
+      return Response.ok(
+        this.service.getExplorations().map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
+      ).build();
+    }
+    Patient p = this.patientService.getPatientBy(patientID, idSpace);
     return Response.ok(
-      this.service.getExplorations().map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
+      this.service.getExplorationsBy(p).map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
     ).build();
   }
 

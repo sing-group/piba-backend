@@ -25,6 +25,7 @@ package org.sing_group.piba.service.spi.exploration;
 import java.util.stream.Stream;
 
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 
 public interface ExplorationService {
@@ -39,4 +40,6 @@ public interface ExplorationService {
   public Stream<Polyp> getPolyps(Exploration exploration);
 
   public void delete(Exploration exploration);
+
+  public Stream<Exploration> getExplorationsBy(Patient patient);
 }

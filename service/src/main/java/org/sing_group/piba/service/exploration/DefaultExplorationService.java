@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.sing_group.piba.domain.dao.spi.exploration.ExplorationDAO;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
 
@@ -68,6 +69,11 @@ public class DefaultExplorationService implements ExplorationService {
   @Override
   public void delete(Exploration exploration) {
     explorationDao.delete(exploration);
+  }
+
+  @Override
+  public Stream<Exploration> getExplorationsBy(Patient patient) {
+    return explorationDao.getExplorationsBy(patient);
   }
 
 }

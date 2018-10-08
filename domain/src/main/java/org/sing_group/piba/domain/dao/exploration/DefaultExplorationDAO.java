@@ -34,6 +34,7 @@ import javax.transaction.Transactional.TxType;
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.exploration.ExplorationDAO;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 
 @Default
@@ -90,6 +91,11 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   @Override
   public void delete(Exploration exploration) {
     this.dh.remove(exploration);
+  }
+
+  @Override
+  public Stream<Exploration> getExplorationsBy(Patient patient) {
+    return this.dh.listBy("patient", patient).stream();
   }
 
 }
