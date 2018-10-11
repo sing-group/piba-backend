@@ -50,8 +50,8 @@ public class DefaultPolypMapper implements PolypMapper {
   public PolypData toPolypData(Polyp polyp) {
     return new PolypData(
       polyp.getId(), polyp.getName(), polyp.getSize(), polyp.getLocation(), polyp.getWasp(),
-      polyp.getNice(), polyp.getLst(), polyp.getParis(), polyp.getHistology(), polyp.getObservation(),
-      UuidAndUri.fromEntity(requestURI, polyp.getExploration(), DefaultVideoResource.class)
+      polyp.getNice(), polyp.getLst(), polyp.getParisPrimary(), polyp.getParisSecondary(), polyp.getHistology(),
+      polyp.getObservation(), UuidAndUri.fromEntity(requestURI, polyp.getExploration(), DefaultVideoResource.class)
     );
   }
 
@@ -62,7 +62,8 @@ public class DefaultPolypMapper implements PolypMapper {
     polyp.setLst(polypEditionData.getLst());
     polyp.setName(polypEditionData.getName());
     polyp.setNice(polypEditionData.getNice());
-    polyp.setParis(polypEditionData.getParis());
+    polyp.setParisPrimary(polypEditionData.getParisPrimary());
+    polyp.setParisSecondary(polypEditionData.getParisSecondary());
     polyp.setWasp(polypEditionData.getWasp());
     polyp.setSize(polypEditionData.getSize());
     polyp.setObservation(polypEditionData.getObservation());

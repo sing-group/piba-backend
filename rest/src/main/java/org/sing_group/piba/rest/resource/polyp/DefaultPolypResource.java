@@ -105,7 +105,7 @@ public class DefaultPolypResource implements PolypResource {
       new Polyp(
         polypEditionData.getName(), polypEditionData.getSize(), polypEditionData.getLocation(),
         polypEditionData.getWasp(), polypEditionData.getNice(),
-        polypEditionData.getLst(), polypEditionData.getParis(),
+        polypEditionData.getLst(), polypEditionData.getParisPrimary(), polypEditionData.getParisSecondary(),
         polypEditionData.getHistology(), polypEditionData.getObservation(), getExploration(polypEditionData)
       );
     polyp = this.service.create(polyp);

@@ -64,8 +64,11 @@ public class Polyp implements Identifiable {
   @Column(name = "lst")
   private LST lst;
   @Enumerated(EnumType.STRING)
-  @Column(name = "paris")
-  private PARIS paris;
+  @Column(name = "parisPrimary")
+  private PARIS parisPrimary;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "parisSecondary")
+  private PARIS parisSecondary;
   @Column(name = "histology")
   private String histology;
   @Column(name = "observation")
@@ -80,8 +83,8 @@ public class Polyp implements Identifiable {
   Polyp() {}
 
   public Polyp(
-    String name, Integer size, Location location, WASP wasp, NICE nice, LST lst, PARIS paris, String histology,
-    String observation, Exploration exploration
+    String name, Integer size, Location location, WASP wasp, NICE nice, LST lst, PARIS parisPrimary,
+    PARIS parisSecondary, String histology, String observation, Exploration exploration
   ) {
     this.id = UUID.randomUUID().toString();
     setName(name);
@@ -90,7 +93,8 @@ public class Polyp implements Identifiable {
     this.wasp = wasp;
     this.nice = nice;
     this.lst = lst;
-    this.paris = paris;
+    this.parisPrimary = parisPrimary;
+    this.parisSecondary = parisSecondary;
     this.histology = histology;
     this.observation = observation;
     setExploration(exploration);
@@ -150,12 +154,20 @@ public class Polyp implements Identifiable {
     this.lst = lst;
   }
 
-  public PARIS getParis() {
-    return paris;
+  public PARIS getParisPrimary() {
+    return parisPrimary;
   }
 
-  public void setParis(PARIS paris) {
-    this.paris = paris;
+  public void setParisPrimary(PARIS parisPrimary) {
+    this.parisPrimary = parisPrimary;
+  }
+
+  public PARIS getParisSecondary() {
+    return parisSecondary;
+  }
+
+  public void setParisSecondary(PARIS parisSecondary) {
+    this.parisSecondary = parisSecondary;
   }
 
   public String getHistology() {
