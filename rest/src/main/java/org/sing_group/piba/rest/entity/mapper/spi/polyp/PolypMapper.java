@@ -24,8 +24,10 @@ package org.sing_group.piba.rest.entity.mapper.spi.polyp;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.polyp.PolypHistology;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
+import org.sing_group.piba.rest.entity.polyp.PolypHistologyEditionData;
 
 public interface PolypMapper {
   public void setRequestURI(UriInfo requestURI);
@@ -34,4 +36,5 @@ public interface PolypMapper {
 
   public void assignPolypEditionData(Polyp polyp, PolypEditionData polypEditionData);
 
+  public PolypHistology toPolypHistology(PolypHistologyEditionData data);
 }

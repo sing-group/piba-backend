@@ -35,6 +35,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.sing_group.piba.domain.entities.Identifiable;
@@ -69,10 +70,12 @@ public class Polyp implements Identifiable {
   @Enumerated(EnumType.STRING)
   @Column(name = "parisSecondary")
   private PARIS parisSecondary;
-  @Column(name = "histology")
-  private String histology;
+
   @Column(name = "observation")
   private String observation;
+
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  private PolypHistology histology;
 
   @ManyToOne
   private Exploration exploration;
@@ -84,7 +87,7 @@ public class Polyp implements Identifiable {
 
   public Polyp(
     String name, Integer size, Location location, WASP wasp, NICE nice, LST lst, PARIS parisPrimary,
-    PARIS parisSecondary, String histology, String observation, Exploration exploration
+    PARIS parisSecondary, PolypHistology histology, String observation, Exploration exploration
   ) {
     this.id = UUID.randomUUID().toString();
     setName(name);
@@ -170,11 +173,11 @@ public class Polyp implements Identifiable {
     this.parisSecondary = parisSecondary;
   }
 
-  public String getHistology() {
+  public PolypHistology getHistology() {
     return histology;
   }
 
-  public void setHistology(String histology) {
+  public void setHistology(PolypHistology histology) {
     this.histology = histology;
   }
 
