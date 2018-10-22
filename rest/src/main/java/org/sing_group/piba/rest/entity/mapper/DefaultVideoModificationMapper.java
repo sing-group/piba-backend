@@ -20,13 +20,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.videomodification;
+package org.sing_group.piba.rest.entity.mapper;
 
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 import org.sing_group.piba.rest.entity.UuidAndUri;
-import org.sing_group.piba.rest.entity.mapper.spi.videomodification.VideoModificationMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.VideoModificationMapper;
 import org.sing_group.piba.rest.entity.videomodification.VideoModificationData;
 import org.sing_group.piba.rest.resource.modifier.DefaultModifierResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;

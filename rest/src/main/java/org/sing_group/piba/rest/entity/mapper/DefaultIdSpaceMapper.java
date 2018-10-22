@@ -20,7 +20,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.idspace;
+package org.sing_group.piba.rest.entity.mapper;
 
 import javax.enterprise.inject.Default;
 import javax.ws.rs.core.UriInfo;
@@ -28,7 +28,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.piba.domain.entities.idspace.IdSpace;
 import org.sing_group.piba.rest.entity.idspace.IdSpaceData;
 import org.sing_group.piba.rest.entity.idspace.IdSpaceEditionData;
-import org.sing_group.piba.rest.entity.mapper.spi.idspace.IdSpaceMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.IdSpaceMapper;
 
 @Default
 public class DefaultIdSpaceMapper implements IdSpaceMapper {

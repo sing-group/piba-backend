@@ -20,7 +20,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.patient;
+package org.sing_group.piba.rest.entity.mapper;
 
 import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntities;
 import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntity;
@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.patient.Patient;
-import org.sing_group.piba.rest.entity.mapper.spi.patient.PatientMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.PatientMapper;
 import org.sing_group.piba.rest.entity.patient.PatientData;
 import org.sing_group.piba.rest.entity.patient.PatientEditionData;
 import org.sing_group.piba.rest.resource.exploration.DefaultExplorationResource;
@@ -41,7 +41,6 @@ import org.sing_group.piba.service.spi.idspace.IdSpaceService;
 public class DefaultPatientMapper implements PatientMapper {
 
   private UriInfo requestURI;
-  
 
   @Inject
   private IdSpaceService idSpaceService;

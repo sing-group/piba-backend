@@ -43,7 +43,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
-import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;

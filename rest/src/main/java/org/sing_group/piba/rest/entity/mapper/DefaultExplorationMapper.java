@@ -20,7 +20,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.exploration;
+package org.sing_group.piba.rest.entity.mapper;
 
 import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntities;
 import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntity;
@@ -31,7 +31,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
-import org.sing_group.piba.rest.entity.mapper.spi.exploration.ExplorationMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.ExplorationMapper;
 import org.sing_group.piba.rest.resource.patient.DefaultPatientResource;
 import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;

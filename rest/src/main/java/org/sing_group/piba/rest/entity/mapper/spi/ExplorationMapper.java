@@ -20,24 +20,18 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.modifier;
+package org.sing_group.piba.rest.entity.mapper.spi;
 
-import javax.enterprise.inject.Default;
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.piba.domain.entities.modifier.Modifier;
-import org.sing_group.piba.rest.entity.mapper.spi.modifier.ModifierMapper;
-import org.sing_group.piba.rest.entity.modifier.ModifierData;
+import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.rest.entity.exploration.ExplorationData;
+import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 
-@Default
-public class DefaultModifierMapper implements ModifierMapper {
+public interface ExplorationMapper {
+  public void setRequestURI(UriInfo requestURI);
 
-  @Override
-  public void setRequestURI(UriInfo requestURI) {}
+  public ExplorationData toExplorationData(Exploration exploration);
 
-  @Override
-  public ModifierData toModifierData(Modifier modifier) {
-    return new ModifierData(modifier.getId(), modifier.getName());
-  }
-
+  public void assignExplorationEditData(Exploration exploration, ExplorationEditionData explorationEditionData);
 }

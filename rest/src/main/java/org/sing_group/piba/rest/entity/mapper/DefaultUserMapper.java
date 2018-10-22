@@ -20,18 +20,17 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.spi.patient;
+package org.sing_group.piba.rest.entity.mapper;
 
-import javax.ws.rs.core.UriInfo;
+import org.sing_group.piba.domain.entities.user.User;
+import org.sing_group.piba.rest.entity.mapper.spi.UserMapper;
+import org.sing_group.piba.rest.entity.user.UserData;
 
-import org.sing_group.piba.domain.entities.patient.Patient;
-import org.sing_group.piba.rest.entity.patient.PatientData;
-import org.sing_group.piba.rest.entity.patient.PatientEditionData;
+public class DefaultUserMapper implements UserMapper {
 
-public interface PatientMapper {
-  public void setRequestURI(UriInfo requestURI);
+  @Override
+  public UserData toUserData(User user) {
+    return new UserData(user.getLogin(), user.getPassword(), user.getRole());
+  }
 
-  public PatientData toPatientData(Patient patient);
-
-  public void assignPatientEditionData(Patient patient, PatientEditionData patientEditionData);
 }

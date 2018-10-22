@@ -20,17 +20,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.user;
+package org.sing_group.piba.rest.entity.mapper.spi;
 
-import org.sing_group.piba.domain.entities.user.User;
-import org.sing_group.piba.rest.entity.mapper.spi.user.UserMapper;
-import org.sing_group.piba.rest.entity.user.UserData;
+import javax.ws.rs.core.UriInfo;
 
-public class DefaultUserMapper implements UserMapper {
+import org.sing_group.piba.domain.entities.videomodification.VideoModification;
+import org.sing_group.piba.rest.entity.videomodification.VideoModificationData;
 
-  @Override
-  public UserData toUserData(User user) {
-    return new UserData(user.getLogin(), user.getPassword(), user.getRole());
-  }
+public interface VideoModificationMapper {
 
+  public void setRequestURI(UriInfo requestURI);
+
+  public VideoModificationData toVideoModificationData(VideoModification videoModification);
 }

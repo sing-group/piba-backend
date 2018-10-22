@@ -38,7 +38,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.piba.rest.entity.mapper.spi.modifier.ModifierMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.ModifierMapper;
 import org.sing_group.piba.rest.entity.modifier.ModifierData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.modifier.ModifierResource;

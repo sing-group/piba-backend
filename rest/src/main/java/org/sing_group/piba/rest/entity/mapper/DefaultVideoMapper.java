@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.sing_group.piba.rest.entity.mapper.video;
+package org.sing_group.piba.rest.entity.mapper;
 
 import static java.util.Collections.emptyList;
 
@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.rest.entity.UuidAndUri;
-import org.sing_group.piba.rest.entity.mapper.spi.video.VideoMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.VideoMapper;
 import org.sing_group.piba.rest.entity.video.VideoData;
 import org.sing_group.piba.rest.entity.video.VideoEditionData;
 import org.sing_group.piba.rest.entity.video.VideoSource;

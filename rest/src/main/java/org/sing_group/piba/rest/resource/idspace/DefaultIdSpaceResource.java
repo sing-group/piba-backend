@@ -47,7 +47,7 @@ import org.sing_group.piba.domain.entities.idspace.IdSpace;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.idspace.IdSpaceData;
 import org.sing_group.piba.rest.entity.idspace.IdSpaceEditionData;
-import org.sing_group.piba.rest.entity.mapper.spi.idspace.IdSpaceMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.IdSpaceMapper;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.idspace.IdSpaceResource;
 import org.sing_group.piba.service.spi.idspace.IdSpaceService;

@@ -44,7 +44,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.domain.entities.video.Video;
-import org.sing_group.piba.rest.entity.mapper.spi.polyprecording.PolypRecordingMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.PolypRecordingMapper;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditicionData;
 import org.sing_group.piba.rest.filter.CrossDomain;

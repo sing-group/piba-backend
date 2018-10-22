@@ -2,8 +2,7 @@
  * #%L
  * REST
  * %%
- * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
- * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
+ * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato, Florentino Fdez-Riverola, Alba Nogueira Rodríguez
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -20,17 +19,19 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.spi.modifier;
+
+package org.sing_group.piba.rest.entity.mapper.spi;
 
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.piba.domain.entities.modifier.Modifier;
-import org.sing_group.piba.rest.entity.modifier.ModifierData;
+import org.sing_group.piba.domain.entities.video.Video;
+import org.sing_group.piba.rest.entity.video.VideoData;
+import org.sing_group.piba.rest.entity.video.VideoEditionData;
 
-public interface ModifierMapper {
-
+public interface VideoMapper {
   public void setRequestURI(UriInfo requestURI);
 
-  public ModifierData toModifierData(Modifier modifier);
+  public VideoData toVideoData(Video video);
 
+  public void assignVideoEditionData(Video video, VideoEditionData videoEditionData);
 }

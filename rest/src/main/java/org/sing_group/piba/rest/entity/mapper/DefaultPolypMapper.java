@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.polyp;
+package org.sing_group.piba.rest.entity.mapper;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ import org.sing_group.piba.domain.entities.polyp.SessileSerratedAdenoma.SsaDyspl
 import org.sing_group.piba.domain.entities.polyp.TraditionalSerratedAdenoma;
 import org.sing_group.piba.domain.entities.polyp.TraditionalSerratedAdenoma.TsaDysplasingGrade;
 import org.sing_group.piba.rest.entity.UuidAndUri;
-import org.sing_group.piba.rest.entity.mapper.spi.polyp.PolypMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 import org.sing_group.piba.rest.entity.polyp.PolypHistologyData;

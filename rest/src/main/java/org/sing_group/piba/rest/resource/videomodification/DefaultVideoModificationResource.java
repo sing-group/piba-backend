@@ -45,7 +45,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
-import org.sing_group.piba.rest.entity.mapper.spi.videomodification.VideoModificationMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.VideoModificationMapper;
 import org.sing_group.piba.rest.entity.videomodification.VideoModificationData;
 import org.sing_group.piba.rest.entity.videomodification.VideoModificationEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;

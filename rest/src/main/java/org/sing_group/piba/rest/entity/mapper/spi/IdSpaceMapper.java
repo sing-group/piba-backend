@@ -20,11 +20,18 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.spi.user;
+package org.sing_group.piba.rest.entity.mapper.spi;
 
-import org.sing_group.piba.domain.entities.user.User;
-import org.sing_group.piba.rest.entity.user.UserData;
+import javax.ws.rs.core.UriInfo;
 
-public interface UserMapper {
-  public UserData toUserData(User user);
+import org.sing_group.piba.domain.entities.idspace.IdSpace;
+import org.sing_group.piba.rest.entity.idspace.IdSpaceData;
+import org.sing_group.piba.rest.entity.idspace.IdSpaceEditionData;
+
+public interface IdSpaceMapper {
+  public void setRequestURI(UriInfo requestURI);
+
+  public IdSpaceData toIDSpaceData(IdSpace idSpace);
+
+  public void assignIdSpaceEditionData(IdSpace idSpace, IdSpaceEditionData idSpaceEditionData);
 }

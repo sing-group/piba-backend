@@ -20,18 +20,24 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.spi.idspace;
+package org.sing_group.piba.rest.entity.mapper;
 
+import javax.enterprise.inject.Default;
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.piba.domain.entities.idspace.IdSpace;
-import org.sing_group.piba.rest.entity.idspace.IdSpaceData;
-import org.sing_group.piba.rest.entity.idspace.IdSpaceEditionData;
+import org.sing_group.piba.domain.entities.modifier.Modifier;
+import org.sing_group.piba.rest.entity.mapper.spi.ModifierMapper;
+import org.sing_group.piba.rest.entity.modifier.ModifierData;
 
-public interface IdSpaceMapper {
-  public void setRequestURI(UriInfo requestURI);
+@Default
+public class DefaultModifierMapper implements ModifierMapper {
 
-  public IdSpaceData toIDSpaceData(IdSpace idSpace);
+  @Override
+  public void setRequestURI(UriInfo requestURI) {}
 
-  public void assignIdSpaceEditionData(IdSpace idSpace, IdSpaceEditionData idSpaceEditionData);
+  @Override
+  public ModifierData toModifierData(Modifier modifier) {
+    return new ModifierData(modifier.getId(), modifier.getName());
+  }
+
 }

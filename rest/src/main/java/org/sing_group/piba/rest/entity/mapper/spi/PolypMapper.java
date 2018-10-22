@@ -19,19 +19,22 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-package org.sing_group.piba.rest.entity.mapper.spi.video;
+package org.sing_group.piba.rest.entity.mapper.spi;
 
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.piba.domain.entities.video.Video;
-import org.sing_group.piba.rest.entity.video.VideoData;
-import org.sing_group.piba.rest.entity.video.VideoEditionData;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.polyp.PolypHistology;
+import org.sing_group.piba.rest.entity.polyp.PolypData;
+import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
+import org.sing_group.piba.rest.entity.polyp.PolypHistologyEditionData;
 
-public interface VideoMapper {
+public interface PolypMapper {
   public void setRequestURI(UriInfo requestURI);
 
-  public VideoData toVideoData(Video video);
+  public PolypData toPolypData(Polyp polyp);
 
-  public void assignVideoEditionData(Video video, VideoEditionData videoEditionData);
+  public void assignPolypEditionData(Polyp polyp, PolypEditionData polypEditionData);
+
+  public PolypHistology toPolypHistology(PolypHistologyEditionData data);
 }

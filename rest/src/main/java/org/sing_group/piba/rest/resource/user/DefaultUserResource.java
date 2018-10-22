@@ -40,7 +40,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.piba.domain.entities.user.Role;
 import org.sing_group.piba.domain.entities.user.User;
-import org.sing_group.piba.rest.entity.mapper.spi.user.UserMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.UserMapper;
 import org.sing_group.piba.rest.entity.user.UserData;
 import org.sing_group.piba.rest.entity.user.UserEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;

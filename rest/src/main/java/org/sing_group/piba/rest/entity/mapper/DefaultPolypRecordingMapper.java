@@ -20,14 +20,14 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.polyprecording;
+package org.sing_group.piba.rest.entity.mapper;
 
 import javax.enterprise.inject.Default;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.rest.entity.UuidAndUri;
-import org.sing_group.piba.rest.entity.mapper.spi.polyprecording.PolypRecordingMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.PolypRecordingMapper;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;

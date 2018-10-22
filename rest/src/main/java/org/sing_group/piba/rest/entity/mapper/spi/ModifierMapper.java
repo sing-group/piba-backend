@@ -20,17 +20,17 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.spi.polyprecording;
+package org.sing_group.piba.rest.entity.mapper.spi;
 
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
-import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
+import org.sing_group.piba.domain.entities.modifier.Modifier;
+import org.sing_group.piba.rest.entity.modifier.ModifierData;
 
-public interface PolypRecordingMapper {
-  
-  public PolypRecordingData toPolypRecordingData(PolypRecording polypRecording);
+public interface ModifierMapper {
 
-  void setRequestURI(UriInfo requestURI);
+  public void setRequestURI(UriInfo requestURI);
+
+  public ModifierData toModifierData(Modifier modifier);
 
 }

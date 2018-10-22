@@ -2,7 +2,8 @@
  * #%L
  * REST
  * %%
- * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato, Florentino Fdez-Riverola, Alba Nogueira Rodríguez
+ * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
+ * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,22 +20,18 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.mapper.spi.polyp;
+package org.sing_group.piba.rest.entity.mapper.spi;
 
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.piba.domain.entities.polyp.Polyp;
-import org.sing_group.piba.domain.entities.polyp.PolypHistology;
-import org.sing_group.piba.rest.entity.polyp.PolypData;
-import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
-import org.sing_group.piba.rest.entity.polyp.PolypHistologyEditionData;
+import org.sing_group.piba.domain.entities.patient.Patient;
+import org.sing_group.piba.rest.entity.patient.PatientData;
+import org.sing_group.piba.rest.entity.patient.PatientEditionData;
 
-public interface PolypMapper {
+public interface PatientMapper {
   public void setRequestURI(UriInfo requestURI);
 
-  public PolypData toPolypData(Polyp polyp);
+  public PatientData toPatientData(Patient patient);
 
-  public void assignPolypEditionData(Polyp polyp, PolypEditionData polypEditionData);
-
-  public PolypHistology toPolypHistology(PolypHistologyEditionData data);
+  public void assignPatientEditionData(Patient patient, PatientEditionData patientEditionData);
 }
