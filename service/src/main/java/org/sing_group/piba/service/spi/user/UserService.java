@@ -32,7 +32,11 @@ import org.sing_group.piba.domain.entities.user.User;
 public interface UserService {
   public User getCurrentUser();
 
+  public User get(String id);
+
   public User create(User user);
+
+  public User edit(User user);
 
   public Stream<User> getUsers();
 }

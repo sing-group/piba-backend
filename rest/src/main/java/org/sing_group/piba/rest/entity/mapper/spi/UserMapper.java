@@ -23,8 +23,11 @@
 package org.sing_group.piba.rest.entity.mapper.spi;
 
 import org.sing_group.piba.domain.entities.user.User;
+import org.sing_group.piba.rest.entity.user.UserEditionData;
 import org.sing_group.piba.rest.entity.user.UserData;
 
 public interface UserMapper {
   public UserData toUserData(User user);
+
+  public void assignUserEditionData(User user, UserEditionData userEditionData);
 }

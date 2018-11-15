@@ -33,6 +33,8 @@ public interface UserResource {
 
   public Response create(UserEditionData userEditionData);
 
+  public Response edit(String login, UserEditionData userEditionData);
+
   public Response getUsers();
 
 }

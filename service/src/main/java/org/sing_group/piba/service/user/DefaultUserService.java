@@ -50,8 +50,18 @@ public class DefaultUserService implements UserService {
   }
 
   @Override
+  public User get(String id) {
+    return userDAO.get(id);
+  }
+
+  @Override
   public User create(User user) {
     return userDAO.create(user);
+  }
+
+  @Override
+  public User edit(User user) {
+    return userDAO.edit(user);
   }
 
   @Override

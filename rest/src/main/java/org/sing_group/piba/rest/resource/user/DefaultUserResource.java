@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -121,6 +122,19 @@ public class DefaultUserResource implements UserResource {
     return Response.ok(
       this.userService.getUsers().map(this.userMapper::toUserData).toArray(UserData[]::new)
     ).build();
+  }
+
+  @PUT
+  @Path("{login}")
+  @RolesAllowed("ADMIN")
+  @ApiOperation(
+    value = "Modifies an existing user", response = UserData.class, code = 200
+  )
+  @Override
+  public Response edit(@PathParam("login") String login, UserEditionData userEditionData) {
+    User user = this.userService.get(login);
+    this.userMapper.assignUserEditionData(user, userEditionData);
+    return Response.ok(this.userMapper.toUserData(this.userService.edit(user))).build();
   }
 
 }
