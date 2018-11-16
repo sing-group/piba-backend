@@ -45,6 +45,8 @@ public class User implements Serializable {
   @Id
   @Column(length = 100, nullable = false, unique = true)
   private String login;
+  @Column(length = 120, nullable = false)
+  private String email;
   @Column(length = 32, nullable = false)
   private String password;
   @Enumerated(EnumType.STRING)
@@ -53,8 +55,9 @@ public class User implements Serializable {
 
   User() {}
 
-  public User(String login, String password, Role role) {
+  public User(String login, String email, String password, Role role) {
     setLogin(login);
+    setEmail(email);
     setPassword(password);
     setRole(role);
   }
@@ -68,6 +71,17 @@ public class User implements Serializable {
       requirePattern(
         login, "[a-zA-ZñÑ0-9_]{1,100}",
         "'login' can only contain letters, numbers or underscore and should have a length between 1 and 100"
+      );
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email =
+      requirePattern(
+        email, "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", "invalid format email"
       );
   }
 

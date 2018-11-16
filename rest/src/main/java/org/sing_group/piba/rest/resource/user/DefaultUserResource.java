@@ -106,7 +106,10 @@ public class DefaultUserResource implements UserResource {
   )
   @Override
   public Response create(UserEditionData userEditionData) {
-    User user = new User(userEditionData.getLogin(), userEditionData.getPassword(), userEditionData.getRole());
+    User user =
+      new User(
+        userEditionData.getLogin(), userEditionData.getEmail(), userEditionData.getPassword(), userEditionData.getRole()
+      );
     user = this.userService.create(user);
     return Response.created(UriBuilder.fromResource(DefaultUserResource.class).path(user.getLogin()).build())
       .entity(userMapper.toUserData(user)).build();

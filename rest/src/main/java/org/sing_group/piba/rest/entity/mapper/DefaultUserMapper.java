@@ -31,15 +31,16 @@ public class DefaultUserMapper implements UserMapper {
 
   @Override
   public UserData toUserData(User user) {
-    return new UserData(user.getLogin(), user.getPassword(), user.getRole());
+    return new UserData(user.getLogin(), user.getEmail(), user.getPassword(), user.getRole());
   }
 
   @Override
   public void assignUserEditionData(User user, UserEditionData userEditionData) {
+    user.setEmail(userEditionData.getEmail());
     // Checks if the password has been modified
     if (!userEditionData.getPassword().isEmpty()) {
       user.setPassword(userEditionData.getPassword());
     }
   }
-  
+
 }

@@ -41,6 +41,8 @@ public class UserEditionData implements Serializable {
 
   @XmlElement(name = "login", required = true)
   private String login;
+  @XmlElement(name = "email")
+  private String email;
   @XmlElement(name = "password")
   private String password;
   @XmlElement(name = "role", required = true)
@@ -48,14 +50,19 @@ public class UserEditionData implements Serializable {
 
   UserEditionData() {}
 
-  public UserEditionData(String login, String password, Role role) {
+  public UserEditionData(String login, String email, String password, Role role) {
     this.login = login;
+    this.email = email;
     this.password = password;
     this.role = role;
   }
 
   public String getLogin() {
     return login;
+  }
+
+  public String getEmail() {
+    return email;
   }
 
   public String getPassword() {
