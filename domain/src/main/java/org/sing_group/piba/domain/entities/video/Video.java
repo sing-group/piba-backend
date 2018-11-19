@@ -55,6 +55,9 @@ public class Video implements Identifiable {
   @Column(name = "is_processing")
   private boolean isProcessing = true;
 
+  @Column(name = "withText")
+  private boolean withText = false;
+
   @ManyToOne
   @JoinColumn(name = "exploration_id")
   private Exploration exploration;
@@ -66,11 +69,14 @@ public class Video implements Identifiable {
     id = UUID.randomUUID().toString();
   }
 
-  public Video(String id, String title, String observations, boolean isProcessing, Exploration exploration) {
+  public Video(
+    String id, String title, String observations, boolean isProcessing, boolean withText, Exploration exploration
+  ) {
     this.id = id;
     this.title = title;
     this.observations = observations;
     this.isProcessing = isProcessing;
+    this.withText = withText;
     setExploration(exploration);
   }
 
@@ -101,6 +107,14 @@ public class Video implements Identifiable {
 
   public boolean isProcessing() {
     return isProcessing;
+  }
+
+  public boolean isWithText() {
+    return withText;
+  }
+
+  public void setWithText(boolean withText) {
+    this.withText = withText;
   }
 
   public Exploration getExploration() {

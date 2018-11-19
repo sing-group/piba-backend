@@ -32,12 +32,15 @@ public class VideoUploadData {
 
   private File videoData;
 
+  private String withText;
+
   private String exploration_id;
 
-  public VideoUploadData(String title, String observations, File videoData, String exploration_id) {
+  public VideoUploadData(String title, String observations, File videoData, String withText, String exploration_id) {
     this.title = title;
     this.observations = observations;
     this.videoData = videoData;
+    this.withText = withText;
     this.exploration_id = exploration_id;
   }
 
@@ -51,6 +54,10 @@ public class VideoUploadData {
 
   public File getVideoData() {
     return videoData;
+  }
+
+  public String getWithText() {
+    return withText;
   }
 
   public String getExploration_id() {

@@ -59,7 +59,7 @@ public class DefaultVideoMapper implements VideoMapper {
   public VideoData toVideoData(Video video) {
     return new VideoData(
       video.getId(), video.getTitle(), video.getObservations(),
-      !video.isProcessing() ? videoURLs(video) : emptyList(), video.isProcessing(),
+      !video.isProcessing() ? videoURLs(video) : emptyList(), video.isProcessing(), video.isWithText(),
       UuidAndUri.fromEntity(requestURI, video.getExploration(), DefaultExplorationResource.class)
     );
   }
@@ -81,6 +81,7 @@ public class DefaultVideoMapper implements VideoMapper {
     video.setTitle(videoEditionData.getTitle());
     video.setObservations(videoEditionData.getObservations());
     video.setProcessing(videoEditionData.isProcessing());
+    video.setWithText(videoEditionData.isWithText());
     video.setExploration(
       videoEditionData.getExploration() == null ? null
         : this.explorationService.getExploration(videoEditionData.getExploration())

@@ -45,6 +45,10 @@ public class VideoEditionData implements Serializable {
   @ApiModelProperty(name = "processing")
   private boolean isProcessing;
 
+  @XmlElement(name = "withText")
+  @ApiModelProperty(name = "withText")
+  private boolean withText;
+
   @XmlElement(name = "video_sources")
   private List<VideoSource> urls;
 
@@ -53,12 +57,16 @@ public class VideoEditionData implements Serializable {
 
   public VideoEditionData() {}
 
-  public VideoEditionData(String id, String title, String observations, List<VideoSource> urls, boolean isProcessing, String exploration) {
+  public VideoEditionData(
+    String id, String title, String observations, List<VideoSource> urls, boolean isProcessing,
+    boolean withText, String exploration
+  ) {
     this.id = id;
     this.title = title;
     this.observations = observations;
     this.urls = urls;
     this.isProcessing = isProcessing;
+    this.withText = withText;
     this.exploration = exploration;
   }
 
@@ -82,8 +90,12 @@ public class VideoEditionData implements Serializable {
     return isProcessing;
   }
 
+  public boolean isWithText() {
+    return withText;
+  }
+
   public String getExploration() {
     return exploration;
   }
-  
+
 }

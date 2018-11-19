@@ -79,7 +79,7 @@ public class DefaultVideoService implements VideoService {
         try (FileInputStream input = new FileInputStream(output.getFile())) {
           videoStorage.store(task.getId() + "." + output.getFormat(), input);
         }
-        
+
         output.getFile().delete();
       }
 
@@ -102,6 +102,7 @@ public class DefaultVideoService implements VideoService {
       video.setObservations(data.getObservations());
       video.setTitle(data.getTitle());
       video.setProcessing(true);
+      video.setWithText(Boolean.valueOf(data.getWithText()));
       video.setExploration(exploration);
       video = videoDao.create(video);
 
