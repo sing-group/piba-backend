@@ -35,6 +35,8 @@ public interface UserResource {
 
   public Response edit(String login, UserEditionData userEditionData);
 
+  public Response delete(String id);
+
   public Response getUsers();
 
 }

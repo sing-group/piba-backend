@@ -71,6 +71,11 @@ public class DefaultUserDAO implements UserDAO {
   public User edit(User user) {
     return this.dh.update(user);
   }
+  
+  @Override
+  public void delete(User user) {
+    this.dh.remove(user);
+  }
 
   @Override
   public Stream<User> getUsers() {

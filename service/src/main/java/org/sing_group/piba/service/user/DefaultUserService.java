@@ -63,6 +63,11 @@ public class DefaultUserService implements UserService {
   public User edit(User user) {
     return userDAO.edit(user);
   }
+  
+  @Override
+  public void delete(User user) {
+    userDAO.delete(user);
+  }
 
   @Override
   public Stream<User> getUsers() {

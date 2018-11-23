@@ -30,6 +30,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -138,6 +139,22 @@ public class DefaultUserResource implements UserResource {
     User user = this.userService.get(login);
     this.userMapper.assignUserEditionData(user, userEditionData);
     return Response.ok(this.userMapper.toUserData(this.userService.edit(user))).build();
+  }
+  
+  @DELETE
+  @Path("{login}")
+  @RolesAllowed("ADMIN")
+  @ApiOperation(
+    value = "Deletes an existing user.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown user: {login}")
+  )
+  @Override
+  public Response delete(@PathParam("login") String login) {
+    User user = this.userService.get(login);
+    this.userService.delete(user);
+    return Response.ok().build();
   }
 
 }
