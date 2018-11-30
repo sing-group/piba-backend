@@ -43,7 +43,7 @@ import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 import org.sing_group.piba.rest.entity.polyp.PolypHistologyData;
 import org.sing_group.piba.rest.entity.polyp.PolypHistologyEditionData;
 import org.sing_group.piba.rest.entity.polyp.PolypType;
-import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
+import org.sing_group.piba.rest.resource.exploration.DefaultExplorationResource;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
 
 @Default
@@ -65,7 +65,7 @@ public class DefaultPolypMapper implements PolypMapper {
       polyp.getId(), polyp.getName(), polyp.getSize(), polyp.getLocation(), polyp.getWasp(),
       polyp.getNice(), polyp.getLst(), polyp.getParisPrimary(), polyp.getParisSecondary(),
       toPolypHistologyData(polyp.getHistology()),
-      polyp.getObservation(), UuidAndUri.fromEntity(requestURI, polyp.getExploration(), DefaultVideoResource.class)
+      polyp.getObservation(), UuidAndUri.fromEntity(requestURI, polyp.getExploration(), DefaultExplorationResource.class)
     );
   }
 
