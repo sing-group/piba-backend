@@ -39,6 +39,7 @@ import javax.persistence.Table;
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
+import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 
 @Entity
 @Table(name = "video")
@@ -64,6 +65,9 @@ public class Video implements Identifiable {
 
   @OneToMany(mappedBy = "video", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<PolypRecording> polypRecordings = new HashSet<>();
+
+  @OneToMany(mappedBy = "video", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<VideoModification> videoModifications = new HashSet<>();
 
   public Video() {
     id = UUID.randomUUID().toString();

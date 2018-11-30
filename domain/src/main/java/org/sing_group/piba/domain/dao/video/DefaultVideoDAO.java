@@ -70,7 +70,7 @@ public class DefaultVideoDAO implements VideoDAO {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown video: " + id));
   }
-  
+
   @Override
   public boolean existsVideo(String id) {
     return this.dh.get(id).isPresent();
@@ -88,9 +88,6 @@ public class DefaultVideoDAO implements VideoDAO {
 
   @Override
   public void delete(Video video) {
-    for (VideoModification videoModification : this.dhVideoModification.listBy("video", video)) {
-      this.dhVideoModification.remove(videoModification);
-    }
     this.dh.remove(video);
   }
 
