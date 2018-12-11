@@ -22,5 +22,5 @@
 package org.sing_group.piba.domain.entities.polyp;
 
 public enum WASP {
-  HYPERPLASTIC, SERRATED, ADENOMA
+  WASP_POSITIVE, WASP_NEGATIVE
 }
