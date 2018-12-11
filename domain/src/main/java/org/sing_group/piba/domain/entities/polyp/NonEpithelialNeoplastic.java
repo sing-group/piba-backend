@@ -1,6 +1,6 @@
 /*-
  * #%L
- * REST
+ * Domain
  * %%
  * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
  * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
@@ -20,10 +20,11 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.rest.entity.polyp;
+package org.sing_group.piba.domain.entities.polyp;
 
-public enum PolypType {
-  // must be the same name as the PolypHistology subclasses (case-insensitive)
-  ADENOMA, INVASIVE, HYPERPLASTIC, SESSILE_SERRATED_ADENOMA, TRADITIONAL_SERRATED_ADENOMA,
-  NON_EPITHELIAL_NEOPLASTIC;
+import javax.persistence.Entity;
+
+@Entity
+public class NonEpithelialNeoplastic extends PolypHistology {
+
 }

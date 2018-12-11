@@ -30,6 +30,7 @@ import org.sing_group.piba.domain.entities.polyp.Adenoma.AdenomaDysplasingGrade;
 import org.sing_group.piba.domain.entities.polyp.Adenoma.AdenomaType;
 import org.sing_group.piba.domain.entities.polyp.Hyperplastic;
 import org.sing_group.piba.domain.entities.polyp.Invasive;
+import org.sing_group.piba.domain.entities.polyp.NonEpithelialNeoplastic;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypHistology;
 import org.sing_group.piba.domain.entities.polyp.SessileSerratedAdenoma;
@@ -98,6 +99,9 @@ public class DefaultPolypMapper implements PolypMapper {
         tsaDysplasingGrade = ((TraditionalSerratedAdenoma) data).getDysplasingGrade();
         polypType = PolypType.TRADITIONAL_SERRATED_ADENOMA;
         break;
+      case "NonEpithelialNeoplastic":
+        polypType = PolypType.NON_EPITHELIAL_NEOPLASTIC;
+        break;
       default:
         throw new IllegalArgumentException("Unknown polyp histology type: " + data.getClass());
     }
@@ -110,7 +114,7 @@ public class DefaultPolypMapper implements PolypMapper {
   @Override
   public void assignPolypEditionData(Polyp polyp, PolypEditionData polypEditionData) {
     if (
-      polyp.getHistology() != null &&
+      polyp.getHistology() != null && polypEditionData.getHistology() != null &&
         polyp.getHistology().getClass().getSimpleName().equalsIgnoreCase(
           polypEditionData.getHistology()
             .getPolypType().name()
@@ -151,6 +155,8 @@ public class DefaultPolypMapper implements PolypMapper {
       case TRADITIONAL_SERRATED_ADENOMA:
         ((TraditionalSerratedAdenoma) histology).setDysplasingGrade(data.getTsaDysplasingGrade());
         break;
+      case NON_EPITHELIAL_NEOPLASTIC:
+        break;
       default:
         throw new IllegalArgumentException("Unknown polyp histology type: " + data.getClass());
     }
@@ -175,6 +181,9 @@ public class DefaultPolypMapper implements PolypMapper {
           break;
         case TRADITIONAL_SERRATED_ADENOMA:
           polypHistology = new TraditionalSerratedAdenoma(data.getTsaDysplasingGrade());
+          break;
+        case NON_EPITHELIAL_NEOPLASTIC:
+          polypHistology = new NonEpithelialNeoplastic();
           break;
         default:
           throw new IllegalArgumentException("Unknown polyp histology type: " + data.getClass());
