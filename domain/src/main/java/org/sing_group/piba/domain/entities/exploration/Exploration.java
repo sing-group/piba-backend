@@ -36,6 +36,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.sing_group.piba.domain.entities.Identifiable;
@@ -58,9 +59,11 @@ public class Exploration implements Identifiable {
   @Column(name = "date", nullable = false)
   private Date date;
 
+  @OrderBy("title ASC")
   @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Video> videos = new ArrayList<>();
 
+  @OrderBy("name ASC")
   @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Polyp> polyps = new ArrayList<>();
 
