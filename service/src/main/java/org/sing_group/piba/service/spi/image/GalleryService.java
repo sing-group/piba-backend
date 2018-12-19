@@ -29,4 +29,6 @@ import org.sing_group.piba.domain.entities.image.Gallery;
 @Local
 public interface GalleryService {
   public Gallery create(Gallery galery);
+
+  public Gallery get(String id);
 }

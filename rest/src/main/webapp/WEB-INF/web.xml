@@ -40,6 +40,7 @@
       <url-pattern>/api/patient/*</url-pattern>
       <url-pattern>/api/idspace/*</url-pattern>
       <url-pattern>/api/gallery/*</url-pattern>
+      <url-pattern>/api/image/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
     <auth-constraint>

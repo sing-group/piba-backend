@@ -30,39 +30,38 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
-import org.sing_group.piba.domain.dao.spi.image.GalleryDAO;
-import org.sing_group.piba.domain.entities.image.Gallery;
+import org.sing_group.piba.domain.dao.spi.image.ImageDAO;
+import org.sing_group.piba.domain.entities.image.Image;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
-public class DefaultGalleryDAO implements GalleryDAO {
+public class DefaultImageDAO implements ImageDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<String, Gallery> dh;
+  protected DAOHelper<String, Image> dh;
 
-  public DefaultGalleryDAO() {
+  public DefaultImageDAO() {
     super();
   }
 
-  public DefaultGalleryDAO(EntityManager em) {
+  public DefaultImageDAO(EntityManager em) {
     this.em = em;
     createDAOHelper();
   }
 
   @PostConstruct
   private void createDAOHelper() {
-    this.dh = DAOHelper.of(String.class, Gallery.class, this.em);
+    this.dh = DAOHelper.of(String.class, Image.class, this.em);
   }
 
   @Override
-  public Gallery create(Gallery galery) {
-    return this.dh.persist(galery);
+  public Image create(Image image) {
+    return this.dh.persist(image);
   }
 
   @Override
-  public Gallery get(String id) {
-    return this.dh.get(id)
-      .orElseThrow(() -> new IllegalArgumentException("Unknown gallery: " + id));
+  public boolean existsImage(String id) {
+    return this.dh.get(id).isPresent();
   }
 }

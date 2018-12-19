@@ -24,16 +24,23 @@ package org.sing_group.piba.domain.entities.image;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.sing_group.piba.domain.entities.Identifiable;
 
 @Entity
 @Table(name = "gallery")
-public class Gallery {
+public class Gallery implements Identifiable {
 
   @Id
   private String id;
@@ -41,6 +48,9 @@ public class Gallery {
   private String title;
   @Column(name = "description")
   private String description;
+
+  @OneToMany(mappedBy = "gallery", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Image> images = new ArrayList<>();
 
   Gallery() {}
 
@@ -66,9 +76,22 @@ public class Gallery {
   public void setDescription(String description) {
     this.description = description;
   }
-
+  
+  @Override
   public String getId() {
     return id;
+  }
+
+  public List<Image> getImages() {
+    return images;
+  }
+
+  public void internalRemoveImage(Image image) {
+    this.images.remove(image);
+  }
+
+  public void internalAddImage(Image image) {
+    this.images.add(image);
   }
 
 }

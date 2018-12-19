@@ -35,6 +35,7 @@ import javax.ejb.Timer;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.sing_group.piba.service.spi.image.ImageService;
 import org.sing_group.piba.service.spi.storage.FileStorage;
 import org.sing_group.piba.service.spi.storage.StorageCleaner;
 import org.sing_group.piba.service.spi.video.VideoService;
@@ -48,10 +49,13 @@ public class DefaultStorageCleaner implements StorageCleaner {
   private SessionContext sessionContext;
 
   @Inject
-  private FileStorage videoStorage;
+  private FileStorage fileStorage;
 
   @Inject
   private VideoService videoService;
+
+  @Inject
+  private ImageService imageService;
 
   private Timer timer;
 
@@ -63,9 +67,9 @@ public class DefaultStorageCleaner implements StorageCleaner {
 
   @Timeout
   public void timeOutHandler() {
-    for (String id : videoStorage.getAllIds()) {
-      if (!videoService.existsVideo(id)) {
-        videoStorage.delete(id);
+    for (String id : fileStorage.getAllIds()) {
+      if (!videoService.existsVideo(id) && !imageService.existsImage(id)) {
+        fileStorage.delete(id);
       }
     }
   }
@@ -73,7 +77,6 @@ public class DefaultStorageCleaner implements StorageCleaner {
   @PreDestroy
   public void shutdown() {
     this.timer.cancel();
-
   }
 
 }

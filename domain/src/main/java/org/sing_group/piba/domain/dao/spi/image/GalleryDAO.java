@@ -28,4 +28,6 @@ public interface GalleryDAO {
 
   public Gallery create(Gallery galery);
 
+  public Gallery get(String id);
+
 }

@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * REST
  * %%
  * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
  * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
@@ -20,30 +20,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.service.image;
+package org.sing_group.piba.rest.resource.spi.image;
 
-import javax.annotation.security.PermitAll;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.ejb.Local;
+import javax.ws.rs.core.Response;
 
-import org.sing_group.piba.domain.dao.spi.image.GalleryDAO;
-import org.sing_group.piba.domain.entities.image.Gallery;
-import org.sing_group.piba.service.spi.image.GalleryService;
+import org.sing_group.piba.rest.entity.RestImageUploadData;
 
-@Stateless
-@PermitAll
-public class DefaultGalleryService implements GalleryService {
+@Local
+public interface ImageResource {
 
-  @Inject
-  private GalleryDAO galeryDao;
+  public Response uploadImage(RestImageUploadData restImageUploadData);
 
-  @Override
-  public Gallery create(Gallery galery) {
-    return galeryDao.create(galery);
-  }
-
-  @Override
-  public Gallery get(String id) {
-    return galeryDao.get(id);
-  }
 }

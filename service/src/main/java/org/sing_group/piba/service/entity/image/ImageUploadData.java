@@ -20,30 +20,37 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.service.image;
+package org.sing_group.piba.service.entity.image;
 
-import javax.annotation.security.PermitAll;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import java.io.File;
 
-import org.sing_group.piba.domain.dao.spi.image.GalleryDAO;
-import org.sing_group.piba.domain.entities.image.Gallery;
-import org.sing_group.piba.service.spi.image.GalleryService;
+public class ImageUploadData {
 
-@Stateless
-@PermitAll
-public class DefaultGalleryService implements GalleryService {
+  private int numFrame;
+  private File imageData;
+  private String gallery, video;
 
-  @Inject
-  private GalleryDAO galeryDao;
-
-  @Override
-  public Gallery create(Gallery galery) {
-    return galeryDao.create(galery);
+  public ImageUploadData(int numFrame, File imageData, String gallery, String video) {
+    this.numFrame = numFrame;
+    this.imageData = imageData;
+    this.gallery = gallery;
+    this.video = video;
   }
 
-  @Override
-  public Gallery get(String id) {
-    return galeryDao.get(id);
+  public int getNumFrame() {
+    return numFrame;
   }
+
+  public File getImageData() {
+    return imageData;
+  }
+
+  public String getGallery() {
+    return gallery;
+  }
+
+  public String getVideo() {
+    return video;
+  }
+
 }

@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * REST
  * %%
  * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
  * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
@@ -20,30 +20,22 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.service.image;
+package org.sing_group.piba.rest.entity;
 
-import javax.annotation.security.PermitAll;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import java.io.File;
+import java.io.Serializable;
 
-import org.sing_group.piba.domain.dao.spi.image.GalleryDAO;
-import org.sing_group.piba.domain.entities.image.Gallery;
-import org.sing_group.piba.service.spi.image.GalleryService;
+import org.sing_group.piba.service.entity.image.ImageUploadData;
 
-@Stateless
-@PermitAll
-public class DefaultGalleryService implements GalleryService {
+import io.swagger.annotations.ApiModel;
 
-  @Inject
-  private GalleryDAO galeryDao;
-
-  @Override
-  public Gallery create(Gallery galery) {
-    return galeryDao.create(galery);
+@ApiModel(value = "image-upload-data", description = "Upload data of a image.")
+public class RestImageUploadData extends ImageUploadData implements Serializable {
+  
+  public RestImageUploadData(int numFrame, File imageData, String gallery, String video) {
+    super(numFrame, imageData, gallery, video);
   }
 
-  @Override
-  public Gallery get(String id) {
-    return galeryDao.get(id);
-  }
+  private static final long serialVersionUID = 1L;
+
 }
