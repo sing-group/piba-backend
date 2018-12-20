@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.modifier;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public class Modifier implements Identifiable {
   }
 
   public void setName(String name) {
-    requireNonNull(name);
+    checkArgument(name, n -> requireNonNull(n, "name cannot be null"));
     this.name = name;
   }
 

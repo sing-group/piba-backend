@@ -21,8 +21,10 @@
  */
 package org.sing_group.piba.domain.entities.polyp;
 
+import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
+
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -113,7 +115,7 @@ public class Polyp implements Identifiable {
   }
 
   public void setName(String name) {
-    Objects.requireNonNull(name);
+    checkArgument(name, n -> requireNonNull(n, "name cannot be null"));
     this.name = name;
   }
 

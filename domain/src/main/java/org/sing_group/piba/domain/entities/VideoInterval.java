@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -40,7 +41,7 @@ public class VideoInterval {
   }
 
   public void setStart(Integer start) {
-    requireNonNull(start, "start of video can not be null");
+    checkArgument(start, s -> requireNonNull(s, "start of video cannot be null"));
     this.start = start;
   }
 
@@ -49,7 +50,7 @@ public class VideoInterval {
   }
 
   public void setEnd(Integer end) {
-    requireNonNull(end, "end of video can not be null");
+    checkArgument(end, e -> requireNonNull(e, "end of video cannot be null"));
     this.end = end;
   }
 

@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.user;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 import static org.sing_group.fluent.checker.Checks.requirePattern;
 
 import java.io.Serializable;
@@ -90,7 +91,7 @@ public class User implements Serializable {
   }
 
   public void setPassword(String password) {
-    requireNonNull(password, "password can't be null");
+    checkArgument(password, p -> requireNonNull(p, "password cannot be null"));
     if (password.length() < 6)
       throw new IllegalArgumentException("password can't be shorter than 6");
     try {
@@ -108,7 +109,7 @@ public class User implements Serializable {
   }
 
   public void setRole(Role role) {
-    requireNonNull(role, "role can't be null");
+    checkArgument(role, r -> requireNonNull(r, "role cannot be null"));
     this.role = role;
   }
 

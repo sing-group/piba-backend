@@ -20,10 +20,9 @@
  * #L%
  */
 
-
-
-
 package org.sing_group.piba.rest.mapper;
+
+import static org.apache.commons.lang.exception.ExceptionUtils.getRootCause;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -35,16 +34,16 @@ import org.slf4j.LoggerFactory;
 
 @Provider
 public class IllegalArgumentExceptionMapper
-implements ExceptionMapper<IllegalArgumentException> {
+  implements ExceptionMapper<IllegalArgumentException> {
   private final static Logger LOG = LoggerFactory.getLogger(IllegalArgumentException.class);
-  
+
   @Override
   public Response toResponse(IllegalArgumentException e) {
     LOG.error("Exception catched", e);
-    
+
     return Response.status(Response.Status.BAD_REQUEST)
-      .entity(e.getMessage())
+      .entity((getRootCause(e) != null ? getRootCause(e) : e).getMessage())
       .type(MediaType.TEXT_PLAIN)
-    .build();
+      .build();
   }
 }

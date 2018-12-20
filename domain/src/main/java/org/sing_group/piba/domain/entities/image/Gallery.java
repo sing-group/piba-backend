@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.image;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class Gallery implements Identifiable {
   }
 
   public void setTitle(String title) {
-    requireNonNull(title, "The title can not be null");
+    checkArgument(title, t -> requireNonNull(t, "title cannot be null"));
     this.title = title;
   }
 
@@ -76,7 +77,7 @@ public class Gallery implements Identifiable {
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   @Override
   public String getId() {
     return id;
@@ -93,5 +94,4 @@ public class Gallery implements Identifiable {
   public void internalAddImage(Image image) {
     this.images.add(image);
   }
-
 }

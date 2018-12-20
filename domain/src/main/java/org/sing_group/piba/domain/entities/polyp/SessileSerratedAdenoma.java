@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.polyp;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,7 +53,9 @@ public class SessileSerratedAdenoma extends PolypHistology {
   }
 
   public void setDysplasingGrade(SsaDysplasingGrade dysplasingGrade) {
-    requireNonNull(dysplasingGrade);
+    checkArgument(
+      dysplasingGrade, d -> requireNonNull(d, "dysplasing grade of sessile serrated adenoma cannot be null")
+    );
     this.dysplasingGrade = dysplasingGrade;
   }
 

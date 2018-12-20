@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.polyp;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,7 +61,7 @@ public class Adenoma extends PolypHistology {
   }
 
   public void setType(AdenomaType type) {
-    requireNonNull(type);
+    checkArgument(type, t -> requireNonNull(t, "type of adenoma cannot be null"));
     this.type = type;
   }
 
@@ -69,7 +70,7 @@ public class Adenoma extends PolypHistology {
   }
 
   public void setDysplasingGrade(AdenomaDysplasingGrade dysplasingGrade) {
-    requireNonNull(dysplasingGrade);
+    checkArgument(dysplasingGrade, d -> requireNonNull(d, "dysplasing grade of adenoma cannot be null"));
     this.dysplasingGrade = dysplasingGrade;
   }
 

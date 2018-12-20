@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.patient;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,7 +96,7 @@ public class Patient implements Identifiable {
   }
 
   public void setPatientID(String publicID) {
-    requireNonNull(publicID);
+    checkArgument(publicID, p -> requireNonNull(p, "patient identifier cannot be null"));
     this.patientID = publicID;
   }
 
@@ -140,7 +141,7 @@ public class Patient implements Identifiable {
   }
 
   public void setIdSpace(IdSpace idSpace) {
-    requireNonNull(idSpace.getId());
+    checkArgument(idSpace, i -> requireNonNull(i, "IdSpace cannot be null"));
     this.idSpace = idSpace;
   }
 

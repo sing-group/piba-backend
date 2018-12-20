@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.idspace;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public class IdSpace implements Identifiable {
   }
 
   public void setName(String name) {
-    requireNonNull(name);
+    checkArgument(name, n -> requireNonNull(n, "name cannot be null"));
     this.name = name;
   }
 

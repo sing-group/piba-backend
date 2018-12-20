@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.exploration;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,7 +91,7 @@ public class Exploration implements Identifiable {
   }
 
   public void setTitle(String title) {
-    requireNonNull(title);
+    checkArgument(title, t -> requireNonNull(t, "title cannot be null"));
     this.title = title;
   }
 
@@ -99,7 +100,7 @@ public class Exploration implements Identifiable {
   }
 
   public void setLocation(String location) {
-    requireNonNull(location);
+    checkArgument(location, l -> requireNonNull(l, "location cannot be null"));
     this.location = location;
   }
 
@@ -108,7 +109,7 @@ public class Exploration implements Identifiable {
   }
 
   public void setDate(Date date) {
-    requireNonNull(date);
+    checkArgument(date, d -> requireNonNull(d, "date cannot be null"));
     this.date = date;
   }
 
