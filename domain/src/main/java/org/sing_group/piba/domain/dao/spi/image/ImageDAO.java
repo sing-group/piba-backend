@@ -27,7 +27,9 @@ import org.sing_group.piba.domain.entities.image.Image;
 public interface ImageDAO {
 
   public Image create(Image image);
-  
+
   public boolean existsImage(String id);
+
+  public Image get(String id);
 
 }

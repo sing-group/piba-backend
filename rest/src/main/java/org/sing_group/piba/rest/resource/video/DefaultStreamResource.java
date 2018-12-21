@@ -87,8 +87,8 @@ public class DefaultStreamResource implements StreamResource {
     ) String format,
     @HeaderParam("range") String rangeHeader
   ) {
-    final InputStream videoStream = this.fileStorage.retrieve(id + "." + format);
-    final long fileLength = this.fileStorage.getLength(id + "." + format);
+    final InputStream videoStream = this.fileStorage.retrieve(id, format);
+    final long fileLength = this.fileStorage.getLength(id, format);
     Range range = getRange(rangeHeader, fileLength);
     ResponseBuilder responseBuilder =
       Response

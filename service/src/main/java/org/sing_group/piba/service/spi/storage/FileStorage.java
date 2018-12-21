@@ -26,13 +26,15 @@ import java.io.InputStream;
 import java.util.Set;
 
 public interface FileStorage {
-  public void store(String id, InputStream data);
+  public void store(String id, String format, InputStream data);
 
-  public InputStream retrieve(String id);
+  public InputStream retrieve(String id, String format);
 
   public void delete(String id);
 
   public Set<String> getAllIds();
 
-  public long getLength(String id);
+  public Set<String> getFormatsForId(String id);
+  
+  public long getLength(String id, String format);
 }

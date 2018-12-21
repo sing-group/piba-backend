@@ -77,7 +77,7 @@ public class DefaultVideoService implements VideoService {
     try {
       for (FileAndFormat output : task.getOutputs()) {
         try (FileInputStream input = new FileInputStream(output.getFile())) {
-          videoStorage.store(task.getId() + "." + output.getFormat(), input);
+          videoStorage.store(task.getId(), output.getFormat(), input);
         }
 
         output.getFile().delete();

@@ -64,4 +64,10 @@ public class DefaultImageDAO implements ImageDAO {
   public boolean existsImage(String id) {
     return this.dh.get(id).isPresent();
   }
+
+  @Override
+  public Image get(String id) {
+    return this.dh.get(id)
+      .orElseThrow(() -> new IllegalArgumentException("Unknown image: " + id));
+  }
 }

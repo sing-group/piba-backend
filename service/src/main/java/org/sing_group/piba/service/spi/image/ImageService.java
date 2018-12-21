@@ -34,4 +34,6 @@ public interface ImageService {
 
   public boolean existsImage(String id);
 
+  public Image get(String id);
+
 }

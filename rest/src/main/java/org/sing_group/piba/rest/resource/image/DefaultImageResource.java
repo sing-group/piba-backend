@@ -25,13 +25,19 @@ package org.sing_group.piba.rest.resource.image;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -39,6 +45,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.rest.entity.RestImageUploadData;
 import org.sing_group.piba.rest.entity.image.ImageData;
@@ -46,9 +53,12 @@ import org.sing_group.piba.rest.entity.mapper.spi.ImageMapper;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.image.ImageResource;
 import org.sing_group.piba.service.spi.image.ImageService;
+import org.sing_group.piba.service.spi.storage.FileStorage;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
 
 @Path("image")
@@ -70,6 +80,9 @@ public class DefaultImageResource implements ImageResource {
   @Inject
   private ImageMapper imageMapper;
 
+  @Inject
+  private FileStorage fileStorage;
+
   @Context
   private UriInfo uriInfo;
 
@@ -90,6 +103,45 @@ public class DefaultImageResource implements ImageResource {
     Image image = this.service.create(restImageUploadData);
     return Response.created(UriBuilder.fromResource(DefaultImageResource.class).path(image.getId()).build())
       .entity(imageMapper.toImageData(image)).build();
+  }
+
+  @Path("{id}")
+  @GET
+  @ApiOperation(
+    value = "Return the bytes of a image.", response = byte[].class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown image: {id}")
+  )
+  @Override
+  public Response getBytes(@PathParam("id") String id) {
+    Set<String> formats = this.fileStorage.getFormatsForId(id);
+
+    if (formats.size() == 0) {
+      throw new IllegalArgumentException("Unknown image: " + id);
+    }
+    String format = formats.iterator().next();
+    final InputStream imageStream = this.fileStorage.retrieve(id, format);
+    try {
+      return Response.ok(IOUtils.toByteArray(imageStream))
+        .header("Content-Type", "image/" + format)
+        .build();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Path("{id}/metadata")
+  @GET
+  @ApiOperation(
+    value = "Return the data of a image.", response = ImageData.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown image: {id}")
+  )
+  @Override
+  public Response getImage(@PathParam("id") String id) {
+    return Response.ok(this.imageMapper.toImageData(this.service.get(id))).build();
   }
 
 }

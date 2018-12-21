@@ -25,6 +25,9 @@ package org.sing_group.piba.service.storage;
 import static java.nio.file.Files.copy;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isDirectory;
+import static java.nio.file.Files.walk;
+import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 import javax.enterprise.inject.Default;
@@ -57,8 +61,8 @@ public class DefaultFileStorage implements FileStorage {
   }
 
   @Override
-  public void store(String id, InputStream data) {
-    final Path file = getFileForId(id);
+  public void store(String id, String format, InputStream data) {
+    final Path file = getFileForId(id, format);
 
     if (exists(file)) {
       throw new IllegalArgumentException("File already exists: " + file);
@@ -70,8 +74,8 @@ public class DefaultFileStorage implements FileStorage {
     }
   }
 
-  private Path getFileForId(String id) {
-    return getBasePath().resolve(id);
+  private Path getFileForId(String id, String format) {
+    return getBasePath().resolve(id + "." + format);
   }
 
   private Path getBasePath() {
@@ -89,8 +93,8 @@ public class DefaultFileStorage implements FileStorage {
   }
 
   @Override
-  public InputStream retrieve(String id) {
-    final Path file = getFileForId(id);
+  public InputStream retrieve(String id, String format) {
+    final Path file = getFileForId(id, format);
     if (!exists(file)) {
       throw new IllegalArgumentException("Cannot find file for id: " + id);
     }
@@ -104,35 +108,49 @@ public class DefaultFileStorage implements FileStorage {
 
   @Override
   public void delete(String id) {
-    try {
-      Files.walk(getBasePath())
-        .filter(path -> path.toFile().getName().startsWith(id + "."))
-        .forEach(
-          path -> {
-            try {
-              Files.delete(path);
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
+    walkOverFilesWithId(id)
+      .forEach(
+        path -> {
+          try {
+            Files.delete(path);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
           }
-        );
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+        }
+      );
   }
 
   @Override
   public Set<String> getAllIds() {
     Set<String> ids = new HashSet<String>();
-    String[] files = new File(getBasePath().toString()).list();
-    for (String file : files) {
-      ids.add(file.split("\\.")[0]);
-    }
+    walkOverFiles().forEach(path -> {
+      File file = path.toFile();
+      ids.add(file.getName().split("\\.")[0]);
+    });
     return ids;
   }
 
   @Override
-  public long getLength(String id) {
-    return getFileForId(id).toFile().length();
+  public long getLength(String id, String format) {
+    return getFileForId(id, format).toFile().length();
+  }
+
+  @Override
+  public Set<String> getFormatsForId(String id) {
+    return walkOverFilesWithId(id)
+      .map(path -> getExtension(path.toFile().getName()))
+      .collect(toSet());
+  }
+
+  private Stream<Path> walkOverFilesWithId(String id) {
+    return walkOverFiles().filter(path -> path.toFile().getName().startsWith(id));
+  }
+
+  private Stream<Path> walkOverFiles() {
+    try {
+      return walk(getBasePath()).filter(path -> !path.equals(getBasePath()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

@@ -32,4 +32,8 @@ public interface ImageResource {
 
   public Response uploadImage(RestImageUploadData restImageUploadData);
 
+  public Response getImage(String id);
+
+  public Response getBytes(String id);
+
 }
