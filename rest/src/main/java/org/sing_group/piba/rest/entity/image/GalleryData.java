@@ -23,11 +23,14 @@
 package org.sing_group.piba.rest.entity.image;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.sing_group.piba.rest.entity.UuidAndUri;
 
 import io.swagger.annotations.ApiModel;
 
@@ -43,13 +46,16 @@ public class GalleryData implements Serializable {
   private String title;
   @XmlElement(name = "description")
   private String description;
+  @XmlElement(name = "images")
+  List<UuidAndUri> images;
 
   GalleryData() {}
 
-  public GalleryData(String id, String title, String description) {
+  public GalleryData(String id, String title, String description, List<UuidAndUri> images) {
     this.id = id;
     this.title = title;
     this.description = description;
+    this.images = images;
   }
 
   public String getId() {
@@ -62,6 +68,10 @@ public class GalleryData implements Serializable {
 
   public String getDescription() {
     return description;
+  }
+
+  public List<UuidAndUri> getImages() {
+    return images;
   }
 
 }

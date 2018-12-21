@@ -23,17 +23,30 @@
 package org.sing_group.piba.rest.entity.mapper;
 
 import javax.enterprise.inject.Default;
+import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.image.Gallery;
+import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.image.GalleryData;
 import org.sing_group.piba.rest.entity.mapper.spi.GalleryMapper;
+import org.sing_group.piba.rest.resource.image.DefaultImageResource;
 
 @Default
 public class DefaultGalleryMapper implements GalleryMapper {
 
+  private UriInfo requestURI;
+
+  @Override
+  public void setRequestURI(UriInfo requestURI) {
+    this.requestURI = requestURI;
+  }
+
   @Override
   public GalleryData toGalleryData(Gallery gallery) {
-    return new GalleryData(gallery.getId(), gallery.getTitle(), gallery.getDescription());
+    return new GalleryData(
+      gallery.getId(), gallery.getTitle(), gallery.getDescription(),
+      UuidAndUri.fromEntities(requestURI, gallery.getImages(), DefaultImageResource.class)
+    );
   }
 
 }

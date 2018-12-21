@@ -31,4 +31,6 @@ import org.sing_group.piba.rest.entity.image.GalleryEditionData;
 public interface GalleryResource {
 
   public Response create(GalleryEditionData galleryEditionData);
+
+  public Response getGallery(String id);
 }
