@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -107,26 +108,36 @@ public class UuidAndUri implements Serializable {
   public static List<UuidAndUri> fromEntities(
     UriInfo requestURI, List<? extends Identifiable> list, Class<?> resourceClass
   ) {
+    return fromEntities(requestURI, list, resourceClass, null);
+  }
+
+  public static List<UuidAndUri> fromEntities(
+    UriInfo requestURI, List<? extends Identifiable> list, Class<?> resourceClass, String concatURL
+  ) {
+    Function<UriBuilder, UriBuilder> uriBuilderMap =
+      (concatURL != null) ? (uriBuilder) -> uriBuilder.path(concatURL) : null;
     List<UuidAndUri> urls = new ArrayList<>();
     for (Identifiable object : list) {
-      urls.add(
-        new UuidAndUri(
-          object.getId(),
-          requestURI.getBaseUriBuilder().path(
-            UriBuilder.fromResource(resourceClass).path((object).getId()).build().toString()
-          ).build()
-        )
-      );
+      urls.add(_fromEntity(requestURI, uriBuilderMap, object, resourceClass));
     }
     return urls;
   }
 
   public static UuidAndUri fromEntity(UriInfo requestURI, Identifiable entity, Class<?> resourceClass) {
+    return _fromEntity(requestURI, null, entity, resourceClass);
+  }
+
+  private static UuidAndUri _fromEntity(
+    UriInfo requestURI, Function<UriBuilder, UriBuilder> uriBuilderMap, Identifiable entity, Class<?> resourceClass
+  ) {
+
+    UriBuilder pathUntilId = UriBuilder.fromResource(resourceClass).path(entity.getId());
     return entity == null ? null
       : new UuidAndUri(
         entity.getId(),
         requestURI.getBaseUriBuilder().path(
-          UriBuilder.fromResource(resourceClass).path(entity.getId()).build().toString()
+          (uriBuilderMap != null ? uriBuilderMap.apply(pathUntilId) : pathUntilId)
+            .build().toString()
         )
           .build()
       );

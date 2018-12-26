@@ -45,7 +45,7 @@ public class DefaultGalleryMapper implements GalleryMapper {
   public GalleryData toGalleryData(Gallery gallery) {
     return new GalleryData(
       gallery.getId(), gallery.getTitle(), gallery.getDescription(),
-      UuidAndUri.fromEntities(requestURI, gallery.getImages(), DefaultImageResource.class)
+      UuidAndUri.fromEntities(requestURI, gallery.getImages(), DefaultImageResource.class, "metadata")
     );
   }
 
