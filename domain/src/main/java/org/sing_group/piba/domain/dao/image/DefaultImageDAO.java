@@ -32,6 +32,7 @@ import javax.transaction.Transactional.TxType;
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.image.ImageDAO;
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.PolypLocation;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
@@ -40,6 +41,7 @@ public class DefaultImageDAO implements ImageDAO {
   @PersistenceContext
   protected EntityManager em;
   protected DAOHelper<String, Image> dh;
+  protected DAOHelper<String, PolypLocation> dhPolypLocation;
 
   public DefaultImageDAO() {
     super();
@@ -53,6 +55,7 @@ public class DefaultImageDAO implements ImageDAO {
   @PostConstruct
   private void createDAOHelper() {
     this.dh = DAOHelper.of(String.class, Image.class, this.em);
+    this.dhPolypLocation = DAOHelper.of(String.class, PolypLocation.class, this.em);
   }
 
   @Override
@@ -69,5 +72,10 @@ public class DefaultImageDAO implements ImageDAO {
   public Image get(String id) {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown image: " + id));
+  }
+
+  @Override
+  public PolypLocation create(PolypLocation polypLocation) {
+    return this.dhPolypLocation.persist(polypLocation);
   }
 }

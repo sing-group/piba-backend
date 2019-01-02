@@ -126,6 +126,12 @@ public class UuidAndUri implements Serializable {
   public static UuidAndUri fromEntity(UriInfo requestURI, Identifiable entity, Class<?> resourceClass) {
     return _fromEntity(requestURI, null, entity, resourceClass);
   }
+  
+  public static UuidAndUri fromEntity(UriInfo requestURI, Identifiable entity, Class<?> resourceClass, String concatURL) {
+    Function<UriBuilder, UriBuilder> uriBuilderMap =
+      (concatURL != null) ? (uriBuilder) -> uriBuilder.path(concatURL) : null;
+    return _fromEntity(requestURI, uriBuilderMap, entity, resourceClass);
+  }
 
   private static UuidAndUri _fromEntity(
     UriInfo requestURI, Function<UriBuilder, UriBuilder> uriBuilderMap, Identifiable entity, Class<?> resourceClass

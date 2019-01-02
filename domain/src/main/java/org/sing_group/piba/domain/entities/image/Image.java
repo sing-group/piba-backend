@@ -24,10 +24,13 @@ package org.sing_group.piba.domain.entities.image;
 
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -54,6 +57,9 @@ public class Image implements Identifiable {
 
   @ManyToOne
   private Video video;
+
+  @OneToOne(mappedBy = "image", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+  private PolypLocation polypLocation;
 
   Image() {}
 
@@ -106,6 +112,14 @@ public class Image implements Identifiable {
 
   public void setVideo(Video video) {
     this.video = video;
+  }
+
+  public PolypLocation getPolypLocation() {
+    return polypLocation;
+  }
+
+  public void setPolypLocation(PolypLocation polypLocation) {
+    this.polypLocation = polypLocation;
   }
 
 }

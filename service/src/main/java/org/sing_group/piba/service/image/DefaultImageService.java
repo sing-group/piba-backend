@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import org.sing_group.piba.domain.dao.spi.image.ImageDAO;
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.service.entity.image.ImageUploadData;
 import org.sing_group.piba.service.spi.image.GalleryService;
@@ -80,6 +81,11 @@ public class DefaultImageService implements ImageService {
   @Override
   public Image get(String id) {
     return imageDao.get(id);
+  }
+
+  @Override
+  public PolypLocation createPolypLocation(PolypLocation polypLocation) {
+    return imageDao.create(polypLocation);
   }
 
 }

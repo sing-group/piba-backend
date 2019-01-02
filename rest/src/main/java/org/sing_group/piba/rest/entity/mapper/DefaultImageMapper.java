@@ -26,10 +26,13 @@ import javax.enterprise.inject.Default;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.image.ImageData;
+import org.sing_group.piba.rest.entity.image.PolypLocationData;
 import org.sing_group.piba.rest.entity.mapper.spi.ImageMapper;
 import org.sing_group.piba.rest.resource.image.DefaultGalleryResource;
+import org.sing_group.piba.rest.resource.image.DefaultImageResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
 
 @Default
@@ -47,7 +50,17 @@ public class DefaultImageMapper implements ImageMapper {
     return new ImageData(
       image.getId(), image.getNumFrame(), image.isRemoved(),
       UuidAndUri.fromEntity(requestURI, image.getGallery(), DefaultGalleryResource.class),
-      UuidAndUri.fromEntity(requestURI, image.getVideo(), DefaultVideoResource.class)
+      UuidAndUri.fromEntity(requestURI, image.getVideo(), DefaultVideoResource.class),
+      image.getPolypLocation() == null ? null
+        : UuidAndUri.fromEntity(requestURI, image, DefaultImageResource.class, "polyplocation")
+    );
+  }
+
+  @Override
+  public PolypLocationData toPolypLocationData(PolypLocation polypLocation) {
+    return new PolypLocationData(
+      polypLocation.getX(), polypLocation.getY(), polypLocation.getWidth(),
+      polypLocation.getHeight()
     );
   }
 

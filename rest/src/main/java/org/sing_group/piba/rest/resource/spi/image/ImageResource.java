@@ -26,6 +26,7 @@ import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.piba.rest.entity.RestImageUploadData;
+import org.sing_group.piba.rest.entity.image.PolypLocationEditionData;
 
 @Local
 public interface ImageResource {
@@ -35,5 +36,7 @@ public interface ImageResource {
   public Response getImage(String id);
 
   public Response getBytes(String id);
+
+  public Response createPolypLocation(String id, PolypLocationEditionData polypLocationEditicionData);
 
 }

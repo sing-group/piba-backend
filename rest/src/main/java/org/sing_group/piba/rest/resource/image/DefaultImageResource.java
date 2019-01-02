@@ -47,8 +47,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.rest.entity.RestImageUploadData;
 import org.sing_group.piba.rest.entity.image.ImageData;
+import org.sing_group.piba.rest.entity.image.PolypLocationData;
+import org.sing_group.piba.rest.entity.image.PolypLocationEditionData;
 import org.sing_group.piba.rest.entity.mapper.spi.ImageMapper;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.image.ImageResource;
@@ -142,6 +145,24 @@ public class DefaultImageResource implements ImageResource {
   @Override
   public Response getImage(@PathParam("id") String id) {
     return Response.ok(this.imageMapper.toImageData(this.service.get(id))).build();
+  }
+
+  @Path("{id}/polyplocation")
+  @POST
+  @ApiOperation(
+    value = "Creates a polyp location in the image.", response = PolypLocationData.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown image: {id}")
+  )
+  @Override
+  public Response createPolypLocation(@PathParam("id") String id, PolypLocationEditionData polypLocationEditicionData) {
+    PolypLocation polypLocation =
+      new PolypLocation(
+        polypLocationEditicionData.getX(), polypLocationEditicionData.getY(), polypLocationEditicionData.getWidth(),
+        polypLocationEditicionData.getHeight(), this.service.get(id)
+      );
+    return Response.ok(this.imageMapper.toPolypLocationData(this.service.createPolypLocation(polypLocation))).build();
   }
 
 }

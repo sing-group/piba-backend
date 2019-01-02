@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.dao.spi.image;
 
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.PolypLocation;
 
 public interface ImageDAO {
 
@@ -31,5 +32,7 @@ public interface ImageDAO {
   public boolean existsImage(String id);
 
   public Image get(String id);
+  
+  public PolypLocation create (PolypLocation polypLocation);
 
 }

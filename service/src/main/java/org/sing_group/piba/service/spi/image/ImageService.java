@@ -25,6 +25,7 @@ package org.sing_group.piba.service.spi.image;
 import javax.ejb.Local;
 
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.service.entity.image.ImageUploadData;
 
 @Local
@@ -35,5 +36,7 @@ public interface ImageService {
   public boolean existsImage(String id);
 
   public Image get(String id);
+
+  public PolypLocation createPolypLocation(PolypLocation polypLocation);
 
 }
