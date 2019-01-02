@@ -52,10 +52,6 @@ public class GalleryEditionData implements Serializable {
     this.description = description;
   }
 
-  public static long getSerialversionuid() {
-    return serialVersionUID;
-  }
-
   public String getId() {
     return id;
   }
