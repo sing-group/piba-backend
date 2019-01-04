@@ -41,4 +41,6 @@ public interface ImageResource {
 
   public Response getPolypLocation(String id);
 
+  public Response delete(String id);
+
 }

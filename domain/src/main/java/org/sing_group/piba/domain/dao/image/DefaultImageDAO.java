@@ -84,4 +84,10 @@ public class DefaultImageDAO implements ImageDAO {
     return this.dhPolypLocation.getBy("image", image)
       .orElseThrow(() -> new IllegalArgumentException("No location for image: " + image.getId()));
   }
+
+  @Override
+  public void delete(Image image) {
+    image.setRemoved(true);
+    this.dh.update(image);
+  }
 }

@@ -34,6 +34,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -177,6 +178,20 @@ public class DefaultImageResource implements ImageResource {
   public Response getPolypLocation(@PathParam("id") String id) {
     Image image = this.service.get(id);
     return Response.ok(this.imageMapper.toPolypLocationData(this.service.getPolypLocation(image))).build();
+  }
+
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Deletes an existing image.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown image: {id}")
+  )
+  @Override
+  public Response delete(@PathParam("id") String id) {
+    this.service.delete(this.service.get(id));
+    return Response.ok().build();
   }
 
 }
