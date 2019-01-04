@@ -38,5 +38,7 @@ public interface ImageService {
   public Image get(String id);
 
   public PolypLocation createPolypLocation(PolypLocation polypLocation);
+  
+  public PolypLocation getPolypLocation(Image image);
 
 }

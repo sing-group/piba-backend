@@ -88,4 +88,9 @@ public class DefaultImageService implements ImageService {
     return imageDao.create(polypLocation);
   }
 
+  @Override
+  public PolypLocation getPolypLocation(Image image) {
+    return imageDao.getPolypLocation(image);
+  }
+
 }

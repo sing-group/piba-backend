@@ -55,7 +55,7 @@ public class PolypLocation implements Identifiable {
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Image image;
 
-  PolypLocation() {}
+  public PolypLocation() {}
 
   public PolypLocation(Integer x, Integer y, Integer width, Integer height, Image image) {
     this.id = UUID.randomUUID().toString();

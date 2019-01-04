@@ -39,4 +39,6 @@ public interface ImageResource {
 
   public Response createPolypLocation(String id, PolypLocationEditionData polypLocationEditicionData);
 
+  public Response getPolypLocation(String id);
+
 }

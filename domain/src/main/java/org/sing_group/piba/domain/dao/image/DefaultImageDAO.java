@@ -78,4 +78,10 @@ public class DefaultImageDAO implements ImageDAO {
   public PolypLocation create(PolypLocation polypLocation) {
     return this.dhPolypLocation.persist(polypLocation);
   }
+
+  @Override
+  public PolypLocation getPolypLocation(Image image) {
+    return this.dhPolypLocation.getBy("image", image)
+      .orElseThrow(() -> new IllegalArgumentException("No location for image: " + image.getId()));
+  }
 }

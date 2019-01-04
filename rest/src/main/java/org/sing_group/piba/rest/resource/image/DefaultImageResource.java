@@ -165,4 +165,18 @@ public class DefaultImageResource implements ImageResource {
     return Response.ok(this.imageMapper.toPolypLocationData(this.service.createPolypLocation(polypLocation))).build();
   }
 
+  @Path("{id}/polyplocation")
+  @GET
+  @ApiOperation(
+    value = "Return the data of the polyp location in the image.", response = PolypLocationData.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown image: {id}")
+  )
+  @Override
+  public Response getPolypLocation(@PathParam("id") String id) {
+    Image image = this.service.get(id);
+    return Response.ok(this.imageMapper.toPolypLocationData(this.service.getPolypLocation(image))).build();
+  }
+
 }

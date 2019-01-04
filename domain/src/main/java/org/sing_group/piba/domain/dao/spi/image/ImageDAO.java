@@ -32,7 +32,9 @@ public interface ImageDAO {
   public boolean existsImage(String id);
 
   public Image get(String id);
-  
-  public PolypLocation create (PolypLocation polypLocation);
+
+  public PolypLocation create(PolypLocation polypLocation);
+
+  public PolypLocation getPolypLocation(Image image);
 
 }
