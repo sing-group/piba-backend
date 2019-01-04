@@ -23,6 +23,7 @@
 package org.sing_group.piba.domain.entities.image;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class Gallery implements Identifiable {
   }
 
   public List<Image> getImages() {
-    return images;
+    return images.stream().filter((img) -> !img.isRemoved()).collect(toList());
   }
 
   public void internalRemoveImage(Image image) {
