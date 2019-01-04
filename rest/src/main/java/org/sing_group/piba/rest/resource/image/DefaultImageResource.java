@@ -43,6 +43,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
@@ -145,6 +146,10 @@ public class DefaultImageResource implements ImageResource {
   )
   @Override
   public Response getImage(@PathParam("id") String id) {
+    Image img = this.service.get(id);
+    if(img.isRemoved()) {
+       return Response.status(Status.NOT_FOUND).build();
+    }
     return Response.ok(this.imageMapper.toImageData(this.service.get(id))).build();
   }
 
