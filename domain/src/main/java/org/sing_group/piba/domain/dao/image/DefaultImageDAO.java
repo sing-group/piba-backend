@@ -90,4 +90,10 @@ public class DefaultImageDAO implements ImageDAO {
     image.setRemoved(true);
     this.dh.update(image);
   }
+
+  @Override
+  public void deletePolypLocation(Image image) {
+    this.getPolypLocation(image).setImage(null);
+    this.dh.update(image);
+  }
 }

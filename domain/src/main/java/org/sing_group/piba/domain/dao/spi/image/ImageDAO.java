@@ -39,4 +39,6 @@ public interface ImageDAO {
 
   public void delete(Image image);
 
+  public void deletePolypLocation(Image image);
+
 }

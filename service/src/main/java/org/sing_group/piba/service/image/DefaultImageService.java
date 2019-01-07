@@ -98,4 +98,9 @@ public class DefaultImageService implements ImageService {
     imageDao.delete(image);
   }
 
+  @Override
+  public void deletePolypLocation(Image image) {
+    imageDao.deletePolypLocation(image);
+  }
+
 }

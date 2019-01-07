@@ -147,8 +147,8 @@ public class DefaultImageResource implements ImageResource {
   @Override
   public Response getImage(@PathParam("id") String id) {
     Image img = this.service.get(id);
-    if(img.isRemoved()) {
-       return Response.status(Status.NOT_FOUND).build();
+    if (img.isRemoved()) {
+      return Response.status(Status.NOT_FOUND).build();
     }
     return Response.ok(this.imageMapper.toImageData(this.service.get(id))).build();
   }
@@ -171,20 +171,6 @@ public class DefaultImageResource implements ImageResource {
     return Response.ok(this.imageMapper.toPolypLocationData(this.service.createPolypLocation(polypLocation))).build();
   }
 
-  @Path("{id}/polyplocation")
-  @GET
-  @ApiOperation(
-    value = "Return the data of the polyp location in the image.", response = PolypLocationData.class, code = 200
-  )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown image: {id}")
-  )
-  @Override
-  public Response getPolypLocation(@PathParam("id") String id) {
-    Image image = this.service.get(id);
-    return Response.ok(this.imageMapper.toPolypLocationData(this.service.getPolypLocation(image))).build();
-  }
-
   @DELETE
   @Path("{id}")
   @ApiOperation(
@@ -196,6 +182,36 @@ public class DefaultImageResource implements ImageResource {
   @Override
   public Response delete(@PathParam("id") String id) {
     this.service.delete(this.service.get(id));
+    return Response.ok().build();
+  }
+
+  @Path("{id}/polyplocation")
+  @GET
+  @ApiOperation(
+    value = "Return the data of the polyp location in the image.", response = PolypLocationData.class, code = 200
+  )
+  @ApiResponses(value = {
+    @ApiResponse(code = 400, message = "Unknown image: {id}"),
+    @ApiResponse(code = 400, message = "No location for image: {id}")
+  })
+  @Override
+  public Response getPolypLocation(@PathParam("id") String id) {
+    Image image = this.service.get(id);
+    return Response.ok(this.imageMapper.toPolypLocationData(this.service.getPolypLocation(image))).build();
+  }
+
+  @DELETE
+  @Path("{id}/polyplocation")
+  @ApiOperation(
+    value = "Deletes an existing polyp location in the image.", code = 200
+  )
+  @ApiResponses(value = {
+    @ApiResponse(code = 400, message = "Unknown image: {id}"),
+    @ApiResponse(code = 400, message = "No location for image: {id}")
+  })
+  @Override
+  public Response deletePolypLocation(@PathParam("id") String id) {
+    this.service.deletePolypLocation(this.service.get(id));
     return Response.ok().build();
   }
 

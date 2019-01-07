@@ -43,4 +43,6 @@ public interface ImageService {
 
   public void delete(Image image);
 
+  public void deletePolypLocation(Image image);
+
 }
