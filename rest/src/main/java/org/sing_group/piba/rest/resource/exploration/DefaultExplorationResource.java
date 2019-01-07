@@ -73,7 +73,7 @@ import io.swagger.annotations.ApiResponses;
 })
 @Stateless
 @Default
-@CrossDomain
+@CrossDomain(allowedHeaders = "X-Pagination-Total-Items")
 public class DefaultExplorationResource implements ExplorationResource {
 
   @Inject
@@ -118,17 +118,33 @@ public class DefaultExplorationResource implements ExplorationResource {
   @ApiOperation(
     value = "Return the data of all explorations or explorations of a specified patient and ID Space.", response = ExplorationData.class, responseContainer = "List", code = 200
   )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Invalid page or pageSize. They must be an integer.")
+  )
   @Override
-  public Response getExplorations(@QueryParam("patient") String patientID, @QueryParam("idspace") String idSpace) {
+  public Response getExplorations(
+    @QueryParam("patient") String patientID, @QueryParam("idspace") String idSpace, @QueryParam("page") String page,
+    @QueryParam("pageSize") String pageSize
+  ) {
+    Patient patient = null;
+    int numExplorations, pageInt, pageSizeInt;
     if (patientID == null || patientID.equals("") || idSpace == null || idSpace.equals("")) {
-      return Response.ok(
-        this.service.getExplorations().map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
-      ).build();
+      numExplorations = this.service.numExplorations();
+    } else {
+      patient = this.patientService.getPatientBy(patientID, idSpace);
+      numExplorations = this.service.numExplorationsByPatient(patient);
     }
-    Patient p = this.patientService.getPatientBy(patientID, idSpace);
+
+    try {
+      pageInt = Integer.parseInt(page);
+      pageSizeInt = Integer.parseInt(pageSize);
+    } catch (NumberFormatException exc) {
+      throw new IllegalArgumentException("Invalid page or pageSize. They must be an integer.");
+    }
+
     return Response.ok(
-      this.service.getExplorationsBy(p).map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
-    ).build();
+      this.service.getExplorations(pageInt, pageSizeInt, patient).map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
+    ).header("X-Pagination-Total-Items", numExplorations).build();
   }
 
   @POST

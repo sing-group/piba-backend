@@ -32,6 +32,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
+import org.sing_group.piba.domain.dao.ListingOptions;
 import org.sing_group.piba.domain.dao.spi.exploration.ExplorationDAO;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.patient.Patient;
@@ -68,8 +69,26 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   }
 
   @Override
-  public Stream<Exploration> getExplorations() {
-    return dh.list().stream();
+  public Stream<Exploration> getExplorations(int page, int pageSize, Patient patient) {
+    int startBlock = (page - 1) * pageSize;
+    int endBlock = startBlock + pageSize - 1;
+    ListingOptions listingOptions = new ListingOptions(startBlock, endBlock);
+    // Checks if a patient is sent
+    if (patient != null) {
+      return dh.listBy("patient", patient, listingOptions).stream();
+    } else {
+      return dh.list(listingOptions).stream();
+    }
+  }
+
+  @Override
+  public int numExplorations() {
+    return dh.list().size();
+  }
+
+  @Override
+  public int numExplorationsByPatient(Patient patient) {
+    return dh.listBy("patient", patient).size();
   }
 
   @Override
@@ -91,11 +110,6 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   @Override
   public void delete(Exploration exploration) {
     this.dh.remove(exploration);
-  }
-
-  @Override
-  public Stream<Exploration> getExplorationsBy(Patient patient) {
-    return this.dh.listBy("patient", patient).stream();
   }
 
 }

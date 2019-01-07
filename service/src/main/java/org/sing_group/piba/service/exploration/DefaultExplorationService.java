@@ -47,8 +47,18 @@ public class DefaultExplorationService implements ExplorationService {
   }
 
   @Override
-  public Stream<Exploration> getExplorations() {
-    return explorationDao.getExplorations();
+  public Stream<Exploration> getExplorations(int page, int pageSize, Patient patient) {
+    return explorationDao.getExplorations(page, pageSize, patient);
+  }
+
+  @Override
+  public int numExplorations() {
+    return explorationDao.numExplorations();
+  }
+  
+  @Override
+  public int numExplorationsByPatient(Patient patient) {
+    return explorationDao.numExplorationsByPatient(patient);
   }
 
   @Override
@@ -69,11 +79,6 @@ public class DefaultExplorationService implements ExplorationService {
   @Override
   public void delete(Exploration exploration) {
     explorationDao.delete(exploration);
-  }
-
-  @Override
-  public Stream<Exploration> getExplorationsBy(Patient patient) {
-    return explorationDao.getExplorationsBy(patient);
   }
 
 }
