@@ -41,7 +41,7 @@ public interface ImageResource {
 
   public Response getPolypLocation(String id);
 
-  public Response delete(String id);
+  public Response delete(String id, String observationToRemove);
 
   public Response deletePolypLocation(String id);
 

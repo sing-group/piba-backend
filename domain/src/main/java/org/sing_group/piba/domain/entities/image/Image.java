@@ -52,6 +52,9 @@ public class Image implements Identifiable {
   @Column(name = "is_removed")
   private boolean isRemoved = false;
 
+  @Column(name = "observation_to_remove")
+  private String observationToRemove;
+
   @ManyToOne
   private Gallery gallery;
 
@@ -90,6 +93,14 @@ public class Image implements Identifiable {
 
   public void setRemoved(boolean isRemoved) {
     this.isRemoved = isRemoved;
+  }
+
+  public String getObservationToRemove() {
+    return observationToRemove;
+  }
+
+  public void setObservationToRemove(String observationToRemove) {
+    this.observationToRemove = observationToRemove;
   }
 
   public Gallery getGallery() {

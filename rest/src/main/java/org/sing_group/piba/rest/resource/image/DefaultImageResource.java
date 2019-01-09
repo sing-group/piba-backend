@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -180,8 +181,10 @@ public class DefaultImageResource implements ImageResource {
     @ApiResponse(code = 400, message = "Unknown image: {id}")
   )
   @Override
-  public Response delete(@PathParam("id") String id) {
-    this.service.delete(this.service.get(id));
+  public Response delete(@PathParam("id") String id, @HeaderParam("X-ReasonToRemove") String observationToRemove) {
+    Image image = this.service.get(id);
+    image.setObservationToRemove(observationToRemove);
+    this.service.delete(image);
     return Response.ok().build();
   }
 
