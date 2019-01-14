@@ -128,6 +128,28 @@ public class DefaultUserResource implements UserResource {
     ).build();
   }
 
+  @GET
+  @Path("{login}")
+  @RolesAllowed({
+    "ADMIN", "USER"
+  })
+  @ApiOperation(
+    value = "Return the data of a user.", response = UserData.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 401, message = SecurityExceptionMapper.UNAUTHORIZED_MESSAGE)
+  )
+  @Override
+  public Response getUser(@PathParam("login") String login) {
+    User currentUser = this.userService.getCurrentUser();
+    if (!login.equals(currentUser.getLogin())) {
+      if (!currentUser.getRole().equals(Role.ADMIN)) {
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+      }
+    }
+    return Response.ok(this.userMapper.toUserData(this.userService.get(login))).build();
+  }
+
   @PUT
   @Path("{login}")
   @RolesAllowed("ADMIN")
@@ -140,7 +162,7 @@ public class DefaultUserResource implements UserResource {
     this.userMapper.assignUserEditionData(user, userEditionData);
     return Response.ok(this.userMapper.toUserData(this.userService.edit(user))).build();
   }
-  
+
   @DELETE
   @Path("{login}")
   @RolesAllowed("ADMIN")
