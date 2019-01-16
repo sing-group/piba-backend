@@ -22,6 +22,8 @@
  */
 package org.sing_group.piba.service.spi.image;
 
+import java.util.stream.Stream;
+
 import javax.ejb.Local;
 
 import org.sing_group.piba.domain.entities.image.Gallery;
@@ -31,4 +33,6 @@ public interface GalleryService {
   public Gallery create(Gallery galery);
 
   public Gallery get(String id);
+  
+  public Stream<Gallery> getGalleries();
 }

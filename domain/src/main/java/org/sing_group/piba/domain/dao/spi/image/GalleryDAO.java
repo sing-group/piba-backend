@@ -22,6 +22,8 @@
  */
 package org.sing_group.piba.domain.dao.spi.image;
 
+import java.util.stream.Stream;
+
 import org.sing_group.piba.domain.entities.image.Gallery;
 
 public interface GalleryDAO {
@@ -29,5 +31,7 @@ public interface GalleryDAO {
   public Gallery create(Gallery galery);
 
   public Gallery get(String id);
+  
+  public Stream<Gallery> getGalleries();
 
 }

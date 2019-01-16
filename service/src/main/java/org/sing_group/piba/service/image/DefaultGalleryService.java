@@ -22,6 +22,8 @@
  */
 package org.sing_group.piba.service.image;
 
+import java.util.stream.Stream;
+
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -35,15 +37,20 @@ import org.sing_group.piba.service.spi.image.GalleryService;
 public class DefaultGalleryService implements GalleryService {
 
   @Inject
-  private GalleryDAO galeryDao;
+  private GalleryDAO galleryDao;
 
   @Override
   public Gallery create(Gallery galery) {
-    return galeryDao.create(galery);
+    return galleryDao.create(galery);
   }
 
   @Override
   public Gallery get(String id) {
-    return galeryDao.get(id);
+    return galleryDao.get(id);
+  }
+  
+  @Override
+  public Stream<Gallery> getGalleries() {
+    return galleryDao.getGalleries();
   }
 }

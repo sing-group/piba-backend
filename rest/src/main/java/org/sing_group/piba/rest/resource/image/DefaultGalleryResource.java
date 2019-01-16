@@ -93,6 +93,16 @@ public class DefaultGalleryResource implements GalleryResource {
       .entity(galleryMapper.toGalleryData(gallery)).build();
   }
 
+  @GET
+  @ApiOperation(
+    value = "Return the data of all galleries.", response = GalleryData.class, responseContainer = "List", code = 200
+  )
+  @Override
+  public Response getGalleries() {
+    return Response.ok(this.service.getGalleries().map(this.galleryMapper::toGalleryData).toArray(GalleryData[]::new))
+      .build();
+  }
+
   @Path("{id}")
   @GET
   @ApiOperation(

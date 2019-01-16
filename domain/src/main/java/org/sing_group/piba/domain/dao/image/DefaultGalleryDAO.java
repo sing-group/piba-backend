@@ -22,6 +22,8 @@
  */
 package org.sing_group.piba.domain.dao.image;
 
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
@@ -64,5 +66,10 @@ public class DefaultGalleryDAO implements GalleryDAO {
   public Gallery get(String id) {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown gallery: " + id));
+  }
+  
+  @Override
+  public Stream<Gallery> getGalleries() {
+    return this.dh.list().stream();
   }
 }
