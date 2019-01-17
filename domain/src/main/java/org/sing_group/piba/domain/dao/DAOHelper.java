@@ -26,6 +26,7 @@ import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 import static org.sing_group.fluent.checker.Checks.requireNonNullCollection;
+import static org.sing_group.piba.domain.dao.ListingOptions.allResults;
 
 import java.util.List;
 import java.util.Optional;
@@ -122,7 +123,7 @@ public class DAOHelper<K, T> {
   }
 
   public final <F> List<T> listBy(String fieldName, F values) {
-    return this.listBy(fieldName, singleton(values), ListingOptions.noModification());
+    return this.listBy(fieldName, singleton(values), allResults().unsorted());
   }
 
   public final <F> List<T> listBy(String fieldName, F values, ListingOptions listingOptions) {
@@ -131,7 +132,7 @@ public class DAOHelper<K, T> {
   }
 
   public final <F> List<T> listBy(String fieldName, Set<F> values) {
-    return this.listBy(fieldName, values, ListingOptions.noModification());
+    return this.listBy(fieldName, values, allResults().unsorted());
   }
 
   public final <F> List<T> listBy(String fieldName, Set<F> values, ListingOptions listingOptions) {
@@ -140,7 +141,7 @@ public class DAOHelper<K, T> {
   }
 
   public <F> Optional<T> getBy(String fieldName, F value) {
-    return getBy(fieldName, value, ListingOptions.noModification());
+    return getBy(fieldName, value, allResults().unsorted());
   }
 
   public <F> Optional<T> getBy(String fieldName, F value, ListingOptions listingOptions) {

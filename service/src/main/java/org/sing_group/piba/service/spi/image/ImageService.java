@@ -22,8 +22,11 @@
  */
 package org.sing_group.piba.service.spi.image;
 
+import java.util.stream.Stream;
+
 import javax.ejb.Local;
 
+import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.service.entity.image.ImageUploadData;
@@ -38,11 +41,15 @@ public interface ImageService {
   public Image get(String id);
 
   public PolypLocation createPolypLocation(PolypLocation polypLocation);
-  
+
   public PolypLocation getPolypLocation(Image image);
 
   public void delete(Image image);
 
   public void deletePolypLocation(Image image);
+
+  public Stream<Image> getImagesBy(Gallery gallery, int page, int pageSize);
+
+  public int totalImagesIn(Gallery gallery);
 
 }

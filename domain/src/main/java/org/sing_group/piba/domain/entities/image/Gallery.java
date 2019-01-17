@@ -23,19 +23,13 @@
 package org.sing_group.piba.domain.entities.image;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.sing_group.piba.domain.entities.Identifiable;
@@ -50,9 +44,6 @@ public class Gallery implements Identifiable {
   private String title;
   @Column(name = "description")
   private String description;
-
-  @OneToMany(mappedBy = "gallery", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Image> images = new ArrayList<>();
 
   Gallery() {}
 
@@ -84,15 +75,4 @@ public class Gallery implements Identifiable {
     return id;
   }
 
-  public List<Image> getImages() {
-    return images.stream().filter((img) -> !img.isRemoved()).collect(toList());
-  }
-
-  public void internalRemoveImage(Image image) {
-    this.images.remove(image);
-  }
-
-  public void internalAddImage(Image image) {
-    this.images.add(image);
-  }
 }

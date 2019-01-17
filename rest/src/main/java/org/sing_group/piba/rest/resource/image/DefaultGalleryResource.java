@@ -25,7 +25,6 @@ package org.sing_group.piba.rest.resource.image;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -74,11 +73,6 @@ public class DefaultGalleryResource implements GalleryResource {
 
   @Context
   private UriInfo uriInfo;
-
-  @PostConstruct
-  public void init() {
-    this.galleryMapper.setRequestURI(this.uriInfo);
-  }
 
   @POST
   @ApiOperation(

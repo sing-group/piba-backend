@@ -22,6 +22,9 @@
  */
 package org.sing_group.piba.domain.dao.spi.image;
 
+import java.util.stream.Stream;
+
+import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 
@@ -40,5 +43,9 @@ public interface ImageDAO {
   public void delete(Image image);
 
   public void deletePolypLocation(Image image);
+
+  public Stream<Image> getImagesBy(Gallery gallery, int page, int pageSize);
+
+  public int totalImagesIn(Gallery gallery);
 
 }

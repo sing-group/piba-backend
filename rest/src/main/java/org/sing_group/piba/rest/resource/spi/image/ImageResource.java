@@ -45,4 +45,6 @@ public interface ImageResource {
 
   public Response deletePolypLocation(String id);
 
+  public Response getImagesBy(String gallery_id, String page, String pageSize);
+
 }

@@ -24,6 +24,7 @@ package org.sing_group.piba.service.image;
 
 import java.io.FileInputStream;
 import java.nio.file.Files;
+import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -101,6 +102,16 @@ public class DefaultImageService implements ImageService {
   @Override
   public void deletePolypLocation(Image image) {
     imageDao.deletePolypLocation(image);
+  }
+
+  @Override
+  public Stream<Image> getImagesBy(Gallery gallery, int page, int pageSize) {
+    return imageDao.getImagesBy(gallery, page, pageSize);
+  }
+
+  @Override
+  public int totalImagesIn(Gallery gallery) {
+    return imageDao.totalImagesIn(gallery);
   }
 
 }

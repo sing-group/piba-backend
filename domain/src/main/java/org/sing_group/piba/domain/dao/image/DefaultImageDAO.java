@@ -22,15 +22,23 @@
  */
 package org.sing_group.piba.domain.dao.image;
 
+import static org.sing_group.piba.domain.dao.ListingOptions.between;
+import static org.sing_group.piba.domain.dao.ListingOptions.SortField.descending;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.image.ImageDAO;
+import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 
@@ -95,5 +103,24 @@ public class DefaultImageDAO implements ImageDAO {
   public void deletePolypLocation(Image image) {
     this.getPolypLocation(image).setImage(null);
     this.dh.update(image);
+  }
+
+  @Override
+  public Stream<Image> getImagesBy(Gallery gallery, int page, int pageSize) {
+    int start = (page - 1) * pageSize;
+    int end = start + pageSize - 1;
+    int totalImages = this.totalImagesIn(gallery);
+    if (end > totalImages) {
+      end = totalImages;
+    }
+    return this.dh.list(between(start, end).sortedBy(descending("created")), (cb, r) -> new Predicate[] {
+      cb.equal(r.get("isRemoved"), false)
+    }).stream();
+  }
+
+  @Override
+  public int totalImagesIn(Gallery gallery) {
+    return this.dh.listBy("gallery", gallery).stream().filter(img -> !img.isRemoved()).collect(Collectors.toList())
+      .size();
   }
 }

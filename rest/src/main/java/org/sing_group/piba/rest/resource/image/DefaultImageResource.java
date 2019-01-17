@@ -41,6 +41,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -49,6 +50,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.rest.entity.RestImageUploadData;
@@ -58,6 +60,7 @@ import org.sing_group.piba.rest.entity.image.PolypLocationEditionData;
 import org.sing_group.piba.rest.entity.mapper.spi.ImageMapper;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.image.ImageResource;
+import org.sing_group.piba.service.spi.image.GalleryService;
 import org.sing_group.piba.service.spi.image.ImageService;
 import org.sing_group.piba.service.spi.storage.FileStorage;
 
@@ -77,11 +80,14 @@ import io.swagger.annotations.ResponseHeader;
 })
 @Stateless
 @Default
-@CrossDomain
+@CrossDomain(allowedHeaders = "X-Pagination-Total-Items")
 public class DefaultImageResource implements ImageResource {
 
   @Inject
   private ImageService service;
+
+  @Inject
+  private GalleryService galleryService;
 
   @Inject
   private ImageMapper imageMapper;
@@ -216,6 +222,28 @@ public class DefaultImageResource implements ImageResource {
   public Response deletePolypLocation(@PathParam("id") String id) {
     this.service.deletePolypLocation(this.service.get(id));
     return Response.ok().build();
+  }
+
+  @GET
+  @Path("gallery/{gallery_id}")
+  @ApiResponses(value = {
+    @ApiResponse(code = 400, message = "Unknown gallery: {gallery_id}"),
+    @ApiResponse(code = 400, message = "Invalid page: {page} or pageSize: {pageSize}")
+  })
+  @Override
+  public Response getImagesBy(
+    @PathParam("gallery_id") String gallery_id, @QueryParam("page") String page, @QueryParam("pageSize") String pageSize
+  ) {
+    Gallery gallery = this.galleryService.get(gallery_id);
+    try {
+      int pageInt = Integer.parseInt(page);
+      int pageSizeInt = Integer.parseInt(pageSize);
+      return Response.ok(
+        this.service.getImagesBy(gallery, pageInt, pageSizeInt).map(this.imageMapper::toImageData).toArray(ImageData[]::new)
+      ).header("X-Pagination-Total-Items", this.service.totalImagesIn(gallery)).build();
+    } catch (NumberFormatException exc) {
+      throw new IllegalArgumentException("Invalid page or pageSize. They must be an integer.");
+    }
   }
 
 }
