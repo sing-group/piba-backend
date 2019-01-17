@@ -152,12 +152,20 @@ public class DefaultUserResource implements UserResource {
 
   @PUT
   @Path("{login}")
-  @RolesAllowed("ADMIN")
+  @RolesAllowed({
+    "ADMIN", "USER"
+  })
   @ApiOperation(
     value = "Modifies an existing user", response = UserData.class, code = 200
   )
   @Override
   public Response edit(@PathParam("login") String login, UserEditionData userEditionData) {
+    User currentUser = this.userService.getCurrentUser();
+    if (!login.equals(currentUser.getLogin())) {
+      if (!currentUser.getRole().equals(Role.ADMIN)) {
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+      }
+    }
     User user = this.userService.get(login);
     this.userMapper.assignUserEditionData(user, userEditionData);
     return Response.ok(this.userMapper.toUserData(this.userService.edit(user))).build();
