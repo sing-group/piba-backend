@@ -22,11 +22,17 @@
  */
 package org.sing_group.piba.service.video;
 
+import static java.lang.Integer.parseInt;
+import static java.util.Arrays.asList;
 import static javax.ejb.TransactionAttributeType.NEVER;
 import static javax.ejb.TransactionManagementType.BEAN;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Asynchronous;
@@ -60,18 +66,32 @@ public class DefaultVideoConversionService implements VideoConversionService {
   @Override
   public void convertVideo(VideoConversionTask task) {
     final File input = task.getInput();
-    
-    if (!input.isFile() || ! input.canRead()) {
+
+    if (!input.isFile() || !input.canRead()) {
       throw new IllegalArgumentException("File " + input.getAbsolutePath() + " not found.");
     }
-    
-    for (FileAndFormat output : task.getOutputs()) {
-      this.convert(input, output.getFile(), output.getFormat());
+
+    try {
+      int fps = getVideoFrameRate(input);
+      task.setFps(fps);
+
+      for (FileAndFormat output : task.getOutputs()) {
+        this.convert(input, output.getFile(), output.getFormat());
+      }
+      task.setStatus(VideoConversionTask.ConversionTaskStatus.FINISHED_SUCCESS);
+
+    } catch (IOException e) {
+      task.setStatus(VideoConversionTask.ConversionTaskStatus.FINISHED_ERROR);
     }
-    
-    task.setStatus(VideoConversionTask.ConversionTaskStatus.FINISHED_SUCCESS);
-    
     conversionEvent.fire(task);
+  }
+
+  private int getVideoFrameRate(final File input) throws IOException {
+    String query = "ffmpeg -i " + input.toString() + " 2>&1 | sed -n 's/.*, \\(.*\\) fp.*/\\1/p'";
+    List<String> command = new ArrayList<>(asList("/bin/bash", "-c"));
+    command.add(query);
+    Process process = new ProcessBuilder(command).start();
+    return parseInt(new BufferedReader(new InputStreamReader(process.getInputStream())).readLine());
   }
 
   private void convert(File from, File to, String toFormat) {

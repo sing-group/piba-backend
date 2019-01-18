@@ -33,6 +33,7 @@ public class VideoConversionTask {
   }
 
   private String id;
+  private Integer fps;
   private File input;
   private FileAndFormat[] outputs;
   private ConversionTaskStatus status = ConversionTaskStatus.ON_PROGRESS;
@@ -45,6 +46,14 @@ public class VideoConversionTask {
 
   public String getId() {
     return id;
+  }
+  
+  public Integer getFps() {
+    return fps;
+  }
+
+  public void setFps(Integer fps) {
+    this.fps = fps;
   }
 
   public File getInput() {

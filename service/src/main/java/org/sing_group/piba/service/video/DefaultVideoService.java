@@ -86,6 +86,7 @@ public class DefaultVideoService implements VideoService {
       if (task.getStatus() == VideoConversionTask.ConversionTaskStatus.FINISHED_SUCCESS) {
         Video video = videoDao.getVideo(task.getId());
         video.setProcessing(false);
+        video.setFps(task.getFps());
         task.getInput().delete();
       }
     } catch (Exception e) {
