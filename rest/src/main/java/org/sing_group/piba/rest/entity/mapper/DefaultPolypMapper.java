@@ -30,6 +30,7 @@ import org.sing_group.piba.domain.entities.polyp.Adenoma.AdenomaDysplasingGrade;
 import org.sing_group.piba.domain.entities.polyp.Adenoma.AdenomaType;
 import org.sing_group.piba.domain.entities.polyp.Hyperplastic;
 import org.sing_group.piba.domain.entities.polyp.Invasive;
+import org.sing_group.piba.domain.entities.polyp.NoHistology;
 import org.sing_group.piba.domain.entities.polyp.NonEpithelialNeoplastic;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypHistology;
@@ -102,6 +103,9 @@ public class DefaultPolypMapper implements PolypMapper {
       case "NonEpithelialNeoplastic":
         polypType = PolypType.NON_EPITHELIAL_NEOPLASTIC;
         break;
+      case "NoHistology":
+        polypType = PolypType.NO_HISTOLOGY;
+        break;
       default:
         throw new IllegalArgumentException("Unknown polyp histology type: " + data.getClass());
     }
@@ -157,6 +161,8 @@ public class DefaultPolypMapper implements PolypMapper {
         break;
       case NON_EPITHELIAL_NEOPLASTIC:
         break;
+      case NO_HISTOLOGY:
+        break;
       default:
         throw new IllegalArgumentException("Unknown polyp histology type: " + data.getClass());
     }
@@ -184,6 +190,9 @@ public class DefaultPolypMapper implements PolypMapper {
           break;
         case NON_EPITHELIAL_NEOPLASTIC:
           polypHistology = new NonEpithelialNeoplastic();
+          break;
+        case NO_HISTOLOGY:
+          polypHistology = new NoHistology();
           break;
         default:
           throw new IllegalArgumentException("Unknown polyp histology type: " + data.getClass());
