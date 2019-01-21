@@ -131,7 +131,7 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   public Response create(PolypRecordingEditicionData polypRecordingEditicionData) {
     Polyp polyp = this.polypService.getPolyp(polypRecordingEditicionData.getPolyp());
     Video video = this.videoService.getVideo(polypRecordingEditicionData.getVideo());
-
+   
     PolypRecording polypRecording =
       new PolypRecording(
         polyp, video, polypRecordingEditicionData.getStart(), polypRecordingEditicionData.getEnd()
@@ -144,19 +144,16 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   }
 
   @DELETE
-  @Path("{video_id}/{polyp_id}")
-  @ApiResponses(value = {
-    @ApiResponse(code = 400, message = "Unknown video: {video_id}"),
-    @ApiResponse(code = 400, message = "Unknown polyp: {polyp_id}")
-  })
+  @Path("{id}")
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown polyp recording: {id}")
+  )
   @ApiOperation(
     value = "Deletes an existing polyp recording.", code = 200
   )
   @Override
-  public Response delete(@PathParam("video_id") String video_id, @PathParam("polyp_id") String polyp_id) {
-    Video video = this.videoService.getVideo(video_id);
-    Polyp polyp = this.polypService.getPolyp(polyp_id);
-    this.polypRecordingService.delete(video, polyp);
+  public Response delete(@PathParam("id") int id) {
+    this.polypRecordingService.delete(this.polypRecordingService.get(id));
     return Response.ok().build();
   }
 

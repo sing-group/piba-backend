@@ -43,7 +43,7 @@ public class DefaultPolypRecordingDAO implements PolypRecordingDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<String, PolypRecording> dh;
+  protected DAOHelper<Integer, PolypRecording> dh;
 
   public DefaultPolypRecordingDAO() {
     super();
@@ -56,7 +56,7 @@ public class DefaultPolypRecordingDAO implements PolypRecordingDAO {
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(String.class, PolypRecording.class, this.em);
+    this.dh = DAOHelper.of(Integer.class, PolypRecording.class, this.em);
   }
 
   @Override
@@ -75,10 +75,13 @@ public class DefaultPolypRecordingDAO implements PolypRecordingDAO {
   }
 
   @Override
-  public void delete(Video video, Polyp polyp) {
-    PolypRecording polypRecording =
-      this.em.find(PolypRecording.class, new PolypRecording.PolypRecordingId(polyp, video));
-    this.dh.remove(polypRecording);
+  public void delete(PolypRecording polypRecording) {
+     this.dh.remove(polypRecording);
+  }
+  
+  @Override
+  public PolypRecording get(int id) {
+    return this.dh.get(id).orElseThrow(() -> new IllegalArgumentException("Unknown polyp recording: " + id));
   }
 
 }

@@ -40,6 +40,9 @@ import io.swagger.annotations.ApiModel;
 public class PolypRecordingData implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  @XmlElement(name = "id")
+  private int id;
+  
   @XmlElement(name = "video")
   private UuidAndUri video;
 
@@ -54,14 +57,19 @@ public class PolypRecordingData implements Serializable {
 
   PolypRecordingData() {}
 
-  public PolypRecordingData(UuidAndUri video, UuidAndUri polyp, Integer start, Integer end) {
+  public PolypRecordingData(int id, UuidAndUri video, UuidAndUri polyp, Integer start, Integer end) {
     super();
+    this.id = id;
     this.video = video;
     this.polyp = polyp;
     this.start = start;
     this.end = end;
   }
 
+  public int getId() {
+    return id;
+  } 
+  
   public UuidAndUri getVideo() {
     return video;
   }

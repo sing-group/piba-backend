@@ -40,6 +40,9 @@ public class PolypRecordingEditicionData implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @XmlElement(name = "id")
+  private int id;
+  
   @XmlElement(name = "video")
   private String video;
 
@@ -54,12 +57,17 @@ public class PolypRecordingEditicionData implements Serializable {
 
   PolypRecordingEditicionData() {}
 
-  public PolypRecordingEditicionData(String video, String polyp, Integer start, Integer end) {
+  public PolypRecordingEditicionData(int id, String video, String polyp, Integer start, Integer end) {
     super();
+    this.id = id;
     this.video = video;
     this.polyp = polyp;
     this.start = start;
     this.end = end;
+  }
+
+  public int getId() {
+    return id;
   }
 
   public String getVideo() {

@@ -56,12 +56,26 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
     if (polypRecording.getPolyp().getExploration().getId() != polypRecording.getVideo().getExploration().getId()) {
       throw new IllegalArgumentException("Do not belong to the same exploration");
     }
+    Stream<PolypRecording> polypRecordings = this.polypRecordingDAO.get(polypRecording.getPolyp());
+    polypRecordings.forEach((p) -> {
+      if (!(polypRecording.getStart() > p.getEnd())) {
+        if (!(polypRecording.getEnd() < p.getStart())) {
+          throw new IllegalArgumentException("The polyp cannot be assigned to that time range");
+        }
+      }
+    });
     return this.polypRecordingDAO.create(polypRecording);
+
   }
 
   @Override
-  public void delete(Video video, Polyp polyp) {
-    this.polypRecordingDAO.delete(video, polyp);
+  public void delete(PolypRecording polypRecording) {
+    this.polypRecordingDAO.delete(polypRecording);
+  }
+  
+  @Override
+  public PolypRecording get(int id) {
+    return polypRecordingDAO.get(id);
   }
 
 }

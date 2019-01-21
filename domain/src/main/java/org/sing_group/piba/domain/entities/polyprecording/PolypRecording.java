@@ -22,30 +22,35 @@
  */
 package org.sing_group.piba.domain.entities.polyprecording;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.sing_group.piba.domain.entities.VideoInterval;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
-import org.sing_group.piba.domain.entities.polyprecording.PolypRecording.PolypRecordingId;
 import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
-@Table(name = "polyprecording")
-@IdClass(PolypRecordingId.class)
+@Table(name = "polyprecording", uniqueConstraints = @UniqueConstraint(columnNames = {
+  "video_id", "polyp_id", "start", "end"
+}))
 public class PolypRecording extends VideoInterval implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
+  @GeneratedValue(strategy = IDENTITY)
+  private int id;
+
   @ManyToOne
   private Polyp polyp;
 
-  @Id
   @ManyToOne
   private Video video;
 
@@ -57,6 +62,10 @@ public class PolypRecording extends VideoInterval implements Serializable {
     setStart(start);
     setEnd(end);
     checkInterval(start, end);
+  }
+
+  public int getId() {
+    return id;
   }
 
   public Polyp getPolyp() {
@@ -73,56 +82,5 @@ public class PolypRecording extends VideoInterval implements Serializable {
 
   public void setVideo(Video video) {
     this.video = video;
-  }
-
-  public static class PolypRecordingId implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private String polyp;
-    private String video;
-
-    public PolypRecordingId() {}
-
-    public PolypRecordingId(String polyp, String video) {
-      this.polyp = polyp;
-      this.video = video;
-    }
-
-    public PolypRecordingId(Polyp polyp, Video video) {
-      this.polyp = polyp.getId();
-      this.video = video.getId();
-    }
-
-    @Override
-    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((polyp == null) ? 0 : polyp.hashCode());
-      result = prime * result + ((video == null) ? 0 : video.hashCode());
-      return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj)
-        return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
-      PolypRecordingId other = (PolypRecordingId) obj;
-      if (polyp == null) {
-        if (other.polyp != null)
-          return false;
-      } else if (!polyp.equals(other.polyp))
-        return false;
-      if (video == null) {
-        if (other.video != null)
-          return false;
-      } else if (!video.equals(other.video))
-        return false;
-      return true;
-    }
-
   }
 }

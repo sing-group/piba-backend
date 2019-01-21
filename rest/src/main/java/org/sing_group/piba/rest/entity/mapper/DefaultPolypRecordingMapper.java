@@ -45,6 +45,7 @@ public class DefaultPolypRecordingMapper implements PolypRecordingMapper {
   @Override
   public PolypRecordingData toPolypRecordingData(PolypRecording polypRecording) {
     return new PolypRecordingData(
+      polypRecording.getId(),
       UuidAndUri.fromEntity(requestURI, polypRecording.getVideo(), DefaultVideoResource.class),
       UuidAndUri.fromEntity(requestURI, polypRecording.getPolyp(), DefaultPolypResource.class),
       polypRecording.getStart(), polypRecording.getEnd()

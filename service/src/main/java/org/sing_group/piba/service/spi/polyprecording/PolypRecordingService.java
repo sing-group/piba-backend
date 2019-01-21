@@ -38,5 +38,7 @@ public interface PolypRecordingService {
 
   public PolypRecording create(PolypRecording polypRecording);
 
-  public void delete(Video video, Polyp polyp);
+  public void delete(PolypRecording polypRecording);
+  
+  public PolypRecording get(int id);
 }
