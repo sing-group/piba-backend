@@ -59,6 +59,9 @@ public class Exploration implements Identifiable {
 
   @Column(name = "date", nullable = false)
   private Date date;
+  
+  @Column(name = "creation_date")
+  private Date creationDate;
 
   @OrderBy("title ASC")
   @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -79,6 +82,7 @@ public class Exploration implements Identifiable {
     this.setLocation(location);
     this.setDate(date);
     setPatient(patient);
+    this.creationDate = new Date();
   }
 
   @Override
@@ -112,7 +116,7 @@ public class Exploration implements Identifiable {
     checkArgument(date, d -> requireNonNull(d, "date cannot be null"));
     this.date = date;
   }
-
+  
   public void addVideo(Video video) {
     video.setExploration(this);
   }
