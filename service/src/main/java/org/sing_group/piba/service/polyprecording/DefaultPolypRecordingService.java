@@ -56,7 +56,7 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
     if (polypRecording.getPolyp().getExploration().getId() != polypRecording.getVideo().getExploration().getId()) {
       throw new IllegalArgumentException("Do not belong to the same exploration");
     }
-    Stream<PolypRecording> polypRecordings = this.polypRecordingDAO.get(polypRecording.getPolyp());
+    Stream<PolypRecording> polypRecordings = this.polypRecordingDAO.get(polypRecording.getVideo());
     polypRecordings.forEach((p) -> {
       if (!(polypRecording.getStart() > p.getEnd())) {
         if (!(polypRecording.getEnd() < p.getStart())) {
