@@ -101,12 +101,19 @@ public class DefaultPolypResource implements PolypResource {
   )
   @Override
   public Response create(PolypEditionData polypEditionData) {
+    Exploration exploration = getExploration(polypEditionData);
+    for (Polyp p : exploration.getPolyps()) {
+      if (polypEditionData.getName().equals(p.getName())) {
+        throw new IllegalArgumentException("The polyp " + p.getName() + " already exists in this exploration");
+      }
+    }
+
     Polyp polyp =
       new Polyp(
         polypEditionData.getName(), polypEditionData.getSize(), polypEditionData.getLocation(),
         polypEditionData.getWasp(), polypEditionData.getNice(),
         polypEditionData.getLst(), polypEditionData.getParisPrimary(), polypEditionData.getParisSecondary(),
-        polypMapper.toPolypHistology(polypEditionData.getHistology()), polypEditionData.getObservation(), getExploration(polypEditionData)
+        polypMapper.toPolypHistology(polypEditionData.getHistology()), polypEditionData.getObservation(), exploration
       );
     polyp = this.service.create(polyp);
 
