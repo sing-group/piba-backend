@@ -34,4 +34,6 @@ public interface ModifierService {
 
   public Modifier get(String id);
 
+  public Modifier create(Modifier modifier);
+
 }

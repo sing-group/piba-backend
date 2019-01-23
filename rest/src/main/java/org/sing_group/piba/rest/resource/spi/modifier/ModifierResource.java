@@ -25,10 +25,14 @@ package org.sing_group.piba.rest.resource.spi.modifier;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.piba.rest.entity.modifier.ModifierEditionData;
+
 @Local
 public interface ModifierResource {
   public Response getModifiers();
 
   public Response getModifier(String id);
+
+  public Response create(ModifierEditionData modifierEditionData);
 
 }

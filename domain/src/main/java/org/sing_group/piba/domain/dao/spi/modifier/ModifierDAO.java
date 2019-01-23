@@ -32,4 +32,6 @@ public interface ModifierDAO {
 
   public Modifier get(String id);
 
+  public Modifier create(Modifier modifier);
+
 }

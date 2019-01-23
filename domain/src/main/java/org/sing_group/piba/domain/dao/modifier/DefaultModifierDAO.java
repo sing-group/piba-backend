@@ -67,4 +67,9 @@ public class DefaultModifierDAO implements ModifierDAO {
     return this.dh.get(id).orElseThrow(() -> new IllegalArgumentException("Unknown modifier: " + id));
   }
 
+  @Override
+  public Modifier create(Modifier modifier) {
+    return this.dh.persist(modifier);
+  }
+
 }

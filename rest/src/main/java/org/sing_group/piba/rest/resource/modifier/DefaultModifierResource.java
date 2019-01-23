@@ -26,20 +26,25 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.rest.entity.mapper.spi.ModifierMapper;
 import org.sing_group.piba.rest.entity.modifier.ModifierData;
+import org.sing_group.piba.rest.entity.modifier.ModifierEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.modifier.ModifierResource;
 import org.sing_group.piba.service.spi.modifier.ModifierService;
@@ -49,6 +54,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+@RolesAllowed({
+  "ADMIN", "USER"
+})
 @Path("modifier")
 @Api(value = "modifier")
 @Produces({
@@ -102,6 +110,18 @@ public class DefaultModifierResource implements ModifierResource {
     return Response
       .ok(this.modifierMapper.toModifierData(this.service.get(id)))
       .build();
+  }
+
+  @POST
+  @RolesAllowed("ADMIN")
+  @ApiOperation(
+    value = "Creates a new modifier.", response = ModifierData.class, code = 201
+  )
+  @Override
+  public Response create(ModifierEditionData modifierEditionData) {
+    Modifier modifier = this.service.create(new Modifier(modifierEditionData.getName()));
+    return Response.created(UriBuilder.fromResource(DefaultModifierResource.class).path(modifier.getId()).build())
+      .entity(modifierMapper.toModifierData(modifier)).build();
   }
 
 }

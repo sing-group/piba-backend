@@ -49,4 +49,9 @@ public class DefaultModifierService implements ModifierService {
     return modifierDAO.get(id);
   }
 
+  @Override
+  public Modifier create(Modifier modifier) {
+    return modifierDAO.create(modifier);
+  }
+
 }
