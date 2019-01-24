@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import org.sing_group.piba.domain.dao.spi.modifier.ModifierDAO;
 import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.service.spi.modifier.ModifierService;
+import org.sing_group.piba.service.spi.videomodification.VideoModificationService;
 
 @Stateless
 @PermitAll
@@ -38,6 +39,9 @@ public class DefaultModifierService implements ModifierService {
 
   @Inject
   private ModifierDAO modifierDAO;
+
+  @Inject
+  private VideoModificationService videoModificationService;
 
   @Override
   public Stream<Modifier> getModifiers() {
@@ -52,6 +56,14 @@ public class DefaultModifierService implements ModifierService {
   @Override
   public Modifier create(Modifier modifier) {
     return modifierDAO.create(modifier);
+  }
+
+  @Override
+  public void delete(Modifier modifier) {
+    if (this.videoModificationService.getVideoModification(modifier).count() > 0) {
+      throw new IllegalArgumentException("Can not remove modifier that has already been assigned.");
+    }
+    modifierDAO.delete(modifier);
   }
 
 }

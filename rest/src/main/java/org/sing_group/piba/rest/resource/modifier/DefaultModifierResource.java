@@ -31,6 +31,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -122,6 +123,22 @@ public class DefaultModifierResource implements ModifierResource {
     Modifier modifier = this.service.create(new Modifier(modifierEditionData.getName()));
     return Response.created(UriBuilder.fromResource(DefaultModifierResource.class).path(modifier.getId()).build())
       .entity(modifierMapper.toModifierData(modifier)).build();
+  }
+
+  @DELETE
+  @RolesAllowed("ADMIN")
+  @Path("{id}")
+  @ApiOperation(
+    value = "Deletes an existing modifier.", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown modifier: {id}")
+  )
+  @Override
+  public Response delete(@PathParam("id") String id) {
+    Modifier modifier = this.service.get(id);
+    this.service.delete(modifier);
+    return Response.ok().build();
   }
 
 }

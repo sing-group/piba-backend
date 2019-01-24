@@ -72,4 +72,9 @@ public class DefaultModifierDAO implements ModifierDAO {
     return this.dh.persist(modifier);
   }
 
+  @Override
+  public void delete(Modifier modifier) {
+    this.dh.remove(modifier);
+  }
+
 }

@@ -34,4 +34,6 @@ public interface ModifierDAO {
 
   public Modifier create(Modifier modifier);
 
+  public void delete(Modifier modifier);
+
 }

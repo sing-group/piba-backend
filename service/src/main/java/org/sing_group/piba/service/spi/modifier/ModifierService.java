@@ -36,4 +36,6 @@ public interface ModifierService {
 
   public Modifier create(Modifier modifier);
 
+  public void delete(Modifier modifier);
+
 }

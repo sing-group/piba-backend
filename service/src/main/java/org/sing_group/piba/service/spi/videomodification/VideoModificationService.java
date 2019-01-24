@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import javax.ejb.Local;
 
+import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 
@@ -35,7 +36,9 @@ public interface VideoModificationService {
 
   public Stream<VideoModification> getVideoModification(Video video);
 
+  public Stream<VideoModification> getVideoModification(Modifier modifier);
+
   public void delete(VideoModification videoModification);
-  
+
   public VideoModification get(int id);
 }
