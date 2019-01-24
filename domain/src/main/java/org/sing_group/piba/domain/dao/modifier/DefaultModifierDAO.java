@@ -73,6 +73,11 @@ public class DefaultModifierDAO implements ModifierDAO {
   }
 
   @Override
+  public Modifier edit(Modifier modifier) {
+    return this.dh.update(modifier);
+  }
+
+  @Override
   public void delete(Modifier modifier) {
     this.dh.remove(modifier);
   }

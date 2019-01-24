@@ -28,6 +28,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.rest.entity.mapper.spi.ModifierMapper;
 import org.sing_group.piba.rest.entity.modifier.ModifierData;
+import org.sing_group.piba.rest.entity.modifier.ModifierEditionData;
 
 @Default
 public class DefaultModifierMapper implements ModifierMapper {
@@ -38,6 +39,11 @@ public class DefaultModifierMapper implements ModifierMapper {
   @Override
   public ModifierData toModifierData(Modifier modifier) {
     return new ModifierData(modifier.getId(), modifier.getName());
+  }
+
+  @Override
+  public void assignModifierEditionData(Modifier modifier, ModifierEditionData modifierEditionData) {
+    modifier.setName(modifierEditionData.getName());
   }
 
 }

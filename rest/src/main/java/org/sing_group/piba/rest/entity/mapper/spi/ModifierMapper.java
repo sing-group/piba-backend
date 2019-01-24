@@ -26,11 +26,14 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.modifier.Modifier;
 import org.sing_group.piba.rest.entity.modifier.ModifierData;
+import org.sing_group.piba.rest.entity.modifier.ModifierEditionData;
 
 public interface ModifierMapper {
 
   public void setRequestURI(UriInfo requestURI);
 
   public ModifierData toModifierData(Modifier modifier);
+
+  public void assignModifierEditionData(Modifier modifier, ModifierEditionData modifierEditionData);
 
 }

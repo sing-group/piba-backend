@@ -59,6 +59,11 @@ public class DefaultModifierService implements ModifierService {
   }
 
   @Override
+  public Modifier edit(Modifier modifier) {
+    return modifierDAO.edit(modifier);
+  }
+
+  @Override
   public void delete(Modifier modifier) {
     if (this.videoModificationService.getVideoModification(modifier).count() > 0) {
       throw new IllegalArgumentException("Can not remove modifier that has already been assigned.");

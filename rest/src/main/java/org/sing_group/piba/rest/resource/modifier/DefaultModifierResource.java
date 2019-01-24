@@ -34,6 +34,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -139,6 +140,21 @@ public class DefaultModifierResource implements ModifierResource {
     Modifier modifier = this.service.get(id);
     this.service.delete(modifier);
     return Response.ok().build();
+  }
+
+  @PUT
+  @RolesAllowed("ADMIN")
+  @Path("{id}")
+  @ApiOperation(
+    value = "Modifies an existing modifier", response = ModifierData.class, code = 200
+  )
+  @ApiResponses(@ApiResponse(code = 400, message = "Unknown modifier: {id}"))
+  @Override
+  public Response edit(@PathParam("id") String id, ModifierEditionData modifierEditionData) {
+    Modifier modifier = this.service.get(id);
+    this.modifierMapper.assignModifierEditionData(modifier, modifierEditionData);
+    return Response.ok(this.modifierMapper.toModifierData(this.service.edit(modifier)))
+      .build();
   }
 
 }

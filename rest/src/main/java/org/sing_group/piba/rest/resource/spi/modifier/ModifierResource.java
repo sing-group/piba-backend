@@ -34,7 +34,9 @@ public interface ModifierResource {
   public Response getModifier(String id);
 
   public Response create(ModifierEditionData modifierEditionData);
-  
+
+  public Response edit(String id, ModifierEditionData modifierEditionData);
+
   public Response delete(String id);
 
 }
