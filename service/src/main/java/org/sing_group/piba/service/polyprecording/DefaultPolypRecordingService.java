@@ -56,7 +56,12 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
     if (polypRecording.getPolyp().getExploration().getId() != polypRecording.getVideo().getExploration().getId()) {
       throw new IllegalArgumentException("Do not belong to the same exploration");
     }
-    Stream<PolypRecording> polypRecordings = this.polypRecordingDAO.get(polypRecording.getVideo());
+
+    Stream<PolypRecording> polypRecordings =
+      this.polypRecordingDAO.get(polypRecording.getVideo()).filter(
+        pr -> pr.getPolyp().equals(polypRecording.getPolyp())
+      );
+
     polypRecordings.forEach((p) -> {
       if (!(polypRecording.getStart() > p.getEnd())) {
         if (!(polypRecording.getEnd() < p.getStart())) {
@@ -64,6 +69,7 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
         }
       }
     });
+
     return this.polypRecordingDAO.create(polypRecording);
 
   }
@@ -72,7 +78,7 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
   public void delete(PolypRecording polypRecording) {
     this.polypRecordingDAO.delete(polypRecording);
   }
-  
+
   @Override
   public PolypRecording get(int id) {
     return polypRecordingDAO.get(id);
