@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -70,6 +71,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
 
+@RolesAllowed({
+  "ADMIN", "USER", "ENDOSCOPIST"
+})
 @Path("image")
 @Api(value = "image")
 @Produces({
@@ -162,6 +166,7 @@ public class DefaultImageResource implements ImageResource {
 
   @Path("{id}/polyplocation")
   @POST
+  @RolesAllowed("ENDOSCOPIST")
   @ApiOperation(
     value = "Creates a polyp location in the image.", response = PolypLocationData.class, code = 200
   )
@@ -180,6 +185,7 @@ public class DefaultImageResource implements ImageResource {
 
   @DELETE
   @Path("{id}")
+  @RolesAllowed("ENDOSCOPIST")
   @ApiOperation(
     value = "Deletes an existing image.", code = 200
   )
@@ -211,6 +217,7 @@ public class DefaultImageResource implements ImageResource {
 
   @DELETE
   @Path("{id}/polyplocation")
+  @RolesAllowed("ENDOSCOPIST")
   @ApiOperation(
     value = "Deletes an existing polyp location in the image.", code = 200
   )

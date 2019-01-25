@@ -56,7 +56,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RolesAllowed({
-  "ADMIN", "USER"
+  "ADMIN", "USER", "ENDOSCOPIST"
 })
 @Path("user")
 @Produces({
@@ -131,7 +131,7 @@ public class DefaultUserResource implements UserResource {
   @GET
   @Path("{login}")
   @RolesAllowed({
-    "ADMIN", "USER"
+    "ADMIN", "USER", "ENDOSCOPIST"
   })
   @ApiOperation(
     value = "Return the data of a user.", response = UserData.class, code = 200
@@ -153,7 +153,7 @@ public class DefaultUserResource implements UserResource {
   @PUT
   @Path("{login}")
   @RolesAllowed({
-    "ADMIN", "USER"
+    "ADMIN", "USER", "ENDOSCOPIST"
   })
   @ApiOperation(
     value = "Modifies an existing user", response = UserData.class, code = 200

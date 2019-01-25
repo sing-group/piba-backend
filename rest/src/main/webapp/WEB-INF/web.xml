@@ -46,6 +46,7 @@
     <auth-constraint>
       <role-name>ADMIN</role-name>
       <role-name>USER</role-name>
+      <role-name>ENDOSCOPIST</role-name>
     </auth-constraint>
   </security-constraint>
   
@@ -55,6 +56,10 @@
 
   <security-role>
     <role-name>USER</role-name>
+  </security-role>
+  
+  <security-role>
+    <role-name>ENDOSCOPIST</role-name>
   </security-role>
   
   <login-config>
