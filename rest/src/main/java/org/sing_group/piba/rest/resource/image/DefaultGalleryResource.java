@@ -25,12 +25,14 @@ package org.sing_group.piba.rest.resource.image;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -108,6 +110,21 @@ public class DefaultGalleryResource implements GalleryResource {
   @Override
   public Response getGallery(@PathParam("id") String id) {
     return Response.ok(this.galleryMapper.toGalleryData(this.service.get(id))).build();
+  }
+
+  @PUT
+  @RolesAllowed("ADMIN")
+  @Path("{id}")
+  @ApiOperation(
+    value = "Modifies an existing gallery", response = GalleryData.class, code = 200
+  )
+  @ApiResponses(@ApiResponse(code = 400, message = "Unknown gallery: {id}"))
+  @Override
+  public Response edit(@PathParam("id") String id, GalleryEditionData galleryEditionData) {
+    Gallery gallery = this.service.get(id);
+    this.galleryMapper.assignGalleryEditionData(gallery, galleryEditionData);
+    return Response.ok(this.galleryMapper.toGalleryData(this.service.edit(gallery)))
+      .build();
   }
 
 }

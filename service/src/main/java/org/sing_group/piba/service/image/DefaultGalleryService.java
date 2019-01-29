@@ -40,17 +40,22 @@ public class DefaultGalleryService implements GalleryService {
   private GalleryDAO galleryDao;
 
   @Override
-  public Gallery create(Gallery galery) {
-    return galleryDao.create(galery);
+  public Gallery create(Gallery gallery) {
+    return galleryDao.create(gallery);
   }
 
   @Override
   public Gallery get(String id) {
     return galleryDao.get(id);
   }
-  
+
   @Override
   public Stream<Gallery> getGalleries() {
     return galleryDao.getGalleries();
+  }
+
+  @Override
+  public Gallery edit(Gallery gallery) {
+    return galleryDao.edit(gallery);
   }
 }

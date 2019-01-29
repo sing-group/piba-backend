@@ -31,7 +31,9 @@ public interface GalleryDAO {
   public Gallery create(Gallery galery);
 
   public Gallery get(String id);
-  
+
   public Stream<Gallery> getGalleries();
+
+  public Gallery edit(Gallery gallery);
 
 }

@@ -58,8 +58,8 @@ public class DefaultGalleryDAO implements GalleryDAO {
   }
 
   @Override
-  public Gallery create(Gallery galery) {
-    return this.dh.persist(galery);
+  public Gallery create(Gallery gallery) {
+    return this.dh.persist(gallery);
   }
 
   @Override
@@ -67,9 +67,14 @@ public class DefaultGalleryDAO implements GalleryDAO {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown gallery: " + id));
   }
-  
+
   @Override
   public Stream<Gallery> getGalleries() {
     return this.dh.list().stream();
+  }
+
+  @Override
+  public Gallery edit(Gallery gallery) {
+    return this.dh.update(gallery);
   }
 }

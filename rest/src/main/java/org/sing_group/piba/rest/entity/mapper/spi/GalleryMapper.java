@@ -24,7 +24,10 @@ package org.sing_group.piba.rest.entity.mapper.spi;
 
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.rest.entity.image.GalleryData;
+import org.sing_group.piba.rest.entity.image.GalleryEditionData;
 
 public interface GalleryMapper {
   public GalleryData toGalleryData(Gallery gallery);
+
+  public void assignGalleryEditionData(Gallery gallery, GalleryEditionData galleryEditionData);
 }

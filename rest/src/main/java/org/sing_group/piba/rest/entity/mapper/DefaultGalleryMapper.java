@@ -26,6 +26,7 @@ import javax.enterprise.inject.Default;
 
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.rest.entity.image.GalleryData;
+import org.sing_group.piba.rest.entity.image.GalleryEditionData;
 import org.sing_group.piba.rest.entity.mapper.spi.GalleryMapper;
 
 @Default
@@ -36,6 +37,12 @@ public class DefaultGalleryMapper implements GalleryMapper {
     return new GalleryData(
       gallery.getId(), gallery.getTitle(), gallery.getDescription()
     );
+  }
+
+  @Override
+  public void assignGalleryEditionData(Gallery gallery, GalleryEditionData galleryEditionData) {
+    gallery.setTitle(galleryEditionData.getTitle());
+    gallery.setDescription(galleryEditionData.getDescription());
   }
 
 }
