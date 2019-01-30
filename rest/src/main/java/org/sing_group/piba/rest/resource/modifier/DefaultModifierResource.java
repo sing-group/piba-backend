@@ -57,7 +57,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RolesAllowed({
-  "ADMIN", "USER"
+  "ADMIN", "USER", "ENDOSCOPIST"
 })
 @Path("modifier")
 @Api(value = "modifier")
