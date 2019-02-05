@@ -47,19 +47,19 @@ public class ExplorationEditionData implements Serializable {
   @XmlElement(name = "location", required = true)
   private String location;
 
-  @XmlElement(name = "date", required = true)
-  private Date date;
+  @XmlElement(name = "explorationDate", required = true)
+  private Date explorationDate;
 
   @XmlElement(name = "patient")
   private String patient;
 
   public ExplorationEditionData() {}
 
-  public ExplorationEditionData(String id, String title, String location, Date date) {
+  public ExplorationEditionData(String id, String title, String location, Date explorationDate) {
     this.id = id;
     this.title = title;
     this.location = location;
-    this.date = date;
+    this.explorationDate = explorationDate;
   }
 
   public String getId() {
@@ -78,12 +78,12 @@ public class ExplorationEditionData implements Serializable {
     this.location = location;
   }
 
-  public Date getDate() {
-    return date;
+  public Date getExplorationDate() {
+    return explorationDate;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
+  public void setExplorationDate(Date explorationDate) {
+    this.explorationDate = explorationDate;
   }
 
   public String getPatient() {

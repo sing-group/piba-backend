@@ -159,7 +159,7 @@ public class DefaultExplorationResource implements ExplorationResource {
     Patient patient = this.patientService.get(explorationEditionData.getPatient());
     Exploration exploration =
       new Exploration(
-        explorationEditionData.getTitle(), explorationEditionData.getLocation(), explorationEditionData.getDate(),
+        explorationEditionData.getTitle(), explorationEditionData.getLocation(), explorationEditionData.getExplorationDate(),
         patient
       );
     exploration = this.service.create(exploration);

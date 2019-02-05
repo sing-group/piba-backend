@@ -52,14 +52,15 @@ public class DefaultExplorationMapper implements ExplorationMapper {
       exploration.getId(), exploration.getTitle(), exploration.getLocation(), exploration.getDate(),
       fromEntities(requestURI, exploration.getVideos(), DefaultVideoResource.class),
       fromEntities(requestURI, exploration.getPolyps(), DefaultPolypResource.class),
-      fromEntity(requestURI, exploration.getPatient(), DefaultPatientResource.class)
+      fromEntity(requestURI, exploration.getPatient(), DefaultPatientResource.class),
+      exploration.getNumVideos(), exploration.getNumPolyps()
     );
   }
 
   @Override
   public void assignExplorationEditData(Exploration exploration, ExplorationEditionData explorationEditionData) {
     exploration.setTitle(explorationEditionData.getTitle());
-    exploration.setDate(explorationEditionData.getDate());
+    exploration.setDate(explorationEditionData.getExplorationDate());
     exploration.setLocation(explorationEditionData.getLocation());
   }
 }

@@ -59,7 +59,7 @@ public class Exploration implements Identifiable {
 
   @Column(name = "date", nullable = false)
   private Date date;
-  
+
   @Column(name = "creation_date")
   private Date creationDate;
 
@@ -113,10 +113,10 @@ public class Exploration implements Identifiable {
   }
 
   public void setDate(Date date) {
-    checkArgument(date, d -> requireNonNull(d, "date cannot be null"));
+    checkArgument(date, d -> requireNonNull(d, "exploration date cannot be null"));
     this.date = date;
   }
-  
+
   public void addVideo(Video video) {
     video.setExploration(this);
   }
@@ -161,6 +161,14 @@ public class Exploration implements Identifiable {
     if (patient != null) {
       this.patient.internalAddExploration(this);
     }
+  }
+
+  public int getNumPolyps() {
+    return polyps.size();
+  }
+
+  public int getNumVideos() {
+    return videos.size();
   }
 
 }

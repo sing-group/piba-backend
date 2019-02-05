@@ -50,8 +50,8 @@ public class ExplorationData implements Serializable {
   @XmlElement(name = "location", required = true)
   private String location;
 
-  @XmlElement(name = "date", required = true)
-  private Date date;
+  @XmlElement(name = "explorationDate", required = true)
+  private Date exporationDate;
 
   @XmlElement(name = "videos")
   private List<UuidAndUri> videos;
@@ -59,22 +59,30 @@ public class ExplorationData implements Serializable {
   @XmlElement(name = "polyps")
   private List<UuidAndUri> polyps;
 
+  @XmlElement(name = "numPolyps")
+  private int numPolyps;
+
+  @XmlElement(name = "numVideos")
+  private int numVideos;
+
   @XmlElement(name = "patient")
   private UuidAndUri patient;
 
   public ExplorationData() {}
 
   public ExplorationData(
-    String id, String title, String location, Date date, List<UuidAndUri> videos, List<UuidAndUri> polyps,
-    UuidAndUri patient
+    String id, String title, String location, Date explorationDate, List<UuidAndUri> videos, List<UuidAndUri> polyps,
+    UuidAndUri patient, int numVideos, int numPolyps
   ) {
     this.id = id;
     this.title = title;
     this.location = location;
-    this.date = date;
+    this.exporationDate = explorationDate;
     this.videos = videos;
     this.polyps = polyps;
     this.patient = patient;
+    this.numPolyps = numPolyps;
+    this.numVideos = numVideos;
   }
 
   public String getId() {
@@ -93,12 +101,12 @@ public class ExplorationData implements Serializable {
     this.location = location;
   }
 
-  public Date getDate() {
-    return date;
+  public Date getExplorationDate() {
+    return exporationDate;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
+  public void setExplorationDate(Date explorationDate) {
+    this.exporationDate = explorationDate;
   }
 
   public List<UuidAndUri> getVideos() {
@@ -111,6 +119,14 @@ public class ExplorationData implements Serializable {
 
   public UuidAndUri getPatient() {
     return patient;
+  }
+
+  public int getNumVideos() {
+    return numVideos;
+  }
+
+  public int getNumPolyps() {
+    return numPolyps;
   }
 
 }
