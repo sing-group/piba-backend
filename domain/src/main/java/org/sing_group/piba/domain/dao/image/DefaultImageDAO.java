@@ -22,17 +22,13 @@
  */
 package org.sing_group.piba.domain.dao.image;
 
-import static org.sing_group.piba.domain.dao.ListingOptions.between;
-import static org.sing_group.piba.domain.dao.ListingOptions.SortField.descending;
-
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -106,21 +102,83 @@ public class DefaultImageDAO implements ImageDAO {
   }
 
   @Override
-  public Stream<Image> getImagesBy(Gallery gallery, int page, int pageSize) {
-    int start = (page - 1) * pageSize;
-    int end = start + pageSize - 1;
-    int totalImages = this.totalImagesIn(gallery);
-    if (end > totalImages) {
-      end = totalImages;
-    }
-    return this.dh.list(between(start, end).sortedBy(descending("created")), (cb, r) -> new Predicate[] {
-      cb.equal(r.get("isRemoved"), false)
-    }).stream();
+  public Stream<Image> getImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+    return this.getImagesBy(gallery, page, pageSize, filter, Image.class);
   }
 
   @Override
-  public int totalImagesIn(Gallery gallery) {
-    return this.dh.listBy("gallery", gallery).stream().filter(img -> !img.isRemoved()).collect(Collectors.toList())
-      .size();
+  public int totalImagesIn(Gallery gallery, String filter) {
+    Stream<Image> images = this.dh.listBy("gallery", gallery).stream().filter(img -> !img.isRemoved());
+    switch (filter) {
+      case "all":
+        break;
+      case "located":
+        images = images.filter(img -> img.getPolypLocation() != null);
+        break;
+      case "no_located":
+        images = images.filter(img -> img.getPolypLocation() == null);
+        break;
+      default:
+        throw new IllegalArgumentException("Filter not valid");
+    }
+    return (int) images.count();
   }
+
+  @Override
+  public Stream<String> getImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+    return this.getImagesBy(gallery, page, pageSize, filter, String.class);
+  }
+
+  private <T> Stream<T> getImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter, Class<T> clazz) {
+    boolean onlyIds = false;
+    if (clazz.equals(String.class))
+      onlyIds = true;
+    else if (!clazz.equals(Image.class)) {
+      throw new IllegalArgumentException("only String or Image classes are allowed");
+    }
+
+    TypedQuery<T> query = null;
+
+    switch (filter) {
+      case "all":
+        query =
+          this.em.createQuery(
+            "SELECT i" + (onlyIds ? ".id" : "")
+              + " FROM Image i WHERE i.gallery=:gallery AND isRemoved=false ORDER BY i.created DESC",
+            clazz
+          );
+        break;
+      case "located":
+        query =
+          this.em.createQuery(
+            "SELECT pl.image" + (onlyIds ? ".id" : "")
+              + " FROM PolypLocation pl WHERE pl.image.gallery=:gallery AND pl.image.isRemoved=false ORDER BY pl.image.created DESC",
+            clazz
+          );
+        break;
+      case "no_located":
+        query =
+          this.em.createQuery(
+            "SELECT i" + (onlyIds ? ".id" : "")
+              + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i) ORDER BY i.created DESC",
+            clazz
+          );
+        break;
+      default:
+        throw new IllegalArgumentException("Filter not valid");
+    }
+    query.setParameter("gallery", gallery);
+    if (page != null && pageSize != null) {
+      int start = (page - 1) * pageSize;
+      int end = start + pageSize;
+      int totalImages = this.totalImagesIn(gallery, filter);
+      if (end > totalImages) {
+        end = totalImages;
+      }
+      return query.setFirstResult(start).setMaxResults(end).getResultList().stream();
+    } else {
+      return query.getResultList().stream();
+    }
+  }
+
 }

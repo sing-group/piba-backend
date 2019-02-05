@@ -22,7 +22,10 @@
  */
 package org.sing_group.piba.rest.entity.mapper;
 
+import static org.sing_group.piba.rest.entity.UuidAndUri.fromEntity;
+
 import javax.enterprise.inject.Default;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.image.Image;
@@ -49,10 +52,10 @@ public class DefaultImageMapper implements ImageMapper {
   public ImageData toImageData(Image image) {
     return new ImageData(
       image.getId(), image.getNumFrame(), image.isRemoved(),
-      UuidAndUri.fromEntity(requestURI, image.getGallery(), DefaultGalleryResource.class),
-      UuidAndUri.fromEntity(requestURI, image.getVideo(), DefaultVideoResource.class),
+      fromEntity(requestURI, image.getGallery(), DefaultGalleryResource.class),
+      fromEntity(requestURI, image.getVideo(), DefaultVideoResource.class),
       image.getPolypLocation() == null ? null
-        : UuidAndUri.fromEntity(requestURI, image, DefaultImageResource.class, "polyplocation")
+        : fromEntity(requestURI, image, DefaultImageResource.class, "polyplocation")
     );
   }
 
@@ -61,6 +64,16 @@ public class DefaultImageMapper implements ImageMapper {
     return new PolypLocationData(
       polypLocation.getX(), polypLocation.getY(), polypLocation.getWidth(),
       polypLocation.getHeight()
+    );
+  }
+
+  @Override
+  public UuidAndUri toUuidAndUri(String identifier) {
+    return new UuidAndUri(
+      identifier,
+      requestURI.getBaseUriBuilder().path(
+        UriBuilder.fromResource(DefaultImageResource.class).path(identifier).path("metadata").build().toString()
+      ).build()
     );
   }
 

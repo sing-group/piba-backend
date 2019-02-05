@@ -46,6 +46,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -55,6 +56,7 @@ import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.rest.entity.RestImageUploadData;
+import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.image.ImageData;
 import org.sing_group.piba.rest.entity.image.PolypLocationData;
 import org.sing_group.piba.rest.entity.image.PolypLocationEditionData;
@@ -232,25 +234,51 @@ public class DefaultImageResource implements ImageResource {
   }
 
   @GET
-  @Path("gallery/{gallery_id}")
+  @ApiOperation(
+    value = "Returns a list of images according to the pagination and filter indicated", response = ImageData.class, code = 200
+  )
   @ApiResponses(value = {
     @ApiResponse(code = 400, message = "Unknown gallery: {gallery_id}"),
     @ApiResponse(code = 400, message = "Invalid page: {page} or pageSize: {pageSize}")
   })
   @Override
   public Response getImagesBy(
-    @PathParam("gallery_id") String gallery_id, @QueryParam("page") String page, @QueryParam("pageSize") String pageSize
+    @QueryParam("gallery_id") String gallery_id, @QueryParam("page") Integer page, @QueryParam(
+      "pageSize"
+    ) Integer pageSize, @QueryParam("filter") String filter
   ) {
-    Gallery gallery = this.galleryService.get(gallery_id);
-    try {
-      int pageInt = Integer.parseInt(page);
-      int pageSizeInt = Integer.parseInt(pageSize);
-      return Response.ok(
-        this.service.getImagesBy(gallery, pageInt, pageSizeInt).map(this.imageMapper::toImageData).toArray(ImageData[]::new)
-      ).header("X-Pagination-Total-Items", this.service.totalImagesIn(gallery)).build();
-    } catch (NumberFormatException exc) {
-      throw new IllegalArgumentException("Invalid page or pageSize. They must be an integer.");
+    if (page == null || pageSize == null) {
+      throw new IllegalArgumentException("Missing pagination parameters");
     }
+    Gallery gallery = this.galleryService.get(gallery_id);
+    return Response.ok(
+      this.service.getImagesBy(gallery, page, pageSize, filter).map(this.imageMapper::toImageData).toArray(ImageData[]::new)
+    ).header("X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter)).build();
   }
 
+  @GET
+  @Path("id")
+  @ApiOperation(
+    value = "Returns a list of identifiers and url to the resource based on the indicated filter", response = UuidAndUri.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown gallery: {gallery_id}")
+  )
+  @Override
+  public Response getImagesIdentifiersBy(
+    @QueryParam("gallery_id") String gallery_id, @QueryParam("page") Integer page, @QueryParam(
+      "pageSize"
+    ) Integer pageSize, @QueryParam("filter") String filter
+  ) {
+    Gallery gallery = this.galleryService.get(gallery_id);
+
+    ResponseBuilder response =
+      Response.ok(
+        this.service.getImagesIdentifiersBy(gallery, page, pageSize, filter).map(this.imageMapper::toUuidAndUri).toArray(UuidAndUri[]::new)
+      );
+    if (page != null && pageSize != null) {
+      response.header("X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter));
+    }
+    return response.build();
+  }
 }

@@ -44,8 +44,10 @@ public interface ImageDAO {
 
   public void deletePolypLocation(Image image);
 
-  public Stream<Image> getImagesBy(Gallery gallery, int page, int pageSize);
+  public Stream<Image> getImagesBy(Gallery gallery, Integer page, Integer pageSize, String format);
 
-  public int totalImagesIn(Gallery gallery);
+  public int totalImagesIn(Gallery gallery, String filter);
+
+  public Stream<String> getImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter);
 
 }

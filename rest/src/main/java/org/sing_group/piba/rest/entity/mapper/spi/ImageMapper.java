@@ -26,6 +26,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
+import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.image.ImageData;
 import org.sing_group.piba.rest.entity.image.PolypLocationData;
 
@@ -36,5 +37,7 @@ public interface ImageMapper {
   public void setRequestURI(UriInfo requestURI);
 
   public PolypLocationData toPolypLocationData(PolypLocation polypLocation);
+
+  public UuidAndUri toUuidAndUri(String identifier);
 
 }

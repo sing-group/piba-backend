@@ -105,13 +105,18 @@ public class DefaultImageService implements ImageService {
   }
 
   @Override
-  public Stream<Image> getImagesBy(Gallery gallery, int page, int pageSize) {
-    return imageDao.getImagesBy(gallery, page, pageSize);
+  public Stream<Image> getImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+    return imageDao.getImagesBy(gallery, page, pageSize, filter);
   }
 
   @Override
-  public int totalImagesIn(Gallery gallery) {
-    return imageDao.totalImagesIn(gallery);
+  public int totalImagesIn(Gallery gallery, String filter) {
+    return imageDao.totalImagesIn(gallery, filter);
+  }
+
+  @Override
+  public Stream<String> getImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+    return imageDao.getImagesIdentifiersBy(gallery, page, pageSize, filter);
   }
 
 }
