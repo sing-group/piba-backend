@@ -86,7 +86,9 @@ import io.swagger.annotations.ResponseHeader;
 })
 @Stateless
 @Default
-@CrossDomain(allowedHeaders = "X-Pagination-Total-Items")
+@CrossDomain(allowedHeaders = {
+  "X-Pagination-Total-Items", "X-Located-Total-Items"
+})
 public class DefaultImageResource implements ImageResource {
 
   @Inject
@@ -253,7 +255,8 @@ public class DefaultImageResource implements ImageResource {
     Gallery gallery = this.galleryService.get(gallery_id);
     return Response.ok(
       this.service.getImagesBy(gallery, page, pageSize, filter).map(this.imageMapper::toImageData).toArray(ImageData[]::new)
-    ).header("X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter)).build();
+    ).header("X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter))
+      .header("X-Located-Total-Items", this.service.totalImagesIn(gallery, "located")).build();
   }
 
   @GET
