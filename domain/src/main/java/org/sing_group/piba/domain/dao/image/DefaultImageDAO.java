@@ -144,7 +144,7 @@ public class DefaultImageDAO implements ImageDAO {
         query =
           this.em.createQuery(
             "SELECT i" + (onlyIds ? ".id" : "")
-              + " FROM Image i WHERE i.gallery=:gallery AND isRemoved=false ORDER BY i.created DESC",
+              + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false ORDER BY i.created DESC, i.id",
             clazz
           );
         break;
@@ -152,7 +152,7 @@ public class DefaultImageDAO implements ImageDAO {
         query =
           this.em.createQuery(
             "SELECT pl.image" + (onlyIds ? ".id" : "")
-              + " FROM PolypLocation pl WHERE pl.image.gallery=:gallery AND pl.image.isRemoved=false ORDER BY pl.image.created DESC",
+              + " FROM PolypLocation pl WHERE pl.image.gallery=:gallery AND pl.image.isRemoved=false ORDER BY pl.image.created DESC, pl.image.id",
             clazz
           );
         break;
@@ -160,7 +160,7 @@ public class DefaultImageDAO implements ImageDAO {
         query =
           this.em.createQuery(
             "SELECT i" + (onlyIds ? ".id" : "")
-              + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i) ORDER BY i.created DESC",
+              + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i) ORDER BY i.created DESC, i.id",
             clazz
           );
         break;
