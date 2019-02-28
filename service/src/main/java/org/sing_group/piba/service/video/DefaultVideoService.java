@@ -105,6 +105,9 @@ public class DefaultVideoService implements VideoService {
       video.setProcessing(true);
       video.setWithText(Boolean.valueOf(data.getWithText()));
       video.setExploration(exploration);
+
+      checkVideoTitle(video);
+
       video = videoDao.create(video);
 
       // asynchronous conversion and storage
@@ -132,6 +135,15 @@ public class DefaultVideoService implements VideoService {
 
   @Override
   public Video edit(Video video) {
+    checkVideoTitle(video);
     return this.videoDao.edit(video);
+  }
+
+  private void checkVideoTitle(Video video) {
+    for (Video v : this.explorationService.getExploration(video.getExploration().getId()).getVideos()) {
+      if (video.getTitle().equals(v.getTitle()) && !video.getId().equals(v.getId())) {
+        throw new IllegalArgumentException("The video " + video.getTitle() + " already exists in this exploration");
+      }
+    }
   }
 }

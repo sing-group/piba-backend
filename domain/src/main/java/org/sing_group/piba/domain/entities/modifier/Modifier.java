@@ -42,7 +42,7 @@ public class Modifier implements Identifiable {
   @Column(name = "id")
   private String id;
 
-  @Column(name = "name", nullable = false)
+  @Column(name = "name", nullable = false, unique = true)
   private String name;
 
   Modifier() {}

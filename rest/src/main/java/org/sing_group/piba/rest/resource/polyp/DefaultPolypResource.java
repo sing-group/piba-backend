@@ -102,11 +102,7 @@ public class DefaultPolypResource implements PolypResource {
   @Override
   public Response create(PolypEditionData polypEditionData) {
     Exploration exploration = getExploration(polypEditionData);
-    for (Polyp p : exploration.getPolyps()) {
-      if (polypEditionData.getName().equals(p.getName())) {
-        throw new IllegalArgumentException("The polyp " + p.getName() + " already exists in this exploration");
-      }
-    }
+    checkPolypName(polypEditionData);
 
     Polyp polyp =
       new Polyp(
@@ -129,6 +125,7 @@ public class DefaultPolypResource implements PolypResource {
   @ApiResponses(@ApiResponse(code = 400, message = "Unknown polyp: {id}"))
   @Override
   public Response edit(@PathParam("id") String id, PolypEditionData polypEditionData) {
+    checkPolypName(polypEditionData);
     Polyp polyp = this.service.getPolyp(id);
     this.polypMapper.assignPolypEditionData(polyp, polypEditionData);
     return Response.ok(this.polypMapper.toPolypData(this.service.edit(polyp)))
@@ -152,6 +149,14 @@ public class DefaultPolypResource implements PolypResource {
 
   private Exploration getExploration(PolypEditionData polypEditionData) {
     return this.explorationService.getExploration(polypEditionData.getExploration());
+  }
+
+  private void checkPolypName(PolypEditionData polypEditionData) {
+    for (Polyp p : getExploration(polypEditionData).getPolyps()) {
+      if (polypEditionData.getName().equals(p.getName()) && !polypEditionData.getId().equals(p.getId())) {
+        throw new IllegalArgumentException("The polyp " + p.getName() + " already exists in this exploration");
+      }
+    }
   }
 
 }
