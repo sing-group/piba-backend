@@ -49,5 +49,7 @@ public interface ImageDAO {
   public int totalImagesIn(Gallery gallery, String filter);
 
   public Stream<String> getImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter);
+  
+  public Stream<String> getImageObservationsToRemoveBy(String observationToRemoveStartsWith);
 
 }

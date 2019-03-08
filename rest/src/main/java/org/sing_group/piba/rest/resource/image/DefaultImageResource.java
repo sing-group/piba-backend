@@ -284,4 +284,17 @@ public class DefaultImageResource implements ImageResource {
     }
     return response.build();
   }
+
+  @GET
+  @Path("observations")
+  @ApiOperation(
+    value = "Returns a list of posible observations to remove", response = String.class, code = 200
+  )
+  @Override
+  public Response getImageObservationsToRemoveBy(
+    @QueryParam("observationStartsWith") String observationToRemoveStartsWith
+  ) {
+    return Response
+      .ok(this.service.getImageObservationsToRemoveBy(observationToRemoveStartsWith).toArray(String[]::new)).build();
+  }
 }

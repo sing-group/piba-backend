@@ -49,4 +49,6 @@ public interface ImageResource {
 
   public Response getImagesIdentifiersBy(String gallery_id, Integer page, Integer pageSize, String filter);
 
+  public Response getImageObservationsToRemoveBy(String observationToRemoveStartsWith);
+
 }

@@ -54,4 +54,6 @@ public interface ImageService {
 
   public Stream<String> getImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter);
 
+  public Stream<String> getImageObservationsToRemoveBy(String observationToRemoveStartsWith);
+
 }

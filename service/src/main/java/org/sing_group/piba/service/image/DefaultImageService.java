@@ -119,4 +119,9 @@ public class DefaultImageService implements ImageService {
     return imageDao.getImagesIdentifiersBy(gallery, page, pageSize, filter);
   }
 
+  @Override
+  public Stream<String> getImageObservationsToRemoveBy(String observationToRemoveStartsWith) {
+    return imageDao.getImageObservationsToRemoveBy(observationToRemoveStartsWith);
+  }
+
 }
