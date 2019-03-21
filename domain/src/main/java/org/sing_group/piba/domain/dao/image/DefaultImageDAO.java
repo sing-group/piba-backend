@@ -115,7 +115,7 @@ public class DefaultImageDAO implements ImageDAO {
       case "located":
         images = images.filter(img -> img.getPolypLocation() != null);
         break;
-      case "no_located":
+      case "not_located":
         images = images.filter(img -> img.getPolypLocation() == null);
         break;
       default:
@@ -156,7 +156,7 @@ public class DefaultImageDAO implements ImageDAO {
             clazz
           );
         break;
-      case "no_located":
+      case "not_located":
         query =
           this.em.createQuery(
             "SELECT i" + (onlyIds ? ".id" : "")
