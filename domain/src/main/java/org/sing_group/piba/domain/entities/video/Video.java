@@ -56,7 +56,7 @@ public class Video implements Identifiable {
   @Column(name = "is_processing")
   private boolean isProcessing = true;
 
-  @Column(name = "withText")
+  @Column(name = "with_text")
   private boolean withText = false;
 
   @Column(name = "fps")

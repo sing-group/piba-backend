@@ -67,10 +67,10 @@ public class Polyp implements Identifiable {
   @Column(name = "lst")
   private LST lst;
   @Enumerated(EnumType.STRING)
-  @Column(name = "parisPrimary")
+  @Column(name = "paris_primary")
   private PARIS parisPrimary;
   @Enumerated(EnumType.STRING)
-  @Column(name = "parisSecondary")
+  @Column(name = "paris_secondary")
   private PARIS parisSecondary;
 
   @Column(name = "observation")

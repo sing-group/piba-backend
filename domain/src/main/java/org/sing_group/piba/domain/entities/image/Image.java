@@ -40,14 +40,14 @@ import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
 @Table(name = "image", uniqueConstraints = @UniqueConstraint(columnNames = {
-  "gallery_id", "video_id", "numFrame"
+  "gallery_id", "video_id", "num_frame"
 }))
 public class Image implements Identifiable {
 
   @Id
   private String id;
 
-  @Column(name = "numFrame")
+  @Column(name = "num_frame")
   private int numFrame;
 
   @Column(name = "is_removed")
