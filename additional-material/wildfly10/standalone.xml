@@ -155,8 +155,8 @@
                 </datasource>
                 <datasource jta="true" jndi-name="java:jboss/datasources/piba" pool-name="piba-mysql" enabled="true" use-ccm="true">
                     <connection-url>jdbc:mysql://localhost:3306/piba?useUnicode=yes&amp;characterEncoding=UTF-8</connection-url>
-                    <driver-class>com.mysql.jdbc.Driver</driver-class>
-                    <driver>mysql-connector-java-5.1.21.jar</driver>
+                    <driver-class>com.mysql.cj.jdbc.Driver</driver-class>
+                    <driver>mysql-connector-java-8.0.13.jar</driver>
                     <security>
                         <user-name>piba</user-name>
                         <password>pibapass</password>

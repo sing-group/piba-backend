@@ -22,6 +22,7 @@
  */
 package org.sing_group.piba.domain.entities.image;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
@@ -53,8 +54,8 @@ public class Image implements Identifiable {
   @Column(name = "is_removed")
   private boolean isRemoved = false;
 
-  @Column(name = "created")
-  private Date created;
+  @Column(name = "created", columnDefinition="DATETIME(3)")
+  private Timestamp created;
 
   @Column(name = "observation_to_remove")
   private String observationToRemove;
@@ -72,7 +73,7 @@ public class Image implements Identifiable {
 
   public Image(int numFrame, boolean isRemoved, Gallery gallery, Video video) {
     this.id = UUID.randomUUID().toString();
-    this.created = new Date();
+    this.created = new Timestamp(new Date().getTime());
     this.numFrame = numFrame;
     this.isRemoved = isRemoved;
     setGallery(gallery);
