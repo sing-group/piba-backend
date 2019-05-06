@@ -169,13 +169,7 @@ public class DefaultImageDAO implements ImageDAO {
     }
     query.setParameter("gallery", gallery);
     if (page != null && pageSize != null) {
-      int start = (page - 1) * pageSize;
-      int end = start + pageSize;
-      int totalImages = this.totalImagesIn(gallery, filter);
-      if (end > totalImages) {
-        end = totalImages;
-      }
-      return query.setFirstResult(start).setMaxResults(end).getResultList().stream();
+      return query.setFirstResult((page - 1) * pageSize).setMaxResults(pageSize).getResultList().stream();
     } else {
       return query.getResultList().stream();
     }
