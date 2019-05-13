@@ -37,6 +37,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.sing_group.piba.domain.entities.Identifiable;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
@@ -65,19 +66,23 @@ public class Image implements Identifiable {
 
   @ManyToOne
   private Video video;
+  
+  @ManyToOne
+  private Polyp polyp;
 
   @OneToOne(mappedBy = "image", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
   private PolypLocation polypLocation;
 
   Image() {}
 
-  public Image(int numFrame, boolean isRemoved, Gallery gallery, Video video) {
+  public Image(int numFrame, boolean isRemoved, Gallery gallery, Video video, Polyp polyp) {
     this.id = UUID.randomUUID().toString();
     this.created = new Timestamp(new Date().getTime());
     this.numFrame = numFrame;
     this.isRemoved = isRemoved;
     setGallery(gallery);
     setVideo(video);
+    setPolyp(polyp);
   }
 
   @Override
@@ -123,6 +128,14 @@ public class Image implements Identifiable {
 
   public void setVideo(Video video) {
     this.video = video;
+  }
+  
+  public Polyp getPolyp() {
+    return polyp;
+  }
+
+  public void setPolyp(Polyp polyp) {
+    this.polyp = polyp;
   }
 
   public PolypLocation getPolypLocation() {

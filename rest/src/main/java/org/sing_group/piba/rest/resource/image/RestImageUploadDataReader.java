@@ -34,7 +34,7 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
 
   private int numFrame;
   private File imageData;
-  private String gallery, video;
+  private String gallery, video, polyp;
 
   @Override
   protected void init() {}
@@ -50,6 +50,9 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
         break;
       case "video":
         this.video = value;
+        break;
+      case "polyp":
+        this.polyp = value;
         break;
       default:
         break;
@@ -67,7 +70,7 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
 
   @Override
   protected RestImageUploadData build() {
-    return new RestImageUploadData(this.numFrame, this.imageData, this.gallery, this.video);
+    return new RestImageUploadData(this.numFrame, this.imageData, this.gallery, this.video, this.polyp);
   }
 
 }

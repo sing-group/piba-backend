@@ -34,10 +34,12 @@ import org.sing_group.piba.domain.dao.spi.image.ImageDAO;
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.service.entity.image.ImageUploadData;
 import org.sing_group.piba.service.spi.image.GalleryService;
 import org.sing_group.piba.service.spi.image.ImageService;
+import org.sing_group.piba.service.spi.polyp.PolypService;
 import org.sing_group.piba.service.spi.storage.FileStorage;
 import org.sing_group.piba.service.spi.video.VideoService;
 
@@ -57,11 +59,18 @@ public class DefaultImageService implements ImageService {
   @Inject
   private VideoService videoService;
 
+  @Inject
+  private PolypService polypService;
+
   @Override
   public Image create(ImageUploadData imageUploadData) {
     Gallery gallery = this.galleryService.get(imageUploadData.getGallery());
     Video video = this.videoService.getVideo(imageUploadData.getVideo());
-    Image image = new Image(imageUploadData.getNumFrame(), false, gallery, video);
+    Polyp polyp = null;
+    if (!imageUploadData.getPolyp().equals("null")) {
+      polyp = this.polypService.getPolyp(imageUploadData.getPolyp());
+    }
+    Image image = new Image(imageUploadData.getNumFrame(), false, gallery, video, polyp);
     image = this.imageDao.create(image);
     try {
       fileStorage.store(

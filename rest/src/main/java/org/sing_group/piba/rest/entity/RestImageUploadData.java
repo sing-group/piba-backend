@@ -31,9 +31,9 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel(value = "image-upload-data", description = "Upload data of a image.")
 public class RestImageUploadData extends ImageUploadData implements Serializable {
-  
-  public RestImageUploadData(int numFrame, File imageData, String gallery, String video) {
-    super(numFrame, imageData, gallery, video);
+
+  public RestImageUploadData(int numFrame, File imageData, String gallery, String video, String polyp) {
+    super(numFrame, imageData, gallery, video, polyp);
   }
 
   private static final long serialVersionUID = 1L;
