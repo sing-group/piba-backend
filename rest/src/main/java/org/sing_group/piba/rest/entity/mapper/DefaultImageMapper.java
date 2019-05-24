@@ -36,6 +36,7 @@ import org.sing_group.piba.rest.entity.image.PolypLocationData;
 import org.sing_group.piba.rest.entity.mapper.spi.ImageMapper;
 import org.sing_group.piba.rest.resource.image.DefaultGalleryResource;
 import org.sing_group.piba.rest.resource.image.DefaultImageResource;
+import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
 
 @Default
@@ -55,7 +56,8 @@ public class DefaultImageMapper implements ImageMapper {
       fromEntity(requestURI, image.getGallery(), DefaultGalleryResource.class),
       fromEntity(requestURI, image.getVideo(), DefaultVideoResource.class),
       image.getPolypLocation() == null ? null
-        : fromEntity(requestURI, image, DefaultImageResource.class, "polyplocation")
+        : fromEntity(requestURI, image, DefaultImageResource.class, "polyplocation"),
+        image.getPolyp() == null ? null : fromEntity(requestURI, image.getPolyp(), DefaultPolypResource.class)
     );
   }
 
