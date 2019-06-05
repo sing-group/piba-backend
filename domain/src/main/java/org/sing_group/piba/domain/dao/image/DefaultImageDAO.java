@@ -118,6 +118,12 @@ public class DefaultImageDAO implements ImageDAO {
       case "not_located":
         images = images.filter(img -> img.getPolypLocation() == null);
         break;
+      case "with_polyp":
+        images = images.filter(img -> img.getPolyp() != null);
+        break;
+      case "not_located_with_polyp":
+        images = images.filter(img -> img.getPolyp() != null && img.getPolypLocation() == null);
+        break;
       default:
         throw new IllegalArgumentException("Filter not valid");
     }
@@ -161,6 +167,14 @@ public class DefaultImageDAO implements ImageDAO {
           this.em.createQuery(
             "SELECT i" + (onlyIds ? ".id" : "")
               + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i) ORDER BY i.created DESC, i.video.id, i.numFrame",
+            clazz
+          );
+        break;
+      case "not_located_with_polyp":
+        query =
+          this.em.createQuery(
+            "SELECT i" + (onlyIds ? ".id" : "")
+              + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i) ORDER BY i.created DESC, i.video.id, i.numFrame",
             clazz
           );
         break;
