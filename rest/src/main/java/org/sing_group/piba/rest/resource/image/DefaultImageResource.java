@@ -287,7 +287,13 @@ public class DefaultImageResource implements ImageResource {
     if (page != null && pageSize != null) {
       response.header("X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter));
     }
-    return response.build();
+    return response.header(
+      "X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter)
+    ).header(
+      "X-Located-Total-Items", this.service.totalImagesIn(gallery, "located")
+    ).header(
+      "X-With-Polyp-Total-Items", this.service.totalImagesIn(gallery, "with_polyp")
+    ).build();
   }
 
   @GET
