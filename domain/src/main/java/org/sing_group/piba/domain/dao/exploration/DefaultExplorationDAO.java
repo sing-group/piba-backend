@@ -33,6 +33,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.ListingOptions;
+import org.sing_group.piba.domain.dao.ListingOptions.SortField;
 import org.sing_group.piba.domain.dao.spi.exploration.ExplorationDAO;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.patient.Patient;
@@ -72,7 +73,7 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   public Stream<Exploration> getExplorations(int page, int pageSize, Patient patient) {
     int startBlock = (page - 1) * pageSize;
     int endBlock = startBlock + pageSize - 1;
-    ListingOptions listingOptions = new ListingOptions(startBlock, endBlock);
+    ListingOptions listingOptions = new ListingOptions(startBlock, endBlock, SortField.descending("creationDate"));
     // Checks if a patient is sent
     if (patient != null) {
       return dh.listBy("patient", patient, listingOptions).stream();
