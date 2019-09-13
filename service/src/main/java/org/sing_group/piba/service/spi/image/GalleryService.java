@@ -22,9 +22,11 @@
  */
 package org.sing_group.piba.service.spi.image;
 
+import java.io.FileNotFoundException;
 import java.util.stream.Stream;
 
 import javax.ejb.Local;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.sing_group.piba.domain.entities.image.Gallery;
 
@@ -37,4 +39,7 @@ public interface GalleryService {
   public Stream<Gallery> getGalleries();
 
   public Gallery edit(Gallery gallery);
+
+  public StreamingOutput getGalleriesInZip(Gallery gallery, String filter, Boolean withLocation)
+    throws FileNotFoundException;
 }
