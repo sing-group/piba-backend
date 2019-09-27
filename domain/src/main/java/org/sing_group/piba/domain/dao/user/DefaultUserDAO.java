@@ -22,6 +22,8 @@
  */
 package org.sing_group.piba.domain.dao.user;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +35,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.user.UserDAO;
+import org.sing_group.piba.domain.entities.passwordrecovery.PasswordRecovery;
 import org.sing_group.piba.domain.entities.user.User;
 
 @Default
@@ -43,6 +46,7 @@ public class DefaultUserDAO implements UserDAO {
   private EntityManager em;
 
   private DAOHelper<String, User> dh;
+  private DAOHelper<String, PasswordRecovery> dhPass;
 
   DefaultUserDAO() {}
 
@@ -54,8 +58,9 @@ public class DefaultUserDAO implements UserDAO {
   @PostConstruct
   private void createDAOHelper() {
     this.dh = DAOHelper.of(String.class, User.class, this.em);
+    this.dhPass = DAOHelper.of(String.class, PasswordRecovery.class, this.em);
   }
-
+  
   @Override
   public User get(String login) {
     return dh.get(login)
@@ -71,7 +76,7 @@ public class DefaultUserDAO implements UserDAO {
   public User edit(User user) {
     return this.dh.update(user);
   }
-  
+
   @Override
   public void delete(User user) {
     this.dh.remove(user);
@@ -80,6 +85,70 @@ public class DefaultUserDAO implements UserDAO {
   @Override
   public Stream<User> getUsers() {
     return this.dh.list().stream();
+  }
+
+  @Override
+  public PasswordRecovery createPasswordRecovery(String loginOrEmail) {
+    User user = getUserByLoginOrEmail(loginOrEmail);
+    String login = user.getLogin();
+
+    PasswordRecovery passRecovery;
+    try {
+      Date now = new Date();
+      passRecovery =
+        this.dhPass.get(login)
+          .orElseThrow(() -> new IllegalArgumentException("Recovery not created yet."));
+      if (passRecovery.getDate().toInstant()
+        .plus(24, ChronoUnit.HOURS).isBefore(now.toInstant())) {
+        passRecovery = this.dhPass.update(new PasswordRecovery(login));
+      }
+    } catch (IllegalArgumentException e) {
+      passRecovery = this.dhPass.persist(new PasswordRecovery(login));
+    }
+    return passRecovery;
+
+  }
+
+  private User getUserByLoginOrEmail(final String loginOrEmail) {
+    if (loginOrEmail.contains("@")) {
+      return dh.getBy("email", loginOrEmail)
+          //.map(User::getLogin)
+          .orElseThrow(() -> new IllegalArgumentException("Unknown user: " + loginOrEmail));
+    } else {
+      return dh.get(loginOrEmail)
+          .orElseThrow(() -> new IllegalArgumentException("Unknown user: " + loginOrEmail));
+    }
+  }
+
+  @Override
+  public void updatePasswordRecovery(PasswordRecovery passwordRecovery) {
+
+    PasswordRecovery passAux;
+    Date now = new Date();
+    passAux =
+      dhPass.getBy("uuid", passwordRecovery.getUuid())
+        .orElseThrow(() -> new IllegalArgumentException("No recovery with this uuid"));
+    if (passAux.getDate().toInstant().plus(24, ChronoUnit.HOURS).isAfter(now.toInstant())) {
+      User user = this.get(passAux.getLogin());
+      user.setPassword(passwordRecovery.getPassword());
+      this.edit(user);
+      this.dhPass.remove(passAux);
+    } else {
+      this.dhPass.remove(passAux);
+      throw new IllegalArgumentException("Recovery has passed the date limit");
+    }
+
+  }
+  
+  @Override
+  public Stream<PasswordRecovery> getAllPasswordRecovery(){
+    return this.dhPass.list().stream();
+  }
+
+  @Override
+  public void deletePasswordRecovery(PasswordRecovery passwordRecovery) {
+    this.dhPass.remove(passwordRecovery);
+    
   }
 
 }

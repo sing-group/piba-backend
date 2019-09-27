@@ -1,8 +1,8 @@
 /*-
  * #%L
- * Service
+ * REST
  * %%
- * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
+ * Copyright (C) 2018 - 2019 Daniel Glez-Peña, Miguel Reboiro-Jato,
  * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
  * %%
  * This program is free software: you can redistribute it and/or modify
@@ -20,30 +20,18 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.service.spi.user;
-
-import java.util.stream.Stream;
+package org.sing_group.piba.rest.resource.spi.user;
 
 import javax.ejb.Local;
+import javax.ws.rs.core.Response;
 
 import org.sing_group.piba.domain.entities.passwordrecovery.PasswordRecovery;
 import org.sing_group.piba.domain.entities.user.User;
 
 @Local
-public interface UserService {
-  public User getCurrentUser();
+public interface UserPasswordRecoveryResource {
 
-  public User get(String id);
+  public Response recoverPassword(User userData);
 
-  public User create(User user);
-
-  public User edit(User user);
-  
-  public void delete(User user);
-
-  public Stream<User> getUsers();
-  
-  public void recoverPassword(String loginOrEmail);
-
-  public void updatePasswordRecovery(PasswordRecovery passwordRecovery);
+  public Response updatePasswordRecovery(PasswordRecovery newPass);
 }

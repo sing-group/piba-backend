@@ -309,8 +309,8 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jsf:1.0"/>
         <subsystem xmlns="urn:jboss:domain:mail:2.0">
-            <mail-session name="default" jndi-name="java:jboss/mail/Default">
-                <smtp-server outbound-socket-binding-ref="mail-smtp"/>
+            <mail-session name="piba-mail" jndi-name="java:/piba/mail">
+                <smtp-server outbound-socket-binding-ref="piba-smtp"/>
             </mail-session>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
@@ -320,6 +320,7 @@
                 <simple name="java:global/piba/swagger/host" value="localhost:8080" type="java.lang.String"/>
                 <simple name="java:global/piba/swagger/basePath" value="/piba-backend/rest/api" type="java.lang.String"/>
                 <simple name="java:global/piba/defaultfilestorage/path" value="/var/lib/piba/storage" type="java.lang.String"/>
+                <simple name="java:global/piba/frontend/url" value="http://localhost:4200/" type="java.lang.String"/>
             </bindings>
             <remote-naming/>
         </subsystem>
@@ -451,8 +452,8 @@
         <socket-binding name="https" port="${jboss.https.port:8443}"/>
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
-        <outbound-socket-binding name="mail-smtp">
-            <remote-destination host="localhost" port="25"/>
+        <outbound-socket-binding name="piba-smtp">
+            <remote-destination host="localhost" port="12125"/>
         </outbound-socket-binding>
     </socket-binding-group>
 </server>

@@ -24,6 +24,7 @@
       <web-resource-name>public</web-resource-name>
       <url-pattern>/api/stream*</url-pattern>
       <url-pattern>/api/download*</url-pattern>
+      <url-pattern>/api/recovery*</url-pattern>
       <http-method>*</http-method>
     </web-resource-collection>
   </security-constraint>
