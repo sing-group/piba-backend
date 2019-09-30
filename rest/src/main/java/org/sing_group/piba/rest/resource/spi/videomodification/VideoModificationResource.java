@@ -35,4 +35,8 @@ public interface VideoModificationResource {
 
   public Response delete(int id);
 
+  public Response edit(int id, VideoModificationEditionData videoModificationEditionData);
+
+  public Response editAll(VideoModificationEditionData[] videoModificationsEditionData);
+
 }

@@ -68,7 +68,7 @@ public class DefaultVideoModificationDAO implements VideoModificationDAO {
   public Stream<VideoModification> getVideoModification(Video video) {
     return this.dh.listBy("video", video).stream();
   }
-  
+
   @Override
   public Stream<VideoModification> getVideoModification(Modifier modifier) {
     return this.dh.listBy("modifier", modifier).stream();
@@ -82,6 +82,11 @@ public class DefaultVideoModificationDAO implements VideoModificationDAO {
   @Override
   public VideoModification get(int id) {
     return this.dh.get(id).orElseThrow(() -> new IllegalArgumentException("Unknown video modification: " + id));
+  }
+
+  @Override
+  public VideoModification edit(VideoModification videoModification) {
+    return this.dh.update(videoModification);
   }
 
 }

@@ -39,4 +39,6 @@ public interface PolypRecordingDAO {
   public void delete(PolypRecording polypRecording);
   
   public PolypRecording get(int id);
+  
+  public PolypRecording edit(PolypRecording polypRecording);
 }

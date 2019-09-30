@@ -25,6 +25,10 @@ package org.sing_group.piba.rest.resource.videomodification;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
@@ -33,6 +37,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -41,16 +46,21 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import org.sing_group.piba.domain.entities.modifier.Modifier;
+import org.sing_group.piba.domain.entities.user.Role;
+import org.sing_group.piba.domain.entities.user.User;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 import org.sing_group.piba.rest.entity.mapper.spi.VideoModificationMapper;
 import org.sing_group.piba.rest.entity.videomodification.VideoModificationData;
 import org.sing_group.piba.rest.entity.videomodification.VideoModificationEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
+import org.sing_group.piba.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.piba.rest.resource.spi.videomodification.VideoModificationResource;
 import org.sing_group.piba.service.spi.modifier.ModifierService;
+import org.sing_group.piba.service.spi.user.UserService;
 import org.sing_group.piba.service.spi.video.VideoService;
 import org.sing_group.piba.service.spi.videomodification.VideoModificationService;
 
@@ -82,6 +92,9 @@ public class DefaultVideoModificationResource implements VideoModificationResour
   private ModifierService modifierService;
 
   @Inject
+  private UserService userService;
+
+  @Inject
   private VideoModificationMapper videoModificationMapper;
 
   @Context
@@ -107,7 +120,8 @@ public class DefaultVideoModificationResource implements VideoModificationResour
 
     VideoModification videoModification =
       new VideoModification(
-        video, modifier, videoModificationEditionData.getStart(), videoModificationEditionData.getEnd()
+        video, modifier, videoModificationEditionData.getStart(), videoModificationEditionData.getEnd(),
+        videoModificationEditionData.isConfirmed()
       );
 
     this.service.create(videoModification);
@@ -136,13 +150,85 @@ public class DefaultVideoModificationResource implements VideoModificationResour
   @ApiOperation(
     value = "Deletes an existing video modification.", code = 200
   )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown video modification: {id}")
-  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown video modification: {id}"),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
   @Override
   public Response delete(@PathParam("id") int id) {
-    this.service.delete(this.service.get(id));
-    return Response.ok().build();
+    VideoModification videoModification = this.service.get(id);
+    if (!videoModification.isConfirmed()) {
+      this.service.delete(videoModification);
+      return Response.ok().build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+  }
+
+  @Path("{id}")
+  @PUT
+  @ApiOperation(
+    value = "Modifies an exisiting video modification", response = VideoModification.class, code = 200
+  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown video modification: {id}"),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
+  @Override
+  public Response edit(@PathParam("id") int id, VideoModificationEditionData videoModificationEditionData) {
+    VideoModification videoModification = this.service.get(id);
+    if (isVideoModificationEditable(videoModification, videoModificationEditionData)) {
+      this.videoModificationMapper.assignVideoModificationEditionData(videoModification, videoModificationEditionData);
+      return Response.ok(this.videoModificationMapper.toVideoModificationData(this.service.edit(videoModification)))
+        .build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+  }
+
+  @PUT
+  @ApiOperation(
+    value = "Modifies all existing video modifications in the array", response = VideoModificationData.class, code = 200
+  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown video modification."),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
+  @Override
+  public Response editAll(VideoModificationEditionData[] videoModificationsEditionData) {
+    if (
+      Arrays.stream(videoModificationsEditionData).allMatch(
+        videoModificationEditionData -> isVideoModificationEditable(
+          this.service.get(videoModificationEditionData.getId()), videoModificationEditionData
+        )
+      )
+    ) {
+      List<VideoModification> editedVideoModifications = new ArrayList<VideoModification>();
+      Arrays.stream(videoModificationsEditionData).forEach(videoModificationEditionData -> {
+        VideoModification videoModification = this.service.get(videoModificationEditionData.getId());
+        this.videoModificationMapper
+          .assignVideoModificationEditionData(videoModification, videoModificationEditionData);
+        editedVideoModifications.add(this.service.edit(videoModification));
+      });
+      return Response.ok(
+        editedVideoModifications.stream().map(this.videoModificationMapper::toVideoModificationData)
+          .toArray(VideoModificationData[]::new)
+      ).build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+  }
+
+  private boolean isEndoscopist() {
+    User currentUser = this.userService.getCurrentUser();
+    return currentUser.getRole().equals(Role.ENDOSCOPIST);
+  }
+
+  private boolean isVideoModificationEditable(
+    VideoModification videoModification, VideoModificationEditionData videoModificationEditionData
+  ) {
+    return (!videoModification.isConfirmed() && videoModificationEditionData.isConfirmed() && isEndoscopist())
+      || (!videoModification.isConfirmed() && !videoModificationEditionData.isConfirmed());
   }
 
 }

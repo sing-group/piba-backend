@@ -84,4 +84,9 @@ public class DefaultPolypRecordingDAO implements PolypRecordingDAO {
     return this.dh.get(id).orElseThrow(() -> new IllegalArgumentException("Unknown polyp recording: " + id));
   }
 
+  @Override
+  public PolypRecording edit(PolypRecording polypRecording) {
+    return this.dh.update(polypRecording);
+  }
+
 }

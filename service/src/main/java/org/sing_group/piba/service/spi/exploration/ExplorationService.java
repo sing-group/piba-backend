@@ -27,14 +27,15 @@ import java.util.stream.Stream;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.video.Video;
 
 public interface ExplorationService {
   public Exploration getExploration(String id);
 
   public Stream<Exploration> getExplorations(int page, int pageSize, Patient patient);
-  
+
   public int numExplorations();
-  
+
   public int numExplorationsByPatient(Patient patient);
 
   public Exploration create(Exploration exploration);
@@ -43,5 +44,8 @@ public interface ExplorationService {
 
   public Stream<Polyp> getPolyps(Exploration exploration);
 
+  public Stream<Video> getVideos(Exploration exploration);
+
   public void delete(Exploration exploration);
+
 }

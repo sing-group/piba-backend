@@ -25,7 +25,7 @@ package org.sing_group.piba.rest.resource.spi.polyprecording;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
-import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditicionData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditionData;
 
 @Local
 public interface PolypRecordingResource {
@@ -33,8 +33,12 @@ public interface PolypRecordingResource {
 
   public Response getPolypResourceByPolyp(String polyp_id);
 
-  public Response create(PolypRecordingEditicionData polypRecordingEditicionData);
+  public Response create(PolypRecordingEditionData polypRecordingEditionData);
+  
+  public Response edit(int id, PolypRecordingEditionData polypRecordingEditionData);
 
   public Response delete(int id);
+
+  public Response editAll(PolypRecordingEditionData[] polypRecordingsEditionData);
 
 }

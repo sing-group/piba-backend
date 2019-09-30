@@ -24,6 +24,10 @@ package org.sing_group.piba.rest.resource.polyp;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
@@ -43,13 +47,17 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.user.Role;
+import org.sing_group.piba.domain.entities.user.User;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
+import org.sing_group.piba.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.piba.rest.resource.spi.polyp.PolypResource;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
 import org.sing_group.piba.service.spi.polyp.PolypService;
+import org.sing_group.piba.service.spi.user.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -74,6 +82,9 @@ public class DefaultPolypResource implements PolypResource {
 
   @Inject
   private ExplorationService explorationService;
+
+  @Inject
+  private UserService userService;
 
   @Inject
   private PolypMapper polypMapper;
@@ -109,7 +120,7 @@ public class DefaultPolypResource implements PolypResource {
         polypEditionData.getName(), polypEditionData.getSize(), polypEditionData.getLocation(),
         polypEditionData.getWasp(), polypEditionData.getNice(),
         polypEditionData.getLst(), polypEditionData.getParisPrimary(), polypEditionData.getParisSecondary(),
-        polypMapper.toPolypHistology(polypEditionData.getHistology()), polypEditionData.getObservation(), exploration
+        polypMapper.toPolypHistology(polypEditionData.getHistology()), polypEditionData.getObservation(), exploration, false
       );
     polyp = this.service.create(polyp);
 
@@ -122,14 +133,51 @@ public class DefaultPolypResource implements PolypResource {
   @ApiOperation(
     value = "Modifies an existing polyp", response = PolypData.class, code = 200
   )
-  @ApiResponses(@ApiResponse(code = 400, message = "Unknown polyp: {id}"))
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown polyp: {id}"),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
   @Override
   public Response edit(@PathParam("id") String id, PolypEditionData polypEditionData) {
     checkPolypName(polypEditionData);
     Polyp polyp = this.service.getPolyp(id);
-    this.polypMapper.assignPolypEditionData(polyp, polypEditionData);
-    return Response.ok(this.polypMapper.toPolypData(this.service.edit(polyp)))
-      .build();
+    if (isPolypEditable(polyp, polypEditionData)) {
+      this.polypMapper.assignPolypEditionData(polyp, polypEditionData);
+      return Response.ok(this.polypMapper.toPolypData(this.service.edit(polyp)))
+        .build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+  }
+
+  @PUT
+  @ApiOperation(
+    value = "Modifies all existing polyps in the array", response = PolypData.class, code = 200
+  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown polyp."),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
+  @Override
+  public Response editAll(PolypEditionData[] polypsEditionData) {
+    if (
+      Arrays.stream(polypsEditionData).allMatch(
+        polypEditionData -> isPolypEditable(this.service.getPolyp(polypEditionData.getId()), polypEditionData)
+      )
+    ) {
+      List<Polyp> editedPolyps = new ArrayList<Polyp>();
+      Arrays.stream(polypsEditionData).forEach(polypEditionData -> {
+        checkPolypName(polypEditionData);
+        Polyp polyp = this.service.getPolyp(polypEditionData.getId());
+        this.polypMapper.assignPolypEditionData(polyp, polypEditionData);
+        editedPolyps.add(this.service.edit(polyp));
+      });
+      return Response.ok(
+        editedPolyps.stream().map(this.polypMapper::toPolypData).toArray(PolypData[]::new)
+      ).build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
   }
 
   @DELETE
@@ -137,14 +185,19 @@ public class DefaultPolypResource implements PolypResource {
   @ApiOperation(
     value = "Deletes an existing polyp.", code = 200
   )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown polyp: {id}")
-  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown polyp: {id}"),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
   @Override
   public Response delete(@PathParam("id") String id) {
     Polyp polyp = this.service.getPolyp(id);
-    this.service.delete(polyp);
-    return Response.ok().build();
+    if (!polyp.isConfirmed()) {
+      this.service.delete(polyp);
+      return Response.ok().build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
   }
 
   private Exploration getExploration(PolypEditionData polypEditionData) {
@@ -157,6 +210,16 @@ public class DefaultPolypResource implements PolypResource {
         throw new IllegalArgumentException("The polyp " + p.getName() + " already exists in this exploration");
       }
     }
+  }
+
+  private boolean isEndoscopist() {
+    User currentUser = this.userService.getCurrentUser();
+    return currentUser.getRole().equals(Role.ENDOSCOPIST);
+  }
+
+  private boolean isPolypEditable(Polyp polyp, PolypEditionData polypEditionData) {
+    return (!polyp.isConfirmed() && polypEditionData.isConfirmed() && isEndoscopist())
+      || (!polyp.isConfirmed() && !polypEditionData.isConfirmed());
   }
 
 }

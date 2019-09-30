@@ -22,18 +22,28 @@
  */
 package org.sing_group.piba.rest.entity.mapper;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.mapper.spi.VideoModificationMapper;
 import org.sing_group.piba.rest.entity.videomodification.VideoModificationData;
+import org.sing_group.piba.rest.entity.videomodification.VideoModificationEditionData;
 import org.sing_group.piba.rest.resource.modifier.DefaultModifierResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
+import org.sing_group.piba.service.spi.modifier.ModifierService;
+import org.sing_group.piba.service.spi.video.VideoService;
 
 public class DefaultVideoModificationMapper implements VideoModificationMapper {
 
   private UriInfo requestURI;
+
+  @Inject
+  private ModifierService modifierService;
+
+  @Inject
+  private VideoService videoService;
 
   @Override
   public void setRequestURI(UriInfo requestURI) {
@@ -46,8 +56,19 @@ public class DefaultVideoModificationMapper implements VideoModificationMapper {
       videoModification.getId(),
       UuidAndUri.fromEntity(requestURI, videoModification.getVideo(), DefaultVideoResource.class),
       UuidAndUri.fromEntity(requestURI, videoModification.getModifier(), DefaultModifierResource.class),
-      videoModification.getStart(), videoModification.getEnd()
+      videoModification.getStart(), videoModification.getEnd(), videoModification.isConfirmed()
     );
+  }
+
+  @Override
+  public void assignVideoModificationEditionData(
+    VideoModification videoModification, VideoModificationEditionData videoModificationEditionData
+  ) {
+    videoModification.setStart(videoModificationEditionData.getStart());
+    videoModification.setEnd(videoModificationEditionData.getEnd());
+    videoModification.setModifier(this.modifierService.get(videoModificationEditionData.getModifier()));
+    videoModification.setVideo(this.videoService.getVideo(videoModificationEditionData.getVideo()));
+    videoModification.setConfirmed(videoModificationEditionData.isConfirmed());
   }
 
 }

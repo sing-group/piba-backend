@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiModel;
 @ApiModel(
   value = "polyprecording-edition-data", description = "Information the relationship between polyps and videos for edition."
 )
-public class PolypRecordingEditicionData implements Serializable {
+public class PolypRecordingEditionData implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -54,16 +54,20 @@ public class PolypRecordingEditicionData implements Serializable {
 
   @XmlElement(name = "end")
   private Integer end;
+  
+  @XmlElement(name = "confirmed")
+  private boolean confirmed;
 
-  PolypRecordingEditicionData() {}
+  PolypRecordingEditionData() {}
 
-  public PolypRecordingEditicionData(int id, String video, String polyp, Integer start, Integer end) {
+  public PolypRecordingEditionData(int id, String video, String polyp, Integer start, Integer end, boolean confirmed) {
     super();
     this.id = id;
     this.video = video;
     this.polyp = polyp;
     this.start = start;
     this.end = end;
+    this.confirmed = confirmed;
   }
 
   public int getId() {
@@ -84,5 +88,19 @@ public class PolypRecordingEditicionData implements Serializable {
 
   public Integer getEnd() {
     return end;
+  }
+  
+  public boolean isConfirmed() {
+    return confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
+  }
+
+  @Override
+  public String toString() {
+    return "PolypRecordingEditionData [id=" + id + ", video=" + video + ", polyp=" + polyp + ", start=" + start
+      + ", end=" + end + ", confirmed=" + confirmed + "]";
   }
 }

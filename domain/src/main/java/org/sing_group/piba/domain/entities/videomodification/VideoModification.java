@@ -42,7 +42,7 @@ import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
 @Table(name = "videomodification", uniqueConstraints = @UniqueConstraint(columnNames = {
-  "video_id", "modifier_id", "start", "end"
+  "video_id", "modifier_id", "start", "end", "confirmed"
 }))
 public class VideoModification extends VideoInterval implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -50,6 +50,9 @@ public class VideoModification extends VideoInterval implements Serializable {
   @Id
   @GeneratedValue(strategy = IDENTITY)
   private int id;
+  
+  @Column(name = "confirmed", columnDefinition="BIT(1) DEFAULT FALSE")
+  private boolean confirmed;
 
   @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
   private Timestamp creationDate;
@@ -66,10 +69,11 @@ public class VideoModification extends VideoInterval implements Serializable {
 
   VideoModification() {}
 
-  public VideoModification(Video video, Modifier modifier, Integer start, Integer end) {
+  public VideoModification(Video video, Modifier modifier, Integer start, Integer end, boolean confirmed) {
     this.video = video;
     this.modifier = modifier;
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.confirmed = confirmed;
     this.setStart(start);
     this.setEnd(end);
     this.checkInterval(start, end);
@@ -93,6 +97,14 @@ public class VideoModification extends VideoInterval implements Serializable {
 
   public void setModifier(Modifier modifier) {
     this.modifier = modifier;
+  }
+
+  public boolean isConfirmed() {
+    return confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
   }
 
 }

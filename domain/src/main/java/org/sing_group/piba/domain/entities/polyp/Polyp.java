@@ -77,6 +77,9 @@ public class Polyp implements Identifiable {
 
   @Column(name = "observation")
   private String observation;
+  
+  @Column(name = "confirmed", columnDefinition="BIT(1) DEFAULT FALSE")
+  private boolean confirmed;
 
   @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
   private Timestamp creationDate;
@@ -98,7 +101,7 @@ public class Polyp implements Identifiable {
 
   public Polyp(
     String name, Integer size, Location location, WASP wasp, NICE nice, LST lst, PARIS parisPrimary,
-    PARIS parisSecondary, PolypHistology histology, String observation, Exploration exploration
+    PARIS parisSecondary, PolypHistology histology, String observation, Exploration exploration, boolean confirmed
   ) {
     this.id = UUID.randomUUID().toString();
     this.size = size;
@@ -111,9 +114,9 @@ public class Polyp implements Identifiable {
     this.histology = histology;
     this.observation = observation;
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.confirmed = confirmed;
     this.setName(name);
     this.setExploration(exploration);
-
   }
 
   @Override
@@ -214,5 +217,13 @@ public class Polyp implements Identifiable {
     if (exploration != null) {
       this.exploration.internalAddPolyp(this);
     }
+  }  
+
+  public boolean isConfirmed() {
+    return confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
   }
 }

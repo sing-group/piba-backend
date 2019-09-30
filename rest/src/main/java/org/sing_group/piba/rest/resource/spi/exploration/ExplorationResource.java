@@ -40,4 +40,4 @@ public interface ExplorationResource {
   public Response getPolyps(String id);
 
   public Response delete(String id);
-}
+  }

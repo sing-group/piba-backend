@@ -33,6 +33,9 @@ public interface PolypResource {
   public Response create(PolypEditionData polypEditionData);
 
   public Response edit(String id, PolypEditionData polypEditionData);
+  
+  public Response editAll(PolypEditionData[] polypEditionData);
 
   public Response delete(String id);
+    
 }

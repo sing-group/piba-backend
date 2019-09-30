@@ -53,16 +53,20 @@ public class VideoModificationEditionData implements Serializable {
 
   @XmlElement(name = "end")
   private Integer end;
+  
+  @XmlElement(name = "confirmed")
+  private boolean confirmed;
 
   VideoModificationEditionData() {}
 
-  public VideoModificationEditionData(int id, String video, String modifier, Integer start, Integer end) {
+  public VideoModificationEditionData(int id, String video, String modifier, Integer start, Integer end, boolean confirmed) {
     super();
     this.id = id;
     this.video = video;
     this.modifier = modifier;
     this.start = start;
     this.end = end;
+    this.confirmed = confirmed;
   }
 
   public int getId() {
@@ -85,4 +89,12 @@ public class VideoModificationEditionData implements Serializable {
     return end;
   }
 
+  public boolean isConfirmed() {
+    return confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
+  }
+  
 }

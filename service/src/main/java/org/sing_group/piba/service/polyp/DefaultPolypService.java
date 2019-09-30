@@ -28,10 +28,14 @@ import javax.inject.Inject;
 import org.sing_group.piba.domain.dao.spi.polyp.PolypDAO;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.service.spi.polyp.PolypService;
+import org.sing_group.piba.service.spi.polyprecording.PolypRecordingService;
 
 @Stateless
 @PermitAll
 public class DefaultPolypService implements PolypService {
+
+  @Inject
+  private PolypRecordingService polypRecordingService;
 
   @Inject
   private PolypDAO polypDao;
@@ -48,6 +52,12 @@ public class DefaultPolypService implements PolypService {
 
   @Override
   public Polyp edit(Polyp polyp) {
+    if (polyp.isConfirmed()) {
+      this.polypRecordingService.get(polyp).forEach(polypRecording -> {
+        polypRecording.setConfirmed(true);
+        this.polypRecordingService.edit(polypRecording);
+      });
+    }
     return polypDao.edit(polyp);
   }
 
@@ -55,4 +65,5 @@ public class DefaultPolypService implements PolypService {
   public void delete(Polyp polyp) {
     polypDao.delete(polyp);
   }
+
 }

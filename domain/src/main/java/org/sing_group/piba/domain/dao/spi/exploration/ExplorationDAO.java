@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.video.Video;
 
 public interface ExplorationDAO {
   public Exploration getExploration(String id);
@@ -42,6 +43,8 @@ public interface ExplorationDAO {
   public Exploration edit(Exploration exploration);
 
   public Stream<Polyp> getPolyps(Exploration exploration);
+
+  public Stream<Video> getVideos(Exploration exploration);
 
   public void delete(Exploration exploration);
 

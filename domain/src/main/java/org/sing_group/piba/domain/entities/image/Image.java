@@ -68,7 +68,7 @@ public class Image implements Identifiable {
   @Column(name = "observation")
   private String observation;
 
-  @Column(name = "manually_selected", columnDefinition = "BIT(1) default false")
+  @Column(name = "manually_selected", columnDefinition = "BIT(1) DEFAULT FALSE")
   private boolean manuallySelected;
 
   @ManyToOne

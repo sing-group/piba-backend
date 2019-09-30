@@ -42,7 +42,7 @@ import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
 @Table(name = "polyprecording", uniqueConstraints = @UniqueConstraint(columnNames = {
-  "video_id", "polyp_id", "start", "end"
+  "video_id", "polyp_id", "start", "end", "confirmed"
 }))
 public class PolypRecording extends VideoInterval implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -64,12 +64,16 @@ public class PolypRecording extends VideoInterval implements Serializable {
   @ManyToOne
   private Video video;
 
+  @Column(name = "confirmed", columnDefinition = "BIT(1) DEFAULT FALSE")
+  private boolean confirmed;
+
   PolypRecording() {}
 
-  public PolypRecording(Polyp polyp, Video video, Integer start, Integer end) {
+  public PolypRecording(Polyp polyp, Video video, Integer start, Integer end, boolean confirmed) {
     this.polyp = polyp;
     this.video = video;
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.confirmed = confirmed;
     this.setStart(start);
     this.setEnd(end);
     this.checkInterval(start, end);
@@ -80,6 +84,7 @@ public class PolypRecording extends VideoInterval implements Serializable {
     this.polyp = polyp;
     this.video = video;
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.confirmed = confirmed;
     this.setStart(start);
     this.setEnd(end);
     this.checkInterval(start, end);
@@ -105,4 +110,17 @@ public class PolypRecording extends VideoInterval implements Serializable {
     this.video = video;
   }
 
+  public boolean isConfirmed() {
+    return confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
+  }
+
+  @Override
+  public String toString() {
+    return "PolypRecording [id=" + id + ", creationDate=" + creationDate + ", updateDate=" + updateDate + ", polyp="
+      + polyp + ", video=" + video + ", confirmed=" + confirmed + "]";
+  }
 }

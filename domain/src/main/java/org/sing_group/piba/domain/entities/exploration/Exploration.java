@@ -69,6 +69,9 @@ public class Exploration implements Identifiable {
   @Column(name = "update_date", columnDefinition = "DATETIME(3)")
   private Timestamp updateDate;
 
+  @Column(name = "confirmed", columnDefinition="BIT(1) DEFAULT FALSE")
+  private boolean confirmed;
+
   @OrderBy("title ASC")
   @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Video> videos = new ArrayList<>();
@@ -82,13 +85,14 @@ public class Exploration implements Identifiable {
 
   Exploration() {}
 
-  public Exploration(String title, String location, Date date, Patient patient) {
-    this.id = UUID.randomUUID().toString();
-    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+  public Exploration(String title, String location, Date date, Patient patient, boolean confirmed) {
+    id = UUID.randomUUID().toString();
     this.setTitle(title);
     this.setLocation(location);
     this.setDate(date);
     this.setPatient(patient);
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.confirmed = confirmed;
   }
 
   @Override
@@ -175,6 +179,14 @@ public class Exploration implements Identifiable {
 
   public int getNumVideos() {
     return videos.size();
+  }
+
+  public boolean isConfirmed() {
+    return this.confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
   }
 
 }

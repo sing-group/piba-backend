@@ -36,4 +36,5 @@ public interface PolypDAO {
   public Polyp edit(Polyp polyp);
   
   public void delete(Polyp polyp);
+  
 }

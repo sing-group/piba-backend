@@ -68,13 +68,16 @@ public class PolypEditionData implements Serializable {
 
   @XmlElement(name = "exploration")
   private String exploration;
+  
+  @XmlElement(name = "confirmed")
+  private boolean confirmed;
 
   PolypEditionData() {}
 
   public PolypEditionData(
     String id, String name, Integer size, Location location, WASP wasp, NICE nice, LST lst,
     PARIS parisPrimary, PARIS parisSecondary, PolypHistologyEditionData histology, String observation,
-    String exploration
+    String exploration, boolean confirmed
   ) {
     this.id = id;
     this.name = name;
@@ -88,6 +91,7 @@ public class PolypEditionData implements Serializable {
     this.histology = histology;
     this.observation = observation;
     this.exploration = exploration;
+    this.confirmed  = confirmed;
   }
 
   public String getId() {
@@ -136,5 +140,13 @@ public class PolypEditionData implements Serializable {
 
   public String getExploration() {
     return exploration;
+  }
+  
+  public boolean isConfirmed() {
+    return confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
   }
 }

@@ -32,11 +32,20 @@ import org.sing_group.piba.domain.dao.spi.exploration.ExplorationDAO;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
+import org.sing_group.piba.service.spi.polyp.PolypService;
+import org.sing_group.piba.service.spi.videomodification.VideoModificationService;
 
 @Stateless
 @PermitAll
 public class DefaultExplorationService implements ExplorationService {
+
+  @Inject
+  private PolypService polypService;
+
+  @Inject
+  private VideoModificationService videoModificationService;
 
   @Inject
   private ExplorationDAO explorationDao;
@@ -55,7 +64,7 @@ public class DefaultExplorationService implements ExplorationService {
   public int numExplorations() {
     return explorationDao.numExplorations();
   }
-  
+
   @Override
   public int numExplorationsByPatient(Patient patient) {
     return explorationDao.numExplorationsByPatient(patient);
@@ -68,12 +77,32 @@ public class DefaultExplorationService implements ExplorationService {
 
   @Override
   public Exploration edit(Exploration exploration) {
+    if (exploration.isConfirmed()) {
+      getPolyps(exploration).filter(polyp -> !polyp.isConfirmed()).forEach(polyp -> {
+        polyp.setConfirmed(true);
+        this.polypService.edit(polyp);
+      });
+
+      getVideos(exploration).forEach(
+        video -> this.videoModificationService.getVideoModification(video)
+          .filter(videoModification -> !videoModification.isConfirmed())
+          .forEach(videoModification -> {
+            videoModification.setConfirmed(true);
+            this.videoModificationService.edit(videoModification);
+          })
+      );
+    }
     return explorationDao.edit(exploration);
   }
 
   @Override
   public Stream<Polyp> getPolyps(Exploration exploration) {
     return explorationDao.getPolyps(exploration);
+  }
+
+  @Override
+  public Stream<Video> getVideos(Exploration exploration) {
+    return explorationDao.getVideos(exploration);
   }
 
   @Override

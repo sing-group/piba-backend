@@ -64,6 +64,9 @@ public class ExplorationData implements Serializable {
 
   @XmlElement(name = "numVideos")
   private int numVideos;
+  
+  @XmlElement(name = "confirmed")
+  private boolean confirmed;
 
   @XmlElement(name = "patient")
   private UuidAndUri patient;
@@ -72,7 +75,7 @@ public class ExplorationData implements Serializable {
 
   public ExplorationData(
     String id, String title, String location, Date explorationDate, List<UuidAndUri> videos, List<UuidAndUri> polyps,
-    UuidAndUri patient, int numVideos, int numPolyps
+    UuidAndUri patient, int numVideos, int numPolyps, boolean confirmed 
   ) {
     this.id = id;
     this.title = title;
@@ -83,18 +86,19 @@ public class ExplorationData implements Serializable {
     this.patient = patient;
     this.numPolyps = numPolyps;
     this.numVideos = numVideos;
+    this.confirmed = confirmed;
   }
 
   public String getId() {
-    return id;
+    return this.id;
   }
 
   public String getTitle() {
-    return title;
+    return this.title;
   }
 
   public String getLocation() {
-    return location;
+    return this.location;
   }
 
   public void setLocation(String location) {
@@ -102,7 +106,7 @@ public class ExplorationData implements Serializable {
   }
 
   public Date getExplorationDate() {
-    return exporationDate;
+    return this.exporationDate;
   }
 
   public void setExplorationDate(Date explorationDate) {
@@ -110,23 +114,31 @@ public class ExplorationData implements Serializable {
   }
 
   public List<UuidAndUri> getVideos() {
-    return videos;
+    return this.videos;
   }
 
   public List<UuidAndUri> getPolyps() {
-    return polyps;
+    return this.polyps;
   }
 
   public UuidAndUri getPatient() {
-    return patient;
+    return this.patient;
   }
 
   public int getNumVideos() {
-    return numVideos;
+    return this.numVideos;
   }
 
   public int getNumPolyps() {
-    return numPolyps;
+    return this.numPolyps;
+  }
+  
+  public boolean isConfirmed() {
+    return this.confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
   }
 
 }

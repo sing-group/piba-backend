@@ -38,6 +38,7 @@ import org.sing_group.piba.domain.dao.spi.exploration.ExplorationDAO;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.video.Video;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
@@ -47,6 +48,7 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   protected EntityManager em;
   protected DAOHelper<String, Exploration> dh;
   protected DAOHelper<String, Polyp> dhPolyp;
+  protected DAOHelper<String, Video> dhVideo;
 
   public DefaultExplorationDAO() {
     super();
@@ -61,6 +63,7 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   protected void createDAOHelper() {
     this.dh = DAOHelper.of(String.class, Exploration.class, this.em);
     this.dhPolyp = DAOHelper.of(String.class, Polyp.class, this.em);
+    this.dhVideo = DAOHelper.of(String.class, Video.class, this.em);
   }
 
   @Override
@@ -99,13 +102,17 @@ public class DefaultExplorationDAO implements ExplorationDAO {
 
   @Override
   public Exploration edit(Exploration exploration) {
-    this.dh.get(exploration.getId());
     return this.dh.update(exploration);
   }
 
   @Override
   public Stream<Polyp> getPolyps(Exploration exploration) {
     return this.dhPolyp.listBy("exploration", exploration).stream();
+  }
+
+  @Override
+  public Stream<Video> getVideos(Exploration exploration) {
+    return this.dhVideo.listBy("exploration", exploration).stream();
   }
 
   @Override

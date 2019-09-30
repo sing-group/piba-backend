@@ -41,4 +41,6 @@ public interface VideoModificationService {
   public void delete(VideoModification videoModification);
 
   public VideoModification get(int id);
+
+  public VideoModification edit(VideoModification videoModification);
 }

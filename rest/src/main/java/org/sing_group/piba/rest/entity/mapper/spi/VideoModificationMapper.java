@@ -26,10 +26,15 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.videomodification.VideoModification;
 import org.sing_group.piba.rest.entity.videomodification.VideoModificationData;
+import org.sing_group.piba.rest.entity.videomodification.VideoModificationEditionData;
 
 public interface VideoModificationMapper {
 
   public void setRequestURI(UriInfo requestURI);
 
   public VideoModificationData toVideoModificationData(VideoModification videoModification);
+
+  void assignVideoModificationEditionData(
+    VideoModification videoModification, VideoModificationEditionData videoModificationEditionData
+  );
 }

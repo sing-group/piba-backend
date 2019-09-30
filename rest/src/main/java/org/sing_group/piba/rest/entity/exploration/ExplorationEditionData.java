@@ -49,17 +49,21 @@ public class ExplorationEditionData implements Serializable {
 
   @XmlElement(name = "explorationDate", required = true)
   private Date explorationDate;
+  
+  @XmlElement(name = "confirmed", required = true)
+  private boolean confirmed;
 
   @XmlElement(name = "patient")
   private String patient;
 
   public ExplorationEditionData() {}
 
-  public ExplorationEditionData(String id, String title, String location, Date explorationDate) {
+  public ExplorationEditionData(String id, String title, String location, Date explorationDate, boolean confirmed) {
     this.id = id;
     this.title = title;
     this.location = location;
     this.explorationDate = explorationDate;
+    this.confirmed = confirmed;
   }
 
   public String getId() {
@@ -92,6 +96,14 @@ public class ExplorationEditionData implements Serializable {
 
   public void setPatient(String patient) {
     this.patient = patient;
+  }
+
+  public boolean isConfirmed() {
+    return confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
   }
 
 }

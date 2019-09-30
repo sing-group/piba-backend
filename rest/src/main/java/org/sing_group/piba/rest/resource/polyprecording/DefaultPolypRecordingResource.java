@@ -25,6 +25,10 @@ package org.sing_group.piba.rest.resource.polyprecording;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
@@ -33,6 +37,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -43,14 +48,19 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
+import org.sing_group.piba.domain.entities.user.Role;
+import org.sing_group.piba.domain.entities.user.User;
 import org.sing_group.piba.domain.entities.video.Video;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypRecordingMapper;
+import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
-import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditicionData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditionData;
 import org.sing_group.piba.rest.filter.CrossDomain;
+import org.sing_group.piba.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.piba.rest.resource.spi.polyprecording.PolypRecordingResource;
 import org.sing_group.piba.service.spi.polyp.PolypService;
 import org.sing_group.piba.service.spi.polyprecording.PolypRecordingService;
+import org.sing_group.piba.service.spi.user.UserService;
 import org.sing_group.piba.service.spi.video.VideoService;
 
 import io.swagger.annotations.Api;
@@ -79,6 +89,9 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
 
   @Inject
   private PolypService polypService;
+
+  @Inject
+  private UserService userService;
 
   @Inject
   private PolypRecordingMapper polypRecordingMapper;
@@ -128,13 +141,13 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
     @ApiResponse(code = 400, message = "Unknown video.")
   })
   @Override
-  public Response create(PolypRecordingEditicionData polypRecordingEditicionData) {
-    Polyp polyp = this.polypService.getPolyp(polypRecordingEditicionData.getPolyp());
-    Video video = this.videoService.getVideo(polypRecordingEditicionData.getVideo());
-   
+  public Response create(PolypRecordingEditionData polypRecordingEditionData) {
+    Polyp polyp = this.polypService.getPolyp(polypRecordingEditionData.getPolyp());
+    Video video = this.videoService.getVideo(polypRecordingEditionData.getVideo());
+
     PolypRecording polypRecording =
       new PolypRecording(
-        polyp, video, polypRecordingEditicionData.getStart(), polypRecordingEditicionData.getEnd()
+        polyp, video, polypRecordingEditionData.getStart(), polypRecordingEditionData.getEnd(), false
       );
 
     this.polypRecordingService.create(polypRecording);
@@ -145,16 +158,90 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
 
   @DELETE
   @Path("{id}")
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown polyp recording: {id}")
-  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown polyp recording: {id}"),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
   @ApiOperation(
     value = "Deletes an existing polyp recording.", code = 200
   )
   @Override
   public Response delete(@PathParam("id") int id) {
-    this.polypRecordingService.delete(this.polypRecordingService.get(id));
-    return Response.ok().build();
+    PolypRecording polypRecording = this.polypRecordingService.get(id);
+    if (!polypRecording.isConfirmed()) {
+      this.polypRecordingService.delete(polypRecording);
+      return Response.ok().build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+  }
+
+  @Path("{id}")
+  @PUT
+  @ApiOperation(
+    value = "Modifies an existing polyp recording", response = PolypRecordingData.class, code = 200
+  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown polyp recording: {id}"),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
+  @Override
+  public Response edit(@PathParam("id") int id, PolypRecordingEditionData polypRecordingEditionData) {
+    System.out.println(polypRecordingEditionData);
+    PolypRecording polypRecording = this.polypRecordingService.get(id);
+    System.out.println(polypRecording);
+    if (isPolypRecordingEditable(polypRecording, polypRecordingEditionData)) {
+      this.polypRecordingMapper.assignPolypRecordingEditionData(polypRecording, polypRecordingEditionData);
+      System.out.println(polypRecording);
+      return Response
+        .ok(this.polypRecordingMapper.toPolypRecordingData(this.polypRecordingService.edit(polypRecording)))
+        .build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+  }
+
+  @PUT
+  @ApiOperation(
+    value = "Modifies all existing polyp recordings in the array", response = PolypData.class, code = 200
+  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown polyp recording."),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
+  @Override
+  public Response editAll(PolypRecordingEditionData[] polypRecordingsEditionData) {
+    if (
+      Arrays.stream(polypRecordingsEditionData).allMatch(
+        polypRecordingEditionData -> isPolypRecordingEditable(
+          this.polypRecordingService.get(polypRecordingEditionData.getId()), polypRecordingEditionData
+        )
+      )
+    ) {
+      List<PolypRecording> editedPolypRecordings = new ArrayList<PolypRecording>();
+      Arrays.stream(polypRecordingsEditionData).forEach(polypRecordingEditionData -> {
+        PolypRecording polypRecording = this.polypRecordingService.get(polypRecordingEditionData.getId());
+        this.polypRecordingMapper.assignPolypRecordingEditionData(polypRecording, polypRecordingEditionData);
+        editedPolypRecordings.add(this.polypRecordingService.edit(polypRecording));
+      });
+      return Response.ok(
+        editedPolypRecordings.stream().map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
+      ).build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+  }
+
+  private boolean isEndoscopist() {
+    User currentUser = this.userService.getCurrentUser();
+    return currentUser.getRole().equals(Role.ENDOSCOPIST);
+  }
+
+  private boolean isPolypRecordingEditable(
+    PolypRecording polypRecording, PolypRecordingEditionData polypRecordingEditionData
+  ) {
+    return (!polypRecording.isConfirmed() && polypRecordingEditionData.isConfirmed() && isEndoscopist())
+      || (!polypRecording.isConfirmed() && !polypRecordingEditionData.isConfirmed());
   }
 
 }

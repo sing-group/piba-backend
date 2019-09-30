@@ -33,10 +33,13 @@ public interface VideoModificationDAO {
   public VideoModification create(VideoModification videoModification);
 
   public Stream<VideoModification> getVideoModification(Video video);
-  
+
   public Stream<VideoModification> getVideoModification(Modifier modifier);
 
   public void delete(VideoModification videoModification);
 
   public VideoModification get(int id);
+
+  public VideoModification edit(VideoModification videoModification);
+
 }

@@ -67,7 +67,7 @@ public class DefaultPolypMapper implements PolypMapper {
       polyp.getId(), polyp.getName(), polyp.getSize(), polyp.getLocation(), polyp.getWasp(),
       polyp.getNice(), polyp.getLst(), polyp.getParisPrimary(), polyp.getParisSecondary(),
       toPolypHistologyData(polyp.getHistology()),
-      polyp.getObservation(), UuidAndUri.fromEntity(requestURI, polyp.getExploration(), DefaultExplorationResource.class)
+      polyp.getObservation(), UuidAndUri.fromEntity(requestURI, polyp.getExploration(), DefaultExplorationResource.class), polyp.isConfirmed()
     );
   }
 
@@ -137,6 +137,7 @@ public class DefaultPolypMapper implements PolypMapper {
     polyp.setWasp(polypEditionData.getWasp());
     polyp.setSize(polypEditionData.getSize());
     polyp.setObservation(polypEditionData.getObservation());
+    polyp.setConfirmed(polypEditionData.isConfirmed());
     polyp.setExploration(
       polypEditionData.getExploration() == null ? null
         : this.explorationService.getExploration(polypEditionData.getExploration())

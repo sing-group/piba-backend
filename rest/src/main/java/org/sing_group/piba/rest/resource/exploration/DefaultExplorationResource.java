@@ -48,15 +48,19 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
 import org.sing_group.piba.domain.entities.patient.Patient;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.user.Role;
+import org.sing_group.piba.domain.entities.user.User;
 import org.sing_group.piba.rest.entity.exploration.ExplorationData;
 import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 import org.sing_group.piba.rest.entity.mapper.spi.ExplorationMapper;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.filter.CrossDomain;
+import org.sing_group.piba.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.piba.rest.resource.spi.exploration.ExplorationResource;
 import org.sing_group.piba.service.spi.exploration.ExplorationService;
 import org.sing_group.piba.service.spi.patient.PatientService;
+import org.sing_group.piba.service.spi.user.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -81,6 +85,9 @@ public class DefaultExplorationResource implements ExplorationResource {
 
   @Inject
   private PatientService patientService;
+
+  @Inject
+  private UserService userService;
 
   @Inject
   private ExplorationMapper explorationMapper;
@@ -123,7 +130,9 @@ public class DefaultExplorationResource implements ExplorationResource {
   )
   @Override
   public Response getExplorations(
-    @QueryParam("patient") String patientID, @QueryParam("idspace") String idSpace, @QueryParam("page") String page,
+    @QueryParam("patient") String patientID, @QueryParam("idspace") String idSpace, @QueryParam(
+      "page"
+    ) String page,
     @QueryParam("pageSize") String pageSize
   ) {
     Patient patient = null;
@@ -159,8 +168,9 @@ public class DefaultExplorationResource implements ExplorationResource {
     Patient patient = this.patientService.get(explorationEditionData.getPatient());
     Exploration exploration =
       new Exploration(
-        explorationEditionData.getTitle(), explorationEditionData.getLocation(), explorationEditionData.getExplorationDate(),
-        patient
+        explorationEditionData.getTitle(), explorationEditionData.getLocation(),
+        explorationEditionData.getExplorationDate(),
+        patient, false
       );
     exploration = this.service.create(exploration);
 
@@ -173,14 +183,21 @@ public class DefaultExplorationResource implements ExplorationResource {
   @ApiOperation(
     value = "Modifies an existing exploration", response = ExplorationData.class, code = 200
   )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown exploration: {id}")
-  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown exploration: {id}"),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
   @Override
   public Response edit(@PathParam("id") String id, ExplorationEditionData explorationEditionData) {
+
     Exploration exploration = this.service.getExploration(id);
-    explorationMapper.assignExplorationEditData(exploration, explorationEditionData);
-    return Response.ok(this.explorationMapper.toExplorationData(this.service.edit(exploration))).build();
+    if (isExplorationEditable(exploration, explorationEditionData)) {
+      this.explorationMapper.assignExplorationEditData(exploration, explorationEditionData);
+      return Response.ok(this.explorationMapper.toExplorationData(this.service.edit(exploration))).build();
+
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
   }
 
   @GET
@@ -207,14 +224,29 @@ public class DefaultExplorationResource implements ExplorationResource {
   @ApiOperation(
     value = "Deletes an existing exploration.", code = 200
   )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown exploration: {id}")
-  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown exploration: {id}"),
+    @ApiResponse(code = 430, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
+  })
   @Override
   public Response delete(@PathParam("id") String id) {
     Exploration exploration = this.service.getExploration(id);
-    this.service.delete(exploration);
-    return Response.ok().build();
+    if (!exploration.isConfirmed()) {
+      this.service.delete(exploration);
+      return Response.ok().build();
+    } else {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+  }
+
+  private boolean isEndoscopist() {
+    User currentUser = this.userService.getCurrentUser();
+    return currentUser.getRole().equals(Role.ENDOSCOPIST);
+  }
+
+  private boolean isExplorationEditable(Exploration exploration, ExplorationEditionData explorationEditionData) {
+    return (!exploration.isConfirmed() && explorationEditionData.isConfirmed() && isEndoscopist())
+      || (!exploration.isConfirmed() && !explorationEditionData.isConfirmed());
   }
 
 }

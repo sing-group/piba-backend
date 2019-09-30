@@ -84,4 +84,9 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
     return polypRecordingDAO.get(id);
   }
 
+  @Override
+  public PolypRecording edit(PolypRecording polypRecording) {
+    return this.polypRecordingDAO.edit(polypRecording);
+  }
+
 }

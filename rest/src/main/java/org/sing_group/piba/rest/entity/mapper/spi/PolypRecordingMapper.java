@@ -26,11 +26,16 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditionData;
 
 public interface PolypRecordingMapper {
 
   public PolypRecordingData toPolypRecordingData(PolypRecording polypRecording);
 
   void setRequestURI(UriInfo requestURI);
+
+  void assignPolypRecordingEditionData(
+    PolypRecording polypRecording, PolypRecordingEditionData polypRecordingEditionData
+  );
 
 }

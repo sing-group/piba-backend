@@ -53,7 +53,7 @@ public class DefaultExplorationMapper implements ExplorationMapper {
       fromEntities(requestURI, exploration.getVideos(), DefaultVideoResource.class),
       fromEntities(requestURI, exploration.getPolyps(), DefaultPolypResource.class),
       fromEntity(requestURI, exploration.getPatient(), DefaultPatientResource.class),
-      exploration.getNumVideos(), exploration.getNumPolyps()
+      exploration.getNumVideos(), exploration.getNumPolyps(), exploration.isConfirmed()
     );
   }
 
@@ -62,5 +62,6 @@ public class DefaultExplorationMapper implements ExplorationMapper {
     exploration.setTitle(explorationEditionData.getTitle());
     exploration.setDate(explorationEditionData.getExplorationDate());
     exploration.setLocation(explorationEditionData.getLocation());
+    exploration.setConfirmed(explorationEditionData.isConfirmed());
   }
 }

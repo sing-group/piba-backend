@@ -66,4 +66,9 @@ public class DefaultVideoModificationService implements VideoModificationService
     return videoModificationDAO.get(id);
   }
 
+  @Override
+  public VideoModification edit(VideoModification videoModification) {
+    return videoModificationDAO.edit(videoModification);
+  }
+
 }

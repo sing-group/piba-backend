@@ -54,16 +54,20 @@ public class PolypRecordingData implements Serializable {
 
   @XmlElement(name = "end")
   private Integer end;
+  
+  @XmlElement(name = "confirmed")
+  private boolean confirmed;
 
   PolypRecordingData() {}
 
-  public PolypRecordingData(int id, UuidAndUri video, UuidAndUri polyp, Integer start, Integer end) {
+  public PolypRecordingData(int id, UuidAndUri video, UuidAndUri polyp, Integer start, Integer end, boolean confirmed) {
     super();
     this.id = id;
     this.video = video;
     this.polyp = polyp;
     this.start = start;
     this.end = end;
+    this.confirmed = confirmed;
   }
 
   public int getId() {
@@ -84,6 +88,14 @@ public class PolypRecordingData implements Serializable {
 
   public Integer getEnd() {
     return end;
+  }
+  
+  public boolean isConfirmed() {
+    return confirmed;
+  }
+
+  public void setConfirmed(boolean confirmed) {
+    this.confirmed = confirmed;
   }
 
 }

@@ -23,19 +23,29 @@
 package org.sing_group.piba.rest.entity.mapper;
 
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypRecordingMapper;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditionData;
 import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
+import org.sing_group.piba.service.spi.polyp.PolypService;
+import org.sing_group.piba.service.spi.video.VideoService;
 
 @Default
 public class DefaultPolypRecordingMapper implements PolypRecordingMapper {
 
   private UriInfo requestURI;
+
+  @Inject
+  private PolypService polypService;
+
+  @Inject
+  private VideoService videoService;
 
   @Override
   public void setRequestURI(UriInfo requestURI) {
@@ -48,8 +58,19 @@ public class DefaultPolypRecordingMapper implements PolypRecordingMapper {
       polypRecording.getId(),
       UuidAndUri.fromEntity(requestURI, polypRecording.getVideo(), DefaultVideoResource.class),
       UuidAndUri.fromEntity(requestURI, polypRecording.getPolyp(), DefaultPolypResource.class),
-      polypRecording.getStart(), polypRecording.getEnd()
+      polypRecording.getStart(), polypRecording.getEnd(), polypRecording.isConfirmed()
     );
+  }
+
+  @Override
+  public void assignPolypRecordingEditionData(
+    PolypRecording polypRecording, PolypRecordingEditionData polypRecordingEditicionData
+  ) {
+    polypRecording.setStart(polypRecordingEditicionData.getStart());
+    polypRecording.setEnd(polypRecordingEditicionData.getEnd());
+    polypRecording.setPolyp(this.polypService.getPolyp(polypRecordingEditicionData.getPolyp()));
+    polypRecording.setVideo(this.videoService.getVideo(polypRecordingEditicionData.getVideo()));
+    polypRecording.setConfirmed(polypRecordingEditicionData.isConfirmed());
   }
 
 }
