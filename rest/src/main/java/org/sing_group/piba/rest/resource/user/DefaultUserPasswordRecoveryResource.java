@@ -35,8 +35,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.sing_group.piba.domain.entities.passwordrecovery.PasswordRecovery;
-import org.sing_group.piba.domain.entities.user.User;
+import org.sing_group.piba.rest.entity.mapper.spi.PasswordRecoveryMapper;
+import org.sing_group.piba.rest.entity.user.LoginOrEmailData;
+import org.sing_group.piba.rest.entity.user.PasswordRecoveryData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.user.UserPasswordRecoveryResource;
 import org.sing_group.piba.service.spi.user.UserService;
@@ -46,14 +47,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Path("recovery")
+@Path("loginrecovery")
 @Produces({
   APPLICATION_JSON, APPLICATION_XML
 })
 @Consumes({
   APPLICATION_JSON, APPLICATION_XML
 })
-@Api("recovery")
+@Api("loginrecovery")
 @Stateless
 @Default
 @CrossDomain
@@ -61,25 +62,21 @@ public class DefaultUserPasswordRecoveryResource implements UserPasswordRecovery
 
   @Inject
   private UserService userService;
-  
-  //@Inject
-  //private UserMapper userMapper;
+
+  @Inject
+  private PasswordRecoveryMapper passwordRecoveryMapper;
 
   @POST
   @ApiOperation(
     value = "Sends an email to recover user password", code = 200
   )
   @Override
-  public Response recoverPassword(User user) {
-    if (!user.getEmail().equals("null@null.null")) {
-      this.userService.recoverPassword(user.getEmail());
-    }
-    else {
-      this.userService.recoverPassword(user.getLogin());
-    }
+  public Response recoverPassword(LoginOrEmailData loginOrEmailData) {
+    this.userService.recoverPassword(this.passwordRecoveryMapper.toLoginOrEmail(loginOrEmailData));
+
     return Response.ok().build();
   }
-  
+
   @PUT
   @Path("/password")
   @ApiOperation(
@@ -89,8 +86,9 @@ public class DefaultUserPasswordRecoveryResource implements UserPasswordRecovery
     @ApiResponse(code = 400, message = "No password recovery found or it's over date")
   )
   @Override
-  public Response updatePasswordRecovery(PasswordRecovery newPassword) {
-    this.userService.updatePasswordRecovery(newPassword);
+  public Response updatePasswordRecovery(PasswordRecoveryData newPassword) {
+    this.userService.updatePasswordRecovery(this.passwordRecoveryMapper.toPasswordRecovery(newPassword));
+
     return Response.ok().build();
   }
 

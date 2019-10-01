@@ -1,8 +1,8 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
- * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
+ * Copyright (C) 2018 - 2020 Daniel Glez-Peña, Miguel Reboiro-Jato,
  * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
  * %%
  * This program is free software: you can redistribute it and/or modify
@@ -20,31 +20,26 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.service.spi.user;
+package org.sing_group.piba.domain.entities.user;
 
-import java.util.stream.Stream;
+import java.util.regex.Pattern;
 
-import javax.ejb.Local;
+public class LoginOrEmail {
+  public final static String EMAIL_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+  public final static Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
-import org.sing_group.piba.domain.entities.passwordrecovery.PasswordRecovery;
-import org.sing_group.piba.domain.entities.user.LoginOrEmail;
-import org.sing_group.piba.domain.entities.user.User;
+  private String loginOrEmail;
 
-@Local
-public interface UserService {
-  public User getCurrentUser();
+  public LoginOrEmail(String loginOrEmail) {
+    this.loginOrEmail = loginOrEmail;
+  }
 
-  public User get(String id);
+  public String getLoginOrEmail() {
+    return loginOrEmail;
+  }
 
-  public User create(User user);
+  public boolean isEmail() {
+    return EMAIL_PATTERN.matcher(this.loginOrEmail).matches();
+  }
 
-  public User edit(User user);
-
-  public void delete(User user);
-
-  public Stream<User> getUsers();
-
-  public void recoverPassword(LoginOrEmail loginOrEmail);
-
-  public void updatePasswordRecovery(PasswordRecovery passwordRecovery);
 }

@@ -25,13 +25,14 @@ package org.sing_group.piba.rest.resource.spi.user;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
-import org.sing_group.piba.domain.entities.passwordrecovery.PasswordRecovery;
-import org.sing_group.piba.domain.entities.user.User;
+import org.sing_group.piba.rest.entity.user.LoginOrEmailData;
+import org.sing_group.piba.rest.entity.user.PasswordRecoveryData;
 
 @Local
 public interface UserPasswordRecoveryResource {
 
-  public Response recoverPassword(User userData);
+  public Response recoverPassword(LoginOrEmailData LoginOrEmailData);
 
-  public Response updatePasswordRecovery(PasswordRecovery newPass);
+  public Response updatePasswordRecovery(PasswordRecoveryData newPass);
+
 }

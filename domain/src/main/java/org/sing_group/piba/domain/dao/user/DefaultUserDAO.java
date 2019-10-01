@@ -22,6 +22,7 @@
  */
 package org.sing_group.piba.domain.dao.user;
 
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.stream.Stream;
@@ -36,6 +37,7 @@ import javax.transaction.Transactional.TxType;
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.user.UserDAO;
 import org.sing_group.piba.domain.entities.passwordrecovery.PasswordRecovery;
+import org.sing_group.piba.domain.entities.user.LoginOrEmail;
 import org.sing_group.piba.domain.entities.user.User;
 
 @Default
@@ -88,35 +90,35 @@ public class DefaultUserDAO implements UserDAO {
   }
 
   @Override
-  public PasswordRecovery createPasswordRecovery(String loginOrEmail) {
+  public PasswordRecovery createPasswordRecovery(LoginOrEmail loginOrEmail) {
     User user = getUserByLoginOrEmail(loginOrEmail);
     String login = user.getLogin();
 
     PasswordRecovery passRecovery;
     try {
-      Date now = new Date();
       passRecovery =
         this.dhPass.get(login)
           .orElseThrow(() -> new IllegalArgumentException("Recovery not created yet."));
-      if (passRecovery.getDate().toInstant()
-        .plus(24, ChronoUnit.HOURS).isBefore(now.toInstant())) {
+      if (
+        passRecovery.getDate().toInstant()
+          .plus(24, ChronoUnit.HOURS).isBefore(Instant.now())
+      ) {
         passRecovery = this.dhPass.update(new PasswordRecovery(login));
       }
     } catch (IllegalArgumentException e) {
       passRecovery = this.dhPass.persist(new PasswordRecovery(login));
     }
-    return passRecovery;
 
+    return passRecovery;
   }
 
-  private User getUserByLoginOrEmail(final String loginOrEmail) {
-    if (loginOrEmail.contains("@")) {
-      return dh.getBy("email", loginOrEmail)
-          //.map(User::getLogin)
-          .orElseThrow(() -> new IllegalArgumentException("Unknown user: " + loginOrEmail));
+  private User getUserByLoginOrEmail(LoginOrEmail loginOrEmail) {
+    if (loginOrEmail.isEmail()) {
+      return dh.getBy("email", loginOrEmail.getLoginOrEmail())
+        .orElseThrow(() -> new IllegalArgumentException("Unknown user: " + loginOrEmail.getLoginOrEmail()));
     } else {
-      return dh.get(loginOrEmail)
-          .orElseThrow(() -> new IllegalArgumentException("Unknown user: " + loginOrEmail));
+      return dh.get(loginOrEmail.getLoginOrEmail())
+        .orElseThrow(() -> new IllegalArgumentException("Unknown user: " + loginOrEmail.getLoginOrEmail()));
     }
   }
 

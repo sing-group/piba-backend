@@ -22,7 +22,6 @@
  */
 package org.sing_group.piba.service.user;
 
-
 import java.util.stream.Stream;
 
 import javax.annotation.Resource;
@@ -39,6 +38,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.sing_group.piba.domain.dao.spi.user.UserDAO;
 import org.sing_group.piba.domain.entities.passwordrecovery.PasswordRecovery;
+import org.sing_group.piba.domain.entities.user.LoginOrEmail;
 import org.sing_group.piba.domain.entities.user.User;
 import org.sing_group.piba.service.spi.user.UserService;
 
@@ -47,10 +47,10 @@ import org.sing_group.piba.service.spi.user.UserService;
 public class DefaultUserService implements UserService {
 
   private static final String FRONTEND_PATH = "java:global/piba/frontend/url";
-  
+
   @Resource(name = FRONTEND_PATH)
   private String frontendURL;
-  
+
   @Resource(name = "java:/piba/mail")
   private Session session;
 
@@ -59,7 +59,7 @@ public class DefaultUserService implements UserService {
 
   @Resource
   private SessionContext context;
-  
+
   @Override
   public User getCurrentUser() {
     return userDAO.get(this.context.getCallerPrincipal().getName());
@@ -91,22 +91,28 @@ public class DefaultUserService implements UserService {
   }
 
   @Override
-  public void recoverPassword(String loginOrEmail) {
+  public void recoverPassword(LoginOrEmail loginOrEmail) {
     sendEmail(userDAO.createPasswordRecovery(loginOrEmail));
   }
 
   private void sendEmail(PasswordRecovery passwordRecovery) {
     try {
+      String email = userDAO.get(passwordRecovery.getLogin()).getEmail();
+      
       Message message = new MimeMessage(session);
-      message.setFrom(new InternetAddress("piba@info.com"));
-      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(userDAO.get(passwordRecovery.getLogin()).getEmail()));
-      message.setSubject("PIBA Password Recovery");
-      message.setText(
-        "Hi " + passwordRecovery.getLogin() + "!\n"
-          + "If you forgot your password, please click on the next URL and change it.\n"
-          + frontendURL + "recovery?uuid=" + passwordRecovery.getUuid()
-          + "\nThe link will be active the next 24 hours."
+      message.setFrom(new InternetAddress("piba@sing-group.org"));
+      message.setRecipients(
+        Message.RecipientType.TO, InternetAddress.parse(email)
       );
+      message.setSubject("PIBA Password Recovery");
+      message.setText(String.format(
+        "Hi %s,\n\n" +
+        "If you forgot your password, please click on the next URL and to change it: \n" +
+        "%sloginrecovery?uuid=%s.\n" +
+        "The link will be active for the next 24 hours.\n\n" +
+        "Sincerely,\n\n\tThe PIBA team",
+        passwordRecovery.getLogin(),  frontendURL, passwordRecovery.getUuid()
+      ));
 
       Transport.send(message);
     } catch (MessagingException ex) {
