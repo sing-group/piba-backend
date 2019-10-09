@@ -32,9 +32,12 @@ import org.sing_group.piba.rest.entity.RestImageUploadData;
 @Provider
 public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestImageUploadData> {
 
-  private int numFrame;
   private File imageData;
-  private String gallery, video, polyp;
+  private int numFrame;
+  private String gallery;
+  private String video;
+  private String polyp;
+  private String observation;
 
   @Override
   protected void init() {}
@@ -54,6 +57,9 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
       case "polyp":
         this.polyp = value;
         break;
+      case "observation":
+        this.observation = value;
+        break;
       default:
         break;
     }
@@ -70,7 +76,9 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
 
   @Override
   protected RestImageUploadData build() {
-    return new RestImageUploadData(this.numFrame, this.imageData, this.gallery, this.video, this.polyp);
+    return new RestImageUploadData(
+      this.numFrame, this.imageData, this.gallery, this.video, this.polyp, this.observation
+    );
   }
 
 }

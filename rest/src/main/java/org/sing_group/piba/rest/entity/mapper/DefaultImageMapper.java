@@ -57,7 +57,8 @@ public class DefaultImageMapper implements ImageMapper {
       fromEntity(requestURI, image.getVideo(), DefaultVideoResource.class),
       image.getPolypLocation() == null ? null
         : fromEntity(requestURI, image, DefaultImageResource.class, "polyplocation"),
-        image.getPolyp() == null ? null : fromEntity(requestURI, image.getPolyp(), DefaultPolypResource.class)
+      image.getPolyp() == null ? null : fromEntity(requestURI, image.getPolyp(), DefaultPolypResource.class),
+      image.getObservation()
     );
   }
 

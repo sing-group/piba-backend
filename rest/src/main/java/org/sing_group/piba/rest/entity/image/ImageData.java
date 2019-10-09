@@ -53,12 +53,20 @@ public class ImageData implements Serializable {
   private UuidAndUri polypLocation;
   @XmlElement(name = "polyp")
   private UuidAndUri polyp;
+  @XmlElement(name = "observation")
+  private String observation;
 
   public ImageData() {}
 
   public ImageData(
-    String id, int numFrame, boolean isRemoved, UuidAndUri gallery, UuidAndUri video, UuidAndUri polypLocation,
-    UuidAndUri polyp
+    String id,
+    int numFrame,
+    boolean isRemoved,
+    UuidAndUri gallery,
+    UuidAndUri video,
+    UuidAndUri polypLocation,
+    UuidAndUri polyp,
+    String observation
   ) {
     this.id = id;
     this.numFrame = numFrame;
@@ -67,6 +75,7 @@ public class ImageData implements Serializable {
     this.video = video;
     this.polypLocation = polypLocation;
     this.polyp = polyp;
+    this.observation = observation;
   }
 
   public String getId() {
@@ -95,6 +104,10 @@ public class ImageData implements Serializable {
 
   public UuidAndUri getPolyp() {
     return polyp;
+  }
+
+  public String getObservation() {
+    return this.observation;
   }
 
 }

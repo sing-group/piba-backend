@@ -55,18 +55,21 @@ public class Image implements Identifiable {
   @Column(name = "is_removed")
   private boolean isRemoved = false;
 
-  @Column(name = "created", columnDefinition="DATETIME(3)")
+  @Column(name = "created", columnDefinition = "DATETIME(3)")
   private Timestamp created;
 
   @Column(name = "observation_to_remove")
   private String observationToRemove;
+
+  @Column(name = "observation")
+  private String observation;
 
   @ManyToOne
   private Gallery gallery;
 
   @ManyToOne
   private Video video;
-  
+
   @ManyToOne
   private Polyp polyp;
 
@@ -75,11 +78,12 @@ public class Image implements Identifiable {
 
   Image() {}
 
-  public Image(int numFrame, boolean isRemoved, Gallery gallery, Video video, Polyp polyp) {
+  public Image(int numFrame, boolean isRemoved, String observation, Gallery gallery, Video video, Polyp polyp) {
     this.id = UUID.randomUUID().toString();
     this.created = new Timestamp(new Date().getTime());
     this.numFrame = numFrame;
     this.isRemoved = isRemoved;
+    this.observation = observation;
     setGallery(gallery);
     setVideo(video);
     setPolyp(polyp);
@@ -114,6 +118,14 @@ public class Image implements Identifiable {
     this.observationToRemove = observationToRemove;
   }
 
+  public String getObservation() {
+    return observation;
+  }
+
+  public void setObservation(String observation) {
+    this.observation = observation;
+  }
+
   public Gallery getGallery() {
     return gallery;
   }
@@ -129,7 +141,7 @@ public class Image implements Identifiable {
   public void setVideo(Video video) {
     this.video = video;
   }
-  
+
   public Polyp getPolyp() {
     return polyp;
   }

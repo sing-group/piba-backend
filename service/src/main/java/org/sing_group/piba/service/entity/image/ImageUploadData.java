@@ -26,16 +26,20 @@ import java.io.File;
 
 public class ImageUploadData {
 
-  private int numFrame;
   private File imageData;
-  private String gallery, video, polyp;
+  private int numFrame;
+  private String gallery;
+  private String video;
+  private String polyp;
+  private String observation;
 
-  public ImageUploadData(int numFrame, File imageData, String gallery, String video, String polyp) {
-    this.numFrame = numFrame;
+  public ImageUploadData(File imageData, int numFrame, String gallery, String video, String polyp, String observation) {
     this.imageData = imageData;
+    this.numFrame = numFrame;
     this.gallery = gallery;
     this.video = video;
     this.polyp = polyp;
+    this.observation = observation;
   }
 
   public int getNumFrame() {
@@ -56,6 +60,10 @@ public class ImageUploadData {
 
   public String getPolyp() {
     return polyp;
+  }
+
+  public String getObservation() {
+    return observation;
   }
 
 }

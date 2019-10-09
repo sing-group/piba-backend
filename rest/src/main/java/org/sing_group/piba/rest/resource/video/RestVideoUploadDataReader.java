@@ -31,8 +31,11 @@ import org.sing_group.piba.rest.entity.RestVideoUploadData;
 @Provider
 public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVideoUploadData> {
 
-  private String title, observations, withText, exploration_id;
   private File videoData;
+  private String title;
+  private String observations;
+  private String withText;
+  private String exploration_id;
 
   @Override
   protected void add(String name, String value) {
