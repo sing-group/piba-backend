@@ -70,7 +70,11 @@ public class DefaultImageService implements ImageService {
     if (!imageUploadData.getPolyp().equals("null")) {
       polyp = this.polypService.getPolyp(imageUploadData.getPolyp());
     }
-    Image image = new Image(imageUploadData.getNumFrame(), false, imageUploadData.getObservation(), gallery, video, polyp);
+    Image image =
+      new Image(
+        imageUploadData.getNumFrame(), false, imageUploadData.getObservation(), imageUploadData.isManuallySelected(),
+        gallery, video, polyp
+      );
     image = this.imageDao.create(image);
     try {
       fileStorage.store(

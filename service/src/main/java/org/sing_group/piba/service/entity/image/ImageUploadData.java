@@ -32,14 +32,25 @@ public class ImageUploadData {
   private String video;
   private String polyp;
   private String observation;
+  private boolean manuallySelected;
 
-  public ImageUploadData(File imageData, int numFrame, String gallery, String video, String polyp, String observation) {
+  public ImageUploadData(
+    File imageData,
+    int numFrame,
+    String gallery,
+    String video,
+    String polyp,
+    String observation,
+    boolean manuallySelected
+  ) {
     this.imageData = imageData;
+    this.numFrame = numFrame;
     this.numFrame = numFrame;
     this.gallery = gallery;
     this.video = video;
     this.polyp = polyp;
     this.observation = observation;
+    this.manuallySelected = manuallySelected;
   }
 
   public int getNumFrame() {
@@ -64,6 +75,10 @@ public class ImageUploadData {
 
   public String getObservation() {
     return observation;
+  }
+
+  public boolean isManuallySelected() {
+    return manuallySelected;
   }
 
 }

@@ -58,7 +58,8 @@ public class DefaultImageMapper implements ImageMapper {
       image.getPolypLocation() == null ? null
         : fromEntity(requestURI, image, DefaultImageResource.class, "polyplocation"),
       image.getPolyp() == null ? null : fromEntity(requestURI, image.getPolyp(), DefaultPolypResource.class),
-      image.getObservation()
+      image.getObservation(),
+      image.isManuallySelected()
     );
   }
 

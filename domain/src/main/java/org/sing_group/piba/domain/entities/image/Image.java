@@ -64,6 +64,9 @@ public class Image implements Identifiable {
   @Column(name = "observation")
   private String observation;
 
+  @Column(name = "manually_selected", columnDefinition = "BIT(1) default false")
+  private boolean manuallySelected;
+
   @ManyToOne
   private Gallery gallery;
 
@@ -78,12 +81,16 @@ public class Image implements Identifiable {
 
   Image() {}
 
-  public Image(int numFrame, boolean isRemoved, String observation, Gallery gallery, Video video, Polyp polyp) {
+  public Image(
+    int numFrame, boolean isRemoved, String observation, boolean manuallySelected, Gallery gallery, Video video,
+    Polyp polyp
+  ) {
     this.id = UUID.randomUUID().toString();
     this.created = new Timestamp(new Date().getTime());
     this.numFrame = numFrame;
     this.isRemoved = isRemoved;
     this.observation = observation;
+    this.manuallySelected = manuallySelected;
     setGallery(gallery);
     setVideo(video);
     setPolyp(polyp);
@@ -158,4 +165,11 @@ public class Image implements Identifiable {
     this.polypLocation = polypLocation;
   }
 
+  public boolean isManuallySelected() {
+    return manuallySelected;
+  }
+
+  public void setManuallySelected(boolean manuallySelected) {
+    this.manuallySelected = manuallySelected;
+  }
 }

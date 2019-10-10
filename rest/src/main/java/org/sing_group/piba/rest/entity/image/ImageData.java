@@ -55,6 +55,8 @@ public class ImageData implements Serializable {
   private UuidAndUri polyp;
   @XmlElement(name = "observation")
   private String observation;
+  @XmlElement(name = "manuallySelected")
+  private boolean manuallySelected;
 
   public ImageData() {}
 
@@ -66,7 +68,8 @@ public class ImageData implements Serializable {
     UuidAndUri video,
     UuidAndUri polypLocation,
     UuidAndUri polyp,
-    String observation
+    String observation,
+    boolean manuallySelected
   ) {
     this.id = id;
     this.numFrame = numFrame;
@@ -76,6 +79,7 @@ public class ImageData implements Serializable {
     this.polypLocation = polypLocation;
     this.polyp = polyp;
     this.observation = observation;
+    this.manuallySelected = manuallySelected;
   }
 
   public String getId() {
@@ -108,6 +112,10 @@ public class ImageData implements Serializable {
 
   public String getObservation() {
     return this.observation;
+  }
+
+  public boolean isManuallySelected() {
+    return this.manuallySelected;
   }
 
 }

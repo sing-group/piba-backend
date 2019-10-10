@@ -38,6 +38,7 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
   private String video;
   private String polyp;
   private String observation;
+  private boolean manuallySelected;
 
   @Override
   protected void init() {}
@@ -60,6 +61,9 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
       case "observation":
         this.observation = value;
         break;
+      case "manuallySelected":
+        this.manuallySelected = Boolean.valueOf(value);
+        break;
       default:
         break;
     }
@@ -77,7 +81,7 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
   @Override
   protected RestImageUploadData build() {
     return new RestImageUploadData(
-      this.numFrame, this.imageData, this.gallery, this.video, this.polyp, this.observation
+      this.numFrame, this.imageData, this.gallery, this.video, this.polyp, this.observation, this.manuallySelected
     );
   }
 
