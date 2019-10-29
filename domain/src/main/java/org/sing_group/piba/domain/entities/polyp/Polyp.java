@@ -24,6 +24,7 @@ package org.sing_group.piba.domain.entities.polyp;
 import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -39,6 +40,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
@@ -76,6 +78,13 @@ public class Polyp implements Identifiable {
   @Column(name = "observation")
   private String observation;
 
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
+
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   private PolypHistology histology;
 
@@ -92,7 +101,6 @@ public class Polyp implements Identifiable {
     PARIS parisSecondary, PolypHistology histology, String observation, Exploration exploration
   ) {
     this.id = UUID.randomUUID().toString();
-    setName(name);
     this.size = size;
     this.location = location;
     this.wasp = wasp;
@@ -102,7 +110,10 @@ public class Polyp implements Identifiable {
     this.parisSecondary = parisSecondary;
     this.histology = histology;
     this.observation = observation;
-    setExploration(exploration);
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.setName(name);
+    this.setExploration(exploration);
+
   }
 
   @Override

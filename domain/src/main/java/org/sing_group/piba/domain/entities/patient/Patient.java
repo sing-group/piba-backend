@@ -25,6 +25,7 @@ package org.sing_group.piba.domain.entities.patient;
 import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
@@ -56,8 +58,10 @@ public class Patient implements Identifiable {
   @Id
   @Column(name = "id")
   private String id;
+
   @Column(name = "patientID", nullable = false)
   private String patientID;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "sex")
   private SEX sex;
@@ -67,7 +71,14 @@ public class Patient implements Identifiable {
   }
 
   @Column(name = "birthdate")
-  private Date birthdate;
+  private Timestamp birthdate;
+
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
 
   @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Exploration> explorations = new ArrayList<>();
@@ -80,10 +91,11 @@ public class Patient implements Identifiable {
 
   public Patient(String patientID, SEX sex, Date birthdate, IdSpace idSpace) {
     this.id = UUID.randomUUID().toString();
-    setPatientID(patientID);
     this.sex = sex;
-    this.birthdate = birthdate;
-    setIdSpace(idSpace);
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.setPatientID(patientID);
+    this.setBirthdate(birthdate);
+    this.setIdSpace(idSpace);
   }
 
   @Override
@@ -113,7 +125,7 @@ public class Patient implements Identifiable {
   }
 
   public void setBirthdate(Date birthdate) {
-    this.birthdate = birthdate;
+    this.birthdate = new Timestamp(birthdate.getTime());
   }
 
   public void internalRemoveExploration(Exploration exploration) {

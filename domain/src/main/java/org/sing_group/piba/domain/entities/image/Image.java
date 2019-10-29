@@ -23,7 +23,6 @@
 package org.sing_group.piba.domain.entities.image;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -35,6 +34,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
@@ -57,6 +57,10 @@ public class Image implements Identifiable {
 
   @Column(name = "created", columnDefinition = "DATETIME(3)")
   private Timestamp created;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
 
   @Column(name = "observation_to_remove")
   private String observationToRemove;
@@ -86,14 +90,14 @@ public class Image implements Identifiable {
     Polyp polyp
   ) {
     this.id = UUID.randomUUID().toString();
-    this.created = new Timestamp(new Date().getTime());
+    this.created = this.updateDate = new Timestamp(System.currentTimeMillis());
     this.numFrame = numFrame;
     this.isRemoved = isRemoved;
     this.observation = observation;
     this.manuallySelected = manuallySelected;
-    setGallery(gallery);
-    setVideo(video);
-    setPolyp(polyp);
+    this.setGallery(gallery);
+    this.setVideo(video);
+    this.setPolyp(polyp);
   }
 
   @Override

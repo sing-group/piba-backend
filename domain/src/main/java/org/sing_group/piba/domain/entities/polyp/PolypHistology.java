@@ -22,13 +22,16 @@
  */
 package org.sing_group.piba.domain.entities.polyp;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -38,8 +41,16 @@ public abstract class PolypHistology {
   @Id
   private String id;
 
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
+
   public PolypHistology() {
-    id = UUID.randomUUID().toString();
+    this.id = UUID.randomUUID().toString();
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
   }
 
   public String getId() {

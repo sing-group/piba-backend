@@ -25,6 +25,7 @@ package org.sing_group.piba.domain.entities.exploration;
 import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +40,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.patient.Patient;
@@ -58,10 +60,14 @@ public class Exploration implements Identifiable {
   private String location;
 
   @Column(name = "date", nullable = false)
-  private Date date;
+  private Timestamp date;
 
-  @Column(name = "creation_date")
-  private Date creationDate;
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
 
   @OrderBy("title ASC")
   @OneToMany(mappedBy = "exploration", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -77,12 +83,12 @@ public class Exploration implements Identifiable {
   Exploration() {}
 
   public Exploration(String title, String location, Date date, Patient patient) {
-    id = UUID.randomUUID().toString();
+    this.id = UUID.randomUUID().toString();
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
     this.setTitle(title);
     this.setLocation(location);
     this.setDate(date);
-    setPatient(patient);
-    this.creationDate = new Date();
+    this.setPatient(patient);
   }
 
   @Override
@@ -114,7 +120,7 @@ public class Exploration implements Identifiable {
 
   public void setDate(Date date) {
     checkArgument(date, d -> requireNonNull(d, "exploration date cannot be null"));
-    this.date = date;
+    this.date = new Timestamp(date.getTime());
   }
 
   public void addVideo(Video video) {

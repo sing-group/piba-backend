@@ -21,6 +21,7 @@
  */
 package org.sing_group.piba.domain.entities.video;
 
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +36,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
@@ -62,6 +64,13 @@ public class Video implements Identifiable {
   @Column(name = "fps")
   private int fps;
 
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
+
   @ManyToOne
   @JoinColumn(name = "exploration_id")
   private Exploration exploration;
@@ -73,20 +82,8 @@ public class Video implements Identifiable {
   private Set<VideoModification> videoModifications = new HashSet<>();
 
   public Video() {
-    id = UUID.randomUUID().toString();
-  }
-
-  public Video(
-    String id, String title, String observations, boolean isProcessing, boolean withText, int fps,
-    Exploration exploration
-  ) {
-    this.id = id;
-    this.title = title;
-    this.observations = observations;
-    this.isProcessing = isProcessing;
-    this.withText = withText;
-    this.fps = fps;
-    setExploration(exploration);
+    this.id = UUID.randomUUID().toString();
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
   }
 
   @Override

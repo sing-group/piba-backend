@@ -25,13 +25,16 @@ package org.sing_group.piba.domain.entities.videomodification;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.VideoInterval;
 import org.sing_group.piba.domain.entities.modifier.Modifier;
@@ -48,6 +51,13 @@ public class VideoModification extends VideoInterval implements Serializable {
   @GeneratedValue(strategy = IDENTITY)
   private int id;
 
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
+
   @ManyToOne
   private Video video;
 
@@ -59,9 +69,10 @@ public class VideoModification extends VideoInterval implements Serializable {
   public VideoModification(Video video, Modifier modifier, Integer start, Integer end) {
     this.video = video;
     this.modifier = modifier;
-    setStart(start);
-    setEnd(end);
-    checkInterval(start, end);
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.setStart(start);
+    this.setEnd(end);
+    this.checkInterval(start, end);
   }
 
   public int getId() {

@@ -25,6 +25,7 @@ package org.sing_group.piba.domain.entities.image;
 import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -43,14 +44,21 @@ public class PolypLocation implements Identifiable {
 
   @Id
   private String id;
+
   @Column(name = "x", nullable = false)
   private Integer x;
+
   @Column(name = "y", nullable = false)
   private Integer y;
+
   @Column(name = "width", nullable = false)
   private Integer width;
+
   @Column(name = "height", nullable = false)
   private Integer height;
+
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Image image;
@@ -59,11 +67,12 @@ public class PolypLocation implements Identifiable {
 
   public PolypLocation(Integer x, Integer y, Integer width, Integer height, Image image) {
     this.id = UUID.randomUUID().toString();
-    setX(x);
-    setY(y);
-    setWidth(width);
-    setHeight(height);
-    setImage(image);
+    this.creationDate = new Timestamp(System.currentTimeMillis());
+    this.setX(x);
+    this.setY(y);
+    this.setWidth(width);
+    this.setHeight(height);
+    this.setImage(image);
   }
 
   @Override

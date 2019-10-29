@@ -29,6 +29,7 @@ import static org.sing_group.fluent.checker.Checks.requirePattern;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +37,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 @Entity
@@ -46,21 +48,32 @@ public class User implements Serializable {
   @Id
   @Column(length = 100, nullable = false, unique = true)
   private String login;
+
   @Column(length = 120, nullable = false)
   private String email;
+
   @Column(length = 32, nullable = false)
   private String password;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Role role;
 
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
+
   User() {}
 
   public User(String login, String email, String password, Role role) {
-    setLogin(login);
-    setEmail(email);
-    setPassword(password);
-    setRole(role);
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.setLogin(login);
+    this.setEmail(email);
+    this.setPassword(password);
+    this.setRole(role);
   }
 
   public String getLogin() {

@@ -25,12 +25,14 @@ package org.sing_group.piba.domain.entities.idspace;
 import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 
@@ -41,14 +43,24 @@ public class IdSpace implements Identifiable {
   @Id
   @Column(name = "id")
   private String id;
+
   @Column(name = "name", nullable = false, unique = true)
   private String name;
+
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
 
   IdSpace() {}
 
   public IdSpace(String name) {
     this.id = UUID.randomUUID().toString();
-    setName(name);
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    
+    this.setName(name);
   }
 
   @Override

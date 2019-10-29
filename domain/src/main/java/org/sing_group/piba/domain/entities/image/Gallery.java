@@ -25,12 +25,14 @@ package org.sing_group.piba.domain.entities.image;
 import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 
@@ -40,17 +42,27 @@ public class Gallery implements Identifiable {
 
   @Id
   private String id;
+
   @Column(name = "title", nullable = false, unique = true)
   private String title;
+
   @Column(name = "description")
   private String description;
+
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
+
+  @Version
+  @Column(name = "update_date", columnDefinition = "DATETIME(3)")
+  private Timestamp updateDate;
 
   Gallery() {}
 
   public Gallery(String name, String description) {
     this.id = UUID.randomUUID().toString();
-    setTitle(name);
     this.description = description;
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.setTitle(name);
   }
 
   public String getTitle() {
