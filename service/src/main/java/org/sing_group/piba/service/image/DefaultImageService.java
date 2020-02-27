@@ -67,7 +67,7 @@ public class DefaultImageService implements ImageService {
     Gallery gallery = this.galleryService.get(imageUploadData.getGallery());
     Video video = this.videoService.getVideo(imageUploadData.getVideo());
     Polyp polyp = null;
-    if (!imageUploadData.getPolyp().equals("null")) {
+    if (imageUploadData.getPolyp() != null) {
       polyp = this.polypService.getPolyp(imageUploadData.getPolyp());
     }
     Image image =
