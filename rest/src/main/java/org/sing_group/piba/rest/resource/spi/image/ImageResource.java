@@ -30,25 +30,25 @@ import org.sing_group.piba.rest.entity.image.PolypLocationEditionData;
 
 @Local
 public interface ImageResource {
+  
+  public Response getImage(String id);
+  
+  public Response getBytes(String id);
+  
+  public Response listImagesBy(String galleryId, int page, int pageSize, String filter);
+  
+  public Response listImagesIdentifiersBy(String galleryId, Integer page, Integer pageSize, String filter);
+  
+  public Response listImageObservationsToRemoveBy(String observationToRemoveStartsWith);
 
   public Response uploadImage(RestImageUploadData restImageUploadData);
 
-  public Response getImage(String id);
-
-  public Response getBytes(String id);
-
+  public Response delete(String id, String observationToRemove);
+  
   public Response createPolypLocation(String id, PolypLocationEditionData polypLocationEditicionData);
 
   public Response getPolypLocation(String id);
 
-  public Response delete(String id, String observationToRemove);
-
   public Response deletePolypLocation(String id);
-
-  public Response getImagesBy(String gallery_id, Integer page, Integer pageSize, String filter);
-
-  public Response getImagesIdentifiersBy(String gallery_id, Integer page, Integer pageSize, String filter);
-
-  public Response getImageObservationsToRemoveBy(String observationToRemoveStartsWith);
 
 }

@@ -86,8 +86,8 @@ public class DefaultUserService implements UserService {
   }
 
   @Override
-  public Stream<User> getUsers() {
-    return userDAO.getUsers();
+  public Stream<User> listUsers() {
+    return userDAO.listUsers();
   }
 
   @Override

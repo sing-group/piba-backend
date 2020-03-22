@@ -63,7 +63,7 @@ public class DefaultIdSpaceDAO implements IdSpaceDAO {
   }
 
   @Override
-  public Stream<IdSpace> getIDSpaces() {
+  public Stream<IdSpace> listIDSpaces() {
     return this.dh.list().stream();
   }
 

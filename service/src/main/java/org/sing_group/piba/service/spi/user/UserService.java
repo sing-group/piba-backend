@@ -42,7 +42,7 @@ public interface UserService {
 
   public void delete(User user);
 
-  public Stream<User> getUsers();
+  public Stream<User> listUsers();
 
   public void recoverPassword(LoginOrEmail loginOrEmail);
 

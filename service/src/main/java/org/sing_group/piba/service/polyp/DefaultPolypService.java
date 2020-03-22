@@ -53,7 +53,7 @@ public class DefaultPolypService implements PolypService {
   @Override
   public Polyp edit(Polyp polyp) {
     if (polyp.isConfirmed()) {
-      this.polypRecordingService.get(polyp).forEach(polypRecording -> {
+      this.polypRecordingService.listByPolyp(polyp).forEach(polypRecording -> {
         polypRecording.setConfirmed(true);
         this.polypRecordingService.edit(polypRecording);
       });

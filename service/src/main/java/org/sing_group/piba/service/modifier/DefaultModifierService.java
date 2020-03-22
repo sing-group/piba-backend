@@ -44,8 +44,8 @@ public class DefaultModifierService implements ModifierService {
   private VideoModificationService videoModificationService;
 
   @Override
-  public Stream<Modifier> getModifiers() {
-    return modifierDAO.getModifiers();
+  public Stream<Modifier> listModifiers() {
+    return modifierDAO.listModifiers();
   }
 
   @Override

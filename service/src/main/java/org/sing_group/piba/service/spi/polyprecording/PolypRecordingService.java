@@ -32,15 +32,15 @@ import org.sing_group.piba.domain.entities.video.Video;
 
 @Local
 public interface PolypRecordingService {
-  public Stream<PolypRecording> get(Video video);
+  public PolypRecording get(int id);
+  
+  public Stream<PolypRecording> listByVideo(Video video);
 
-  public Stream<PolypRecording> get(Polyp polyp);
+  public Stream<PolypRecording> listByPolyp(Polyp polyp);
 
   public PolypRecording create(PolypRecording polypRecording);
 
-  public void delete(PolypRecording polypRecording);
-  
-  public PolypRecording get(int id);
-  
   public PolypRecording edit(PolypRecording polypRecording);
+  
+  public void delete(PolypRecording polypRecording);
 }

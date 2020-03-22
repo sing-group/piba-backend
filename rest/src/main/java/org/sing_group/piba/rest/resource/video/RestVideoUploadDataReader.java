@@ -35,7 +35,7 @@ public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVi
   private String title;
   private String observations;
   private String withText;
-  private String exploration_id;
+  private String explorationId;
 
   @Override
   protected void add(String name, String value) {
@@ -50,7 +50,7 @@ public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVi
         this.withText = value;
         break;
       case "exploration_id":
-        this.exploration_id = value;
+        this.explorationId = value;
         break;
     }
 
@@ -68,7 +68,7 @@ public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVi
 
   @Override
   protected RestVideoUploadData build() {
-    return new RestVideoUploadData(this.title, this.observations, this.videoData, this.withText, this.exploration_id);
+    return new RestVideoUploadData(this.title, this.observations, this.videoData, this.withText, this.explorationId);
   }
 
   @Override

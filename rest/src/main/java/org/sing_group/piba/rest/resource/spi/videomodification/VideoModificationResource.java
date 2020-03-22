@@ -29,14 +29,14 @@ import org.sing_group.piba.rest.entity.videomodification.VideoModificationEditio
 
 @Local
 public interface VideoModificationResource {
+  public Response getVideoModification(String videoId);
+  
   public Response create(VideoModificationEditionData videoModificationEditionData);
-
-  public Response getVideoModification(String video_id);
-
-  public Response delete(int id);
 
   public Response edit(int id, VideoModificationEditionData videoModificationEditionData);
 
   public Response editAll(VideoModificationEditionData[] videoModificationsEditionData);
+  
+  public Response delete(int id);
 
 }

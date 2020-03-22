@@ -58,7 +58,7 @@ public class DefaultModifierDAO implements ModifierDAO {
   }
 
   @Override
-  public Stream<Modifier> getModifiers() {
+  public Stream<Modifier> listModifiers() {
     return this.dh.list().stream();
   }
 

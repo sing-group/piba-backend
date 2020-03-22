@@ -30,9 +30,9 @@ import org.sing_group.piba.domain.entities.video.Video;
 
 public interface PolypRecordingDAO {
 
-  public Stream<PolypRecording> get(Video video);
+  public Stream<PolypRecording> listByVideo(Video video);
 
-  public Stream<PolypRecording> get(Polyp polyp);
+  public Stream<PolypRecording> listByPolyp(Polyp polyp);
 
   public PolypRecording create(PolypRecording polypRecording);
 

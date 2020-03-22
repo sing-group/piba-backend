@@ -119,7 +119,7 @@ public class DefaultPatientResource implements PatientResource {
     value = "Return the data of all patients.", response = PatientData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getPatients() {
+  public Response listPatients() {
     return Response.ok(this.service.getPatients().map(this.patientMapper::toPatientData).toArray(PatientData[]::new))
       .build();
   }

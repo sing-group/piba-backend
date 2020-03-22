@@ -36,7 +36,7 @@ public interface GalleryService {
 
   public Gallery get(String id);
 
-  public Stream<Gallery> getGalleries();
+  public Stream<Gallery> listGalleries();
 
   public Gallery edit(Gallery gallery);
 

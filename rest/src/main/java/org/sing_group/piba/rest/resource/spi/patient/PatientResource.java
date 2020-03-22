@@ -29,13 +29,13 @@ import org.sing_group.piba.rest.entity.patient.PatientEditionData;
 
 @Local
 public interface PatientResource {
-  public Response create(PatientEditionData patientEditionData);
-
-  public Response getPatients();
-
   public Response getPatient(String id);
-
+  
   public Response getPatientBy(String patientID, String idSpace);
+  
+  public Response listPatients();
+
+  public Response create(PatientEditionData patientEditionData);
 
   public Response edit(String id, PatientEditionData patientEditionData);
 

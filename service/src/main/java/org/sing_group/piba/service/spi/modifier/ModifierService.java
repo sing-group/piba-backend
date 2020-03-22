@@ -30,7 +30,7 @@ import org.sing_group.piba.domain.entities.modifier.Modifier;
 
 @Local
 public interface ModifierService {
-  public Stream<Modifier> getModifiers();
+  public Stream<Modifier> listModifiers();
 
   public Modifier get(String id);
 

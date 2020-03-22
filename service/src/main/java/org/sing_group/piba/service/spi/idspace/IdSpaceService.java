@@ -32,7 +32,7 @@ import org.sing_group.piba.domain.entities.idspace.IdSpace;
 public interface IdSpaceService {
   public IdSpace get(String id);
 
-  public Stream<IdSpace> getIDSpaces();
+  public Stream<IdSpace> listIDSpaces();
 
   public IdSpace create(IdSpace idSpace);
 

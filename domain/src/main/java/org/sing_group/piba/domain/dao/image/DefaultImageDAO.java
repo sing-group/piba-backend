@@ -102,12 +102,12 @@ public class DefaultImageDAO implements ImageDAO {
   }
 
   @Override
-  public Stream<Image> getImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
-    return this.getImagesBy(gallery, page, pageSize, filter, Image.class);
+  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+    return this.listImagesBy(gallery, page, pageSize, filter, Image.class);
   }
 
   @Override
-  public int totalImagesIn(Gallery gallery, String filter) {
+  public int countImagesIn(Gallery gallery, String filter) {
     Stream<Image> images = this.dh.listBy("gallery", gallery).stream().filter(img -> !img.isRemoved());
     switch (filter) {
       case "all":
@@ -131,15 +131,15 @@ public class DefaultImageDAO implements ImageDAO {
   }
 
   @Override
-  public Stream<String> getImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
-    return this.getImagesBy(gallery, page, pageSize, filter, String.class);
+  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+    return this.listImagesBy(gallery, page, pageSize, filter, String.class);
   }
 
-  private <T> Stream<T> getImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter, Class<T> clazz) {
+  private <T> Stream<T> listImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter, Class<T> clazz) {
     boolean onlyIds = false;
-    if (clazz.equals(String.class))
+    if (clazz.equals(String.class)) {
       onlyIds = true;
-    else if (!clazz.equals(Image.class)) {
+    } else if (!clazz.equals(Image.class)) {
       throw new IllegalArgumentException("only String or Image classes are allowed");
     }
 
@@ -190,7 +190,7 @@ public class DefaultImageDAO implements ImageDAO {
   }
 
   @Override
-  public Stream<String> getImageObservationsToRemoveBy(String observationToRemoveStartsWith) {
+  public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith) {
     return this.em.createQuery(
       "SELECT DISTINCT i.observationToRemove FROM Image i WHERE i.observationToRemove LIKE :observationToRemoveStartsWith",
       String.class

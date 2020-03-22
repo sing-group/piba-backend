@@ -29,16 +29,15 @@ import org.sing_group.piba.rest.entity.user.UserEditionData;
 
 @Local
 public interface UserResource {
-  public Response role(String login);
+  public Response getUser(String login);
+  
+  public Response getRole(String login);
+  
+  public Response listUsers();
 
   public Response create(UserEditionData userEditionData);
 
   public Response edit(String login, UserEditionData userEditionData);
 
   public Response delete(String id);
-
-  public Response getUsers();
-  
-  public Response getUser(String login);
-
 }

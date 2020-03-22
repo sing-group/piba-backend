@@ -28,7 +28,7 @@ import org.sing_group.piba.domain.entities.modifier.Modifier;
 
 public interface ModifierDAO {
 
-  public Stream<Modifier> getModifiers();
+  public Stream<Modifier> listModifiers();
 
   public Modifier get(String id);
 

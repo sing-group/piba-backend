@@ -49,8 +49,8 @@ public class DefaultIdSpaceService implements IdSpaceService {
   }
 
   @Override
-  public Stream<IdSpace> getIDSpaces() {
-    return idSpaceDAO.getIDSpaces();
+  public Stream<IdSpace> listIDSpaces() {
+    return idSpaceDAO.listIDSpaces();
   }
 
   @Override

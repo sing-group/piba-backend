@@ -32,17 +32,17 @@ import org.sing_group.piba.domain.entities.video.Video;
 public interface ExplorationDAO {
   public Exploration getExploration(String id);
 
-  public Stream<Exploration> getExplorations(int page, int pageSize, Patient patient);
+  public Stream<Exploration> listExplorations(int page, int pageSize, Patient patient);
 
-  public int numExplorations();
+  public int countExplorations();
 
-  public int numExplorationsByPatient(Patient patient);
+  public int countExplorationsByPatient(Patient patient);
 
   public Exploration create(Exploration exploration);
 
   public Exploration edit(Exploration exploration);
 
-  public Stream<Polyp> getPolyps(Exploration exploration);
+  public Stream<Polyp> listPolypsOfExploration(Exploration exploration);
 
   public Stream<Video> getVideos(Exploration exploration);
 

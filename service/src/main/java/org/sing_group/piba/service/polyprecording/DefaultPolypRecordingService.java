@@ -42,13 +42,13 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
   private PolypRecordingDAO polypRecordingDAO;
 
   @Override
-  public Stream<PolypRecording> get(Video video) {
-    return this.polypRecordingDAO.get(video);
+  public Stream<PolypRecording> listByVideo(Video video) {
+    return this.polypRecordingDAO.listByVideo(video);
   }
 
   @Override
-  public Stream<PolypRecording> get(Polyp polyp) {
-    return this.polypRecordingDAO.get(polyp);
+  public Stream<PolypRecording> listByPolyp(Polyp polyp) {
+    return this.polypRecordingDAO.listByPolyp(polyp);
   }
 
   @Override
@@ -58,7 +58,7 @@ public class DefaultPolypRecordingService implements PolypRecordingService {
     }
 
     Stream<PolypRecording> polypRecordings =
-      this.polypRecordingDAO.get(polypRecording.getVideo()).filter(
+      this.polypRecordingDAO.listByVideo(polypRecording.getVideo()).filter(
         pr -> pr.getPolyp().equals(polypRecording.getPolyp())
       );
 

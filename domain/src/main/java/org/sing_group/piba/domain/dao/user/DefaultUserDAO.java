@@ -85,7 +85,7 @@ public class DefaultUserDAO implements UserDAO {
   }
 
   @Override
-  public Stream<User> getUsers() {
+  public Stream<User> listUsers() {
     return this.dh.list().stream();
   }
 

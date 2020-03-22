@@ -138,8 +138,8 @@ public class DefaultVideoModificationResource implements VideoModificationResour
     @ApiResponse(code = 400, message = "Unknown video: {id}")
   )
   @Override
-  public Response getVideoModification(@QueryParam("id") String video_id) {
-    Video video = this.videoService.getVideo(video_id);
+  public Response getVideoModification(@QueryParam("id") String videoId) {
+    Video video = this.videoService.getVideo(videoId);
     return Response.ok(
       this.service.getVideoModification(video).map(this.videoModificationMapper::toVideoModificationData).toArray(VideoModificationData[]::new)
     ).build();

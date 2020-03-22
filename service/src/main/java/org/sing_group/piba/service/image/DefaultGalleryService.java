@@ -74,14 +74,14 @@ public class DefaultGalleryService implements GalleryService {
   }
 
   @Override
-  public Stream<Gallery> getGalleries() {
-    return galleryDao.getGalleries();
+  public Stream<Gallery> listGalleries() {
+    return galleryDao.listGalleries();
   }
 
   @Override
   public StreamingOutput getGalleriesInZip(Gallery gallery, String filter, Boolean withLocation)
     throws FileNotFoundException {
-    Stream<Image> images = imageService.getImagesBy(gallery, null, null, filter);
+    Stream<Image> images = imageService.listImagesBy(gallery, null, null, filter);
 
     StreamingOutput sout = new StreamingOutput() {
       @Override

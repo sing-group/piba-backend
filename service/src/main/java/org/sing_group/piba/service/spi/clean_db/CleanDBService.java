@@ -20,7 +20,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.service.spi.cleanDB;
+package org.sing_group.piba.service.spi.clean_db;
 
 public interface CleanDBService {
   

@@ -30,7 +30,7 @@ public interface IdSpaceDAO {
 
   public IdSpace get(String id);
 
-  public Stream<IdSpace> getIDSpaces();
+  public Stream<IdSpace> listIDSpaces();
 
   public IdSpace create(IdSpace idSpace);
 

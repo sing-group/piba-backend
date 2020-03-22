@@ -117,7 +117,7 @@ public class DefaultVideoResource implements VideoResource {
     ), code = 201
   )
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response uploadVideo(RestVideoUploadData videoData) {
+  public Response create(RestVideoUploadData videoData) {
     Video video = this.service.create(videoData);
 
     return Response.created(UriBuilder.fromResource(DefaultVideoResource.class).path(video.getId()).build())

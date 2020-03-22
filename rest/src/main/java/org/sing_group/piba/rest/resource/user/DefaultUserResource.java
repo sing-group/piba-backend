@@ -87,7 +87,7 @@ public class DefaultUserResource implements UserResource {
     @ApiResponse(code = 401, message = SecurityExceptionMapper.UNAUTHORIZED_MESSAGE)
   })
   @Override
-  public Response role(@PathParam("login") String login) {
+  public Response getRole(@PathParam("login") String login) {
     User currentUser = this.userService.getCurrentUser();
     if (!login.equals(currentUser.getLogin())) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -122,9 +122,9 @@ public class DefaultUserResource implements UserResource {
     value = "Return the data of all users.", response = UserData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getUsers() {
+  public Response listUsers() {
     return Response.ok(
-      this.userService.getUsers().map(this.userMapper::toUserData).toArray(UserData[]::new)
+      this.userService.listUsers().map(this.userMapper::toUserData).toArray(UserData[]::new)
     ).build();
   }
 

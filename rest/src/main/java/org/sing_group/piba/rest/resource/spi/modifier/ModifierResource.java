@@ -29,9 +29,9 @@ import org.sing_group.piba.rest.entity.modifier.ModifierEditionData;
 
 @Local
 public interface ModifierResource {
-  public Response getModifiers();
-
   public Response getModifier(String id);
+  
+  public Response listModifiers();
 
   public Response create(ModifierEditionData modifierEditionData);
 

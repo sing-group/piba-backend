@@ -73,7 +73,7 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   }
 
   @Override
-  public Stream<Exploration> getExplorations(int page, int pageSize, Patient patient) {
+  public Stream<Exploration> listExplorations(int page, int pageSize, Patient patient) {
     int startBlock = (page - 1) * pageSize;
     int endBlock = startBlock + pageSize - 1;
     ListingOptions listingOptions = new ListingOptions(startBlock, endBlock, SortField.descending("creationDate"));
@@ -86,12 +86,12 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   }
 
   @Override
-  public int numExplorations() {
+  public int countExplorations() {
     return dh.list().size();
   }
 
   @Override
-  public int numExplorationsByPatient(Patient patient) {
+  public int countExplorationsByPatient(Patient patient) {
     return dh.listBy("patient", patient).size();
   }
 
@@ -106,7 +106,7 @@ public class DefaultExplorationDAO implements ExplorationDAO {
   }
 
   @Override
-  public Stream<Polyp> getPolyps(Exploration exploration) {
+  public Stream<Polyp> listPolypsOfExploration(Exploration exploration) {
     return this.dhPolyp.listBy("exploration", exploration).stream();
   }
 

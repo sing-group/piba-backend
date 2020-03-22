@@ -91,9 +91,9 @@ public class DefaultModifierResource implements ModifierResource {
     value = "Return the data of all modifiers.", response = ModifierData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getModifiers() {
+  public Response listModifiers() {
     return Response
-      .ok(this.service.getModifiers().map(this.modifierMapper::toModifierData).toArray(ModifierData[]::new))
+      .ok(this.service.listModifiers().map(this.modifierMapper::toModifierData).toArray(ModifierData[]::new))
       .build();
   }
 

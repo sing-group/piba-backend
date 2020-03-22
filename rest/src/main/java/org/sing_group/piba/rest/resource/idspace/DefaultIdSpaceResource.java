@@ -107,9 +107,9 @@ public class DefaultIdSpaceResource implements IdSpaceResource {
     value = "Return the data of all id spaces.", response = IdSpaceData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getIDSpaces() {
+  public Response listIDSpaces() {
     return Response.ok(
-      this.service.getIDSpaces().map(this.idSpaceMapper::toIDSpaceData).toArray(IdSpaceData[]::new)
+      this.service.listIDSpaces().map(this.idSpaceMapper::toIDSpaceData).toArray(IdSpaceData[]::new)
     ).build();
   }
 

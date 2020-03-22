@@ -37,7 +37,7 @@ public interface UserDAO {
 
   public void delete(User user);
 
-  public Stream<User> getUsers();
+  public Stream<User> listUsers();
 
   public PasswordRecovery createPasswordRecovery(LoginOrEmail userMail);
 

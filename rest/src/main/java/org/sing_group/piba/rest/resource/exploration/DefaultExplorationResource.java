@@ -129,31 +129,22 @@ public class DefaultExplorationResource implements ExplorationResource {
     @ApiResponse(code = 400, message = "Invalid page or pageSize. They must be an integer.")
   )
   @Override
-  public Response getExplorations(
-    @QueryParam("patient") String patientID, @QueryParam("idspace") String idSpace, @QueryParam(
-      "page"
-    ) String page,
-    @QueryParam("pageSize") String pageSize
+  public Response listExplorations(
+    @QueryParam("patient") String patientID, @QueryParam("idspace") String idSpace,
+    @QueryParam("page") int page, @QueryParam("pageSize") int pageSize
   ) {
     Patient patient = null;
-    int numExplorations, pageInt, pageSizeInt;
+    int countExplorations;
     if (patientID == null || patientID.equals("") || idSpace == null || idSpace.equals("")) {
-      numExplorations = this.service.numExplorations();
+      countExplorations = this.service.countExplorations();
     } else {
       patient = this.patientService.getPatientBy(patientID, idSpace);
-      numExplorations = this.service.numExplorationsByPatient(patient);
-    }
-
-    try {
-      pageInt = Integer.parseInt(page);
-      pageSizeInt = Integer.parseInt(pageSize);
-    } catch (NumberFormatException exc) {
-      throw new IllegalArgumentException("Invalid page or pageSize. They must be an integer.");
+      countExplorations = this.service.countExplorationsByPatient(patient);
     }
 
     return Response.ok(
-      this.service.getExplorations(pageInt, pageSizeInt, patient).map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
-    ).header("X-Pagination-Total-Items", numExplorations).build();
+      this.service.listExplorations(page, pageSize, patient).map(this.explorationMapper::toExplorationData).toArray(ExplorationData[]::new)
+    ).header("X-Pagination-Total-Items", countExplorations).build();
   }
 
   @POST
@@ -209,10 +200,10 @@ public class DefaultExplorationResource implements ExplorationResource {
     @ApiResponse(code = 400, message = "Unknown exploration: {id}")
   )
   @Override
-  public Response getPolyps(@PathParam("id") String id) {
+  public Response listPolypsOfExploration(@PathParam("id") String id) {
     Exploration exploration = this.service.getExploration(id);
     if (exploration != null) {
-      final Stream<Polyp> list = this.service.getPolyps(exploration);
+      final Stream<Polyp> list = this.service.listPolypsOfExploration(exploration);
       final PolypData[] polyps = list.map(this.polypMapper::toPolypData).toArray(PolypData[]::new);
       return Response.ok(polyps).build();
     }

@@ -97,8 +97,8 @@ public class DefaultGalleryResource implements GalleryResource {
     value = "Return the data of all galleries.", response = GalleryData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getGalleries() {
-    return Response.ok(this.service.getGalleries().map(this.galleryMapper::toGalleryData).toArray(GalleryData[]::new))
+  public Response listGalleries() {
+    return Response.ok(this.service.listGalleries().map(this.galleryMapper::toGalleryData).toArray(GalleryData[]::new))
       .build();
   }
 

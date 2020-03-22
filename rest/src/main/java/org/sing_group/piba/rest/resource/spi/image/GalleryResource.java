@@ -29,12 +29,11 @@ import org.sing_group.piba.rest.entity.image.GalleryEditionData;
 
 @Local
 public interface GalleryResource {
-
-  public Response create(GalleryEditionData galleryEditionData);
-
-  public Response getGalleries();
-
   public Response getGallery(String id);
+
+  public Response listGalleries();
+  
+  public Response create(GalleryEditionData galleryEditionData);
 
   public Response edit(String id, GalleryEditionData galleryEditionData);
 }

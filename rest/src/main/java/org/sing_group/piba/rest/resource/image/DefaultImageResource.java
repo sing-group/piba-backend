@@ -244,23 +244,20 @@ public class DefaultImageResource implements ImageResource {
     @ApiResponse(code = 400, message = "Invalid page: {page} or pageSize: {pageSize}")
   })
   @Override
-  public Response getImagesBy(
-    @QueryParam("gallery_id") String gallery_id, @QueryParam("page") Integer page, @QueryParam(
-      "pageSize"
-    ) Integer pageSize, @QueryParam("filter") String filter
+  public Response listImagesBy(
+    @QueryParam("gallery_id") String galleryId,
+    @QueryParam("page") int page, @QueryParam("pageSize") int pageSize,
+    @QueryParam("filter") String filter
   ) {
-    if (page == null || pageSize == null) {
-      throw new IllegalArgumentException("Missing pagination parameters");
-    }
-    Gallery gallery = this.galleryService.get(gallery_id);
+    Gallery gallery = this.galleryService.get(galleryId);
     return Response.ok(
-      this.service.getImagesBy(gallery, page, pageSize, filter).map(this.imageMapper::toImageData).toArray(ImageData[]::new)
+      this.service.listImagesBy(gallery, page, pageSize, filter).map(this.imageMapper::toImageData).toArray(ImageData[]::new)
     ).header(
-      "X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter)
+      "X-Pagination-Total-Items", this.service.countImagesIn(gallery, filter)
     ).header(
-      "X-Located-Total-Items", this.service.totalImagesIn(gallery, "located")
+      "X-Located-Total-Items", this.service.countImagesIn(gallery, "located")
     ).header(
-      "X-With-Polyp-Total-Items", this.service.totalImagesIn(gallery, "with_polyp")
+      "X-With-Polyp-Total-Items", this.service.countImagesIn(gallery, "with_polyp")
     ).build();
   }
 
@@ -273,26 +270,26 @@ public class DefaultImageResource implements ImageResource {
     @ApiResponse(code = 400, message = "Unknown gallery: {gallery_id}")
   )
   @Override
-  public Response getImagesIdentifiersBy(
-    @QueryParam("gallery_id") String gallery_id, @QueryParam("page") Integer page, @QueryParam(
-      "pageSize"
-    ) Integer pageSize, @QueryParam("filter") String filter
+  public Response listImagesIdentifiersBy(
+    @QueryParam("gallery_id") String galleryId,
+    @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
+    @QueryParam("filter") String filter
   ) {
-    Gallery gallery = this.galleryService.get(gallery_id);
+    Gallery gallery = this.galleryService.get(galleryId);
 
     ResponseBuilder response =
       Response.ok(
-        this.service.getImagesIdentifiersBy(gallery, page, pageSize, filter).map(this.imageMapper::toUuidAndUri).toArray(UuidAndUri[]::new)
+        this.service.listImagesIdentifiersBy(gallery, page, pageSize, filter).map(this.imageMapper::toUuidAndUri).toArray(UuidAndUri[]::new)
       );
     if (page != null && pageSize != null) {
-      response.header("X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter));
+      response.header("X-Pagination-Total-Items", this.service.countImagesIn(gallery, filter));
     }
     return response.header(
-      "X-Pagination-Total-Items", this.service.totalImagesIn(gallery, filter)
+      "X-Pagination-Total-Items", this.service.countImagesIn(gallery, filter)
     ).header(
-      "X-Located-Total-Items", this.service.totalImagesIn(gallery, "located")
+      "X-Located-Total-Items", this.service.countImagesIn(gallery, "located")
     ).header(
-      "X-With-Polyp-Total-Items", this.service.totalImagesIn(gallery, "with_polyp")
+      "X-With-Polyp-Total-Items", this.service.countImagesIn(gallery, "with_polyp")
     ).build();
   }
 
@@ -302,10 +299,10 @@ public class DefaultImageResource implements ImageResource {
     value = "Returns a list of posible observations to remove", response = String.class, code = 200
   )
   @Override
-  public Response getImageObservationsToRemoveBy(
+  public Response listImageObservationsToRemoveBy(
     @QueryParam("observationStartsWith") String observationToRemoveStartsWith
   ) {
     return Response
-      .ok(this.service.getImageObservationsToRemoveBy(observationToRemoveStartsWith).toArray(String[]::new)).build();
+      .ok(this.service.listImageObservationsToRemoveBy(observationToRemoveStartsWith).toArray(String[]::new)).build();
   }
 }

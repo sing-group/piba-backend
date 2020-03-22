@@ -111,10 +111,10 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   )
   @ApiResponses(@ApiResponse(code = 400, message = "Unknown video: {video_id}"))
   @Override
-  public Response getPolypResourceByVideo(@PathParam("video_id") String video_id) {
-    Video video = this.videoService.getVideo(video_id);
+  public Response listPolypResourcesByVideo(@PathParam("video_id") String videoId) {
+    Video video = this.videoService.getVideo(videoId);
     return Response.ok(
-      this.polypRecordingService.get(video).map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
+      this.polypRecordingService.listByVideo(video).map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
     ).build();
   }
 
@@ -125,10 +125,10 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   )
   @ApiResponses(@ApiResponse(code = 400, message = "Unknown polyp: {polyp_id}"))
   @Override
-  public Response getPolypResourceByPolyp(@PathParam("polyp_id") String polyp_id) {
-    Polyp polyp = this.polypService.getPolyp(polyp_id);
+  public Response listPolypResourcesByPolyp(@PathParam("polyp_id") String polypId) {
+    Polyp polyp = this.polypService.getPolyp(polypId);
     return Response.ok(
-      this.polypRecordingService.get(polyp).map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
+      this.polypRecordingService.listByPolyp(polyp).map(this.polypRecordingMapper::toPolypRecordingData).toArray(PolypRecordingData[]::new)
     ).build();
   }
 

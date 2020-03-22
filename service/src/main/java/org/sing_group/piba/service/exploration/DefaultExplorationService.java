@@ -56,18 +56,18 @@ public class DefaultExplorationService implements ExplorationService {
   }
 
   @Override
-  public Stream<Exploration> getExplorations(int page, int pageSize, Patient patient) {
-    return explorationDao.getExplorations(page, pageSize, patient);
+  public Stream<Exploration> listExplorations(int page, int pageSize, Patient patient) {
+    return explorationDao.listExplorations(page, pageSize, patient);
   }
 
   @Override
-  public int numExplorations() {
-    return explorationDao.numExplorations();
+  public int countExplorations() {
+    return explorationDao.countExplorations();
   }
 
   @Override
-  public int numExplorationsByPatient(Patient patient) {
-    return explorationDao.numExplorationsByPatient(patient);
+  public int countExplorationsByPatient(Patient patient) {
+    return explorationDao.countExplorationsByPatient(patient);
   }
 
   @Override
@@ -78,7 +78,7 @@ public class DefaultExplorationService implements ExplorationService {
   @Override
   public Exploration edit(Exploration exploration) {
     if (exploration.isConfirmed()) {
-      getPolyps(exploration).filter(polyp -> !polyp.isConfirmed()).forEach(polyp -> {
+      listPolypsOfExploration(exploration).filter(polyp -> !polyp.isConfirmed()).forEach(polyp -> {
         polyp.setConfirmed(true);
         this.polypService.edit(polyp);
       });
@@ -96,8 +96,8 @@ public class DefaultExplorationService implements ExplorationService {
   }
 
   @Override
-  public Stream<Polyp> getPolyps(Exploration exploration) {
-    return explorationDao.getPolyps(exploration);
+  public Stream<Polyp> listPolypsOfExploration(Exploration exploration) {
+    return explorationDao.listPolypsOfExploration(exploration);
   }
 
   @Override

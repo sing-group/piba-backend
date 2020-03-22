@@ -69,7 +69,7 @@ public class DefaultGalleryDAO implements GalleryDAO {
   }
 
   @Override
-  public Stream<Gallery> getGalleries() {
+  public Stream<Gallery> listGalleries() {
     return this.dh.list().stream();
   }
 

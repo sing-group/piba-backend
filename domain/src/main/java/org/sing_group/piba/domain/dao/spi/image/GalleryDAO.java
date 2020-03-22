@@ -32,7 +32,7 @@ public interface GalleryDAO {
 
   public Gallery get(String id);
 
-  public Stream<Gallery> getGalleries();
+  public Stream<Gallery> listGalleries();
 
   public Gallery edit(Gallery gallery);
 

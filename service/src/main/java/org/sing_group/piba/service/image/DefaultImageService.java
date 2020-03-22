@@ -118,23 +118,23 @@ public class DefaultImageService implements ImageService {
   }
 
   @Override
-  public Stream<Image> getImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
-    return imageDao.getImagesBy(gallery, page, pageSize, filter);
+  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+    return imageDao.listImagesBy(gallery, page, pageSize, filter);
   }
 
   @Override
-  public int totalImagesIn(Gallery gallery, String filter) {
-    return imageDao.totalImagesIn(gallery, filter);
+  public int countImagesIn(Gallery gallery, String filter) {
+    return imageDao.countImagesIn(gallery, filter);
   }
 
   @Override
-  public Stream<String> getImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
-    return imageDao.getImagesIdentifiersBy(gallery, page, pageSize, filter);
+  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+    return imageDao.listImagesIdentifiersBy(gallery, page, pageSize, filter);
   }
 
   @Override
-  public Stream<String> getImageObservationsToRemoveBy(String observationToRemoveStartsWith) {
-    return imageDao.getImageObservationsToRemoveBy(observationToRemoveStartsWith);
+  public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith) {
+    return imageDao.listImageObservationsToRemoveBy(observationToRemoveStartsWith);
   }
 
 }

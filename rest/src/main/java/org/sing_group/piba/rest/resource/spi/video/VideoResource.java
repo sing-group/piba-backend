@@ -34,7 +34,7 @@ public interface VideoResource {
 
   public Response listVideos();
 
-  public Response uploadVideo(RestVideoUploadData video);
+  public Response create(RestVideoUploadData video);
 
   public Response edit(String id, VideoEditionData videoEditionData);
 

@@ -97,7 +97,7 @@ public class DefaultVideoService implements VideoService {
   @Override
   public Video create(VideoUploadData data) {
     try {
-      Exploration exploration = this.explorationService.getExploration(data.getExploration_id());
+      Exploration exploration = this.explorationService.getExploration(data.getExplorationId());
 
       Video video = new Video();
       video.setObservations(data.getObservations());

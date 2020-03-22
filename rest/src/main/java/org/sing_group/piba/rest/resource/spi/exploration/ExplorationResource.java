@@ -31,13 +31,13 @@ import org.sing_group.piba.rest.entity.exploration.ExplorationEditionData;
 public interface ExplorationResource {
   public Response getExploration(String id);
 
-  public Response getExplorations(String patientID, String idSpace, String page, String pageSize);
+  public Response listExplorations(String patientID, String idSpace, int page, int pageSize);
 
   public Response create(ExplorationEditionData explorationEditionData);
 
   public Response edit(String id, ExplorationEditionData explorationEditionData);
 
-  public Response getPolyps(String id);
-
   public Response delete(String id);
-  }
+
+  public Response listPolypsOfExploration(String id);
+}

@@ -31,7 +31,7 @@ import org.sing_group.piba.rest.entity.idspace.IdSpaceEditionData;
 public interface IdSpaceResource {
   public Response get(String id);
 
-  public Response getIDSpaces();
+  public Response listIDSpaces();
 
   public Response create(IdSpaceEditionData idSpaceEditionData);
 

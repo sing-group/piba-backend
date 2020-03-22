@@ -34,14 +34,14 @@ public class VideoUploadData {
 
   private String withText;
 
-  private String exploration_id;
+  private String explorationId;
 
-  public VideoUploadData(String title, String observations, File videoData, String withText, String exploration_id) {
+  public VideoUploadData(String title, String observations, File videoData, String withText, String explorationId) {
     this.title = title;
     this.observations = observations;
     this.videoData = videoData;
     this.withText = withText;
-    this.exploration_id = exploration_id;
+    this.explorationId = explorationId;
   }
 
   public String getObservations() {
@@ -60,8 +60,8 @@ public class VideoUploadData {
     return withText;
   }
 
-  public String getExploration_id() {
-    return exploration_id;
+  public String getExplorationId() {
+    return explorationId;
   }
 
 }

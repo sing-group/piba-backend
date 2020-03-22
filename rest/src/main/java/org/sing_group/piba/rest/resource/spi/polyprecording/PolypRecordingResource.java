@@ -29,16 +29,16 @@ import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditionData;
 
 @Local
 public interface PolypRecordingResource {
-  public Response getPolypResourceByVideo(String video_id);
+  public Response listPolypResourcesByVideo(String videoId);
 
-  public Response getPolypResourceByPolyp(String polyp_id);
+  public Response listPolypResourcesByPolyp(String polypId);
 
   public Response create(PolypRecordingEditionData polypRecordingEditionData);
   
   public Response edit(int id, PolypRecordingEditionData polypRecordingEditionData);
+  
+  public Response editAll(PolypRecordingEditionData[] polypRecordingsEditionData);
 
   public Response delete(int id);
-
-  public Response editAll(PolypRecordingEditionData[] polypRecordingsEditionData);
 
 }
