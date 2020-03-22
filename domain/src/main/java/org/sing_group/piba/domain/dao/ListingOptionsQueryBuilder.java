@@ -19,12 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-
-
-
-
-
 package org.sing_group.piba.domain.dao;
 
 import static java.util.Objects.requireNonNull;
@@ -35,7 +29,9 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 public class ListingOptionsQueryBuilder {
@@ -51,9 +47,9 @@ public class ListingOptionsQueryBuilder {
         .map(sortField -> {
           switch (sortField.getSortDirection()) {
             case ASCENDING:
-              return cb.asc(root.get(sortField.getSortField()));
+              return cb.asc(getField(sortField.getSortField(), root));
             case DESCENDING:
-              return cb.desc(root.get(sortField.getSortField()));
+              return cb.desc(getField(sortField.getSortField(), root));
             default:
               throw new IllegalStateException("Invalid sort direction: " + sortField.getSortDirection());
           }
@@ -64,6 +60,17 @@ public class ListingOptionsQueryBuilder {
     } else {
       return query;
     }
+  }
+  
+  private static Path<Object> getField(String field, Root<?> root) {
+    final String[] subfields = field.split("\\.");
+    
+    From<?, ?> join = root;
+    for (int i = 0; i < subfields.length - 1; i++) {
+      join = join.join(subfields[i]);
+    }
+    
+    return join.get(subfields[subfields.length - 1]);
   }
   
   public <T> TypedQuery<T> addLimits(TypedQuery<T> query) {

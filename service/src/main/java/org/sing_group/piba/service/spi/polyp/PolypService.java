@@ -21,6 +21,8 @@
  */
 package org.sing_group.piba.service.spi.polyp;
 
+import java.util.stream.Stream;
+
 import javax.ejb.Local;
 
 import org.sing_group.piba.domain.entities.polyp.Polyp;
@@ -28,10 +30,14 @@ import org.sing_group.piba.domain.entities.polyp.Polyp;
 @Local
 public interface PolypService {
   public Polyp getPolyp(String id);
+  
+  public Stream<Polyp> listPolyps(int page, int pageSize);
 
   public Polyp create(Polyp polyp);
 
   public Polyp edit(Polyp polyp);
 
   public void delete(Polyp polyp);
+
+  public int countPolyps();
 }

@@ -22,6 +22,8 @@
 
 package org.sing_group.piba.domain.dao.polyp;
 
+import static org.sing_group.piba.domain.dao.ListingOptions.SortField.ascending;
+
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +34,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
+import org.sing_group.piba.domain.dao.ListingOptions;
 import org.sing_group.piba.domain.dao.spi.polyp.PolypDAO;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 
@@ -58,8 +61,22 @@ public class DefaultPolypDAO implements PolypDAO {
   }
 
   @Override
-  public Stream<Polyp> getPolyps() {
-    return this.dh.list().stream();
+  public Stream<Polyp> listPolyps(int page, int pageSize) {
+    int start = (page - 1) * pageSize;
+    int end = start + pageSize - 1;
+    
+    ListingOptions listingOptions = ListingOptions.between(start, end)
+      .sortedBy(
+        ascending("exploration.title"),
+        ascending("name")
+      );
+    
+    return this.dh.list(listingOptions).stream();
+  }
+  
+  @Override
+  public int countPolyps() {
+    return this.dh.list().size();
   }
 
   @Override

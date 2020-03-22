@@ -30,6 +30,8 @@ import org.sing_group.piba.rest.entity.polyp.PolypEditionData;
 public interface PolypResource {
   public Response getPolyp(String id);
 
+  public Response listPolyps(int page, int pageSize);
+  
   public Response create(PolypEditionData polypEditionData);
 
   public Response edit(String id, PolypEditionData polypEditionData);

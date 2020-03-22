@@ -21,6 +21,8 @@
  */
 package org.sing_group.piba.service.polyp;
 
+import java.util.stream.Stream;
+
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -44,6 +46,11 @@ public class DefaultPolypService implements PolypService {
   public Polyp getPolyp(String id) {
     return polypDao.getPolyp(id);
   }
+  
+  @Override
+  public Stream<Polyp> listPolyps(int page, int pageSize) {
+    return polypDao.listPolyps(page, pageSize);
+  }
 
   @Override
   public Polyp create(Polyp polyp) {
@@ -64,6 +71,11 @@ public class DefaultPolypService implements PolypService {
   @Override
   public void delete(Polyp polyp) {
     polypDao.delete(polyp);
+  }
+
+  @Override
+  public int countPolyps() {
+    return this.polypDao.countPolyps();
   }
 
 }

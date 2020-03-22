@@ -40,6 +40,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -74,7 +75,7 @@ import io.swagger.annotations.ApiResponses;
 })
 @Stateless
 @Default
-@CrossDomain
+@CrossDomain(allowedHeaders = "X-Pagination-Total-Items")
 public class DefaultPolypResource implements PolypResource {
 
   @Inject
@@ -104,6 +105,28 @@ public class DefaultPolypResource implements PolypResource {
   @Override
   public Response getPolyp(@PathParam("id") String id) {
     return Response.ok(this.polypMapper.toPolypData(this.service.getPolyp(id))).build();
+  }
+
+  @GET
+  @ApiOperation(
+    value = "Return the data of all th polyps.", response = PolypData.class, responseContainer = "List", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Invalid page or pageSize. They must be an integer.")
+  )
+  @Override
+  public Response listPolyps(
+    @QueryParam("page") int page, @QueryParam("pageSize") int pageSize
+  ) {
+    int countPolyps = this.service.countPolyps();
+    
+    return Response.ok(
+        this.service.listPolyps(page, pageSize)
+          .map(this.polypMapper::toPolypData)
+        .toArray(PolypData[]::new)
+      )
+      .header("X-Pagination-Total-Items", countPolyps)
+    .build();
   }
 
   @POST

@@ -27,14 +27,16 @@ import java.util.stream.Stream;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 
 public interface PolypDAO {
-  public Stream<Polyp> getPolyps();
-
   public Polyp getPolyp(String id);
+  
+  public Stream<Polyp> listPolyps(int page, int pageSize);
 
   public Polyp create(Polyp polyp);
 
   public Polyp edit(Polyp polyp);
   
   public void delete(Polyp polyp);
+
+  public int countPolyps();
   
 }
