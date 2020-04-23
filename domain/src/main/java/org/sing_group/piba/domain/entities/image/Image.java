@@ -53,10 +53,10 @@ public class Image implements Identifiable {
   private int numFrame;
 
   @Column(name = "is_removed")
-  private boolean isRemoved = false;
+  private boolean isRemoved;
 
-  @Column(name = "created", columnDefinition = "DATETIME(3)")
-  private Timestamp created;
+  @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
+  private Timestamp creationDate;
 
   @Version
   @Column(name = "update_date", columnDefinition = "DATETIME(3)")
@@ -90,7 +90,7 @@ public class Image implements Identifiable {
     Polyp polyp
   ) {
     this.id = UUID.randomUUID().toString();
-    this.created = this.updateDate = new Timestamp(System.currentTimeMillis());
+    this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
     this.numFrame = numFrame;
     this.isRemoved = isRemoved;
     this.observation = observation;

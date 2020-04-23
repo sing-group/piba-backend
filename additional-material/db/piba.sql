@@ -112,7 +112,7 @@ DROP TABLE IF EXISTS `image`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `image` (
   `id` varchar(255) NOT NULL,
-  `created` datetime(3) DEFAULT NULL,
+  `creation_date` datetime(3) DEFAULT NULL,
   `is_removed` bit(1) DEFAULT NULL,
   `num_frame` int(11) DEFAULT NULL,
   `observation_to_remove` varchar(255) DEFAULT NULL,
