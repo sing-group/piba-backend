@@ -44,6 +44,7 @@ import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
 import org.sing_group.piba.domain.entities.exploration.Exploration;
+import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 
 @Entity
@@ -95,7 +96,10 @@ public class Polyp implements Identifiable {
   private Exploration exploration;
 
   @OneToMany(mappedBy = "polyp", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<PolypRecording> polypRecordings = new HashSet<>();
+  private Set<PolypRecording> polypRecordings;
+  
+  @OneToMany(mappedBy = "polyp", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Image> images;
 
   Polyp() {}
 
@@ -115,6 +119,8 @@ public class Polyp implements Identifiable {
     this.observation = observation;
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
     this.confirmed = confirmed;
+    this.polypRecordings = new HashSet<>();
+    this.images = new HashSet<>();
     this.setName(name);
     this.setExploration(exploration);
   }
