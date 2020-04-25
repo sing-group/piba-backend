@@ -42,7 +42,7 @@ import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
 @Table(name = "videomodification", uniqueConstraints = @UniqueConstraint(columnNames = {
-  "video_id", "modifier_id", "start", "end", "confirmed"
+  "video_id", "modifier_id", "start", "end"
 }))
 public class VideoModification extends VideoInterval implements Serializable {
   private static final long serialVersionUID = 1L;

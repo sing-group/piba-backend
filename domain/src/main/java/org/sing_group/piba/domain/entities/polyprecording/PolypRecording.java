@@ -42,7 +42,7 @@ import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
 @Table(name = "polyprecording", uniqueConstraints = @UniqueConstraint(columnNames = {
-  "video_id", "polyp_id", "start", "end", "confirmed"
+  "video_id", "polyp_id", "start", "end"
 }))
 public class PolypRecording extends VideoInterval implements Serializable {
   private static final long serialVersionUID = 1L;

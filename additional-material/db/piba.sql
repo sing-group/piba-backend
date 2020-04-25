@@ -347,7 +347,6 @@ CREATE TABLE `polyprecording` (
   `update_date` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK3b5be1u27giv88biccgx1plgn` (`video_id`,`polyp_id`,`start`,`end`),
-  UNIQUE KEY `UKpdsea88nhvqsegwt00jwnwlbs` (`video_id`,`polyp_id`,`start`,`end`,`confirmed`),
   KEY `FKahq84qib3dgahokten4udjfie` (`video_id`),
   KEY `FK3edmv3619hxs7ae76gtlmae0n` (`polyp_id`),
   CONSTRAINT `FK3edmv3619hxs7ae76gtlmae0n` FOREIGN KEY (`polyp_id`) REFERENCES `polyp` (`id`),
@@ -444,7 +443,6 @@ CREATE TABLE `videomodification` (
   `update_date` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UKaa10u3drw60wmiobh2d6dsv37` (`video_id`,`modifier_id`,`start`,`end`),
-  UNIQUE KEY `UKlenjuyg9xhr13qqivimyllkoo` (`video_id`,`modifier_id`,`start`,`end`,`confirmed`),
   KEY `FKtob22gaa4c18vaivyqutckh41` (`modifier_id`),
   CONSTRAINT `FKgu49tdj4htc2b47etvu705yam` FOREIGN KEY (`video_id`) REFERENCES `video` (`id`),
   CONSTRAINT `FKtob22gaa4c18vaivyqutckh41` FOREIGN KEY (`modifier_id`) REFERENCES `modifier` (`id`)
