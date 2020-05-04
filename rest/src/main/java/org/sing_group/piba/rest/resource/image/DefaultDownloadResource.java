@@ -26,6 +26,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
@@ -35,11 +37,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.image.DownloadResource;
+import org.sing_group.piba.service.entity.image.ImagesInGallery;
 import org.sing_group.piba.service.spi.image.GalleryService;
 
 import io.swagger.annotations.Api;
@@ -64,7 +70,7 @@ public class DefaultDownloadResource implements DownloadResource {
   private GalleryService service;
 
   @GET
-  @Path("/gallery/{id}/{filter}/{location}")
+  @Path("/gallery/{id}")
   @Produces("application/zip")
   @ApiOperation(
     value = "Return the images of a gallery in a zip.", response = StreamingOutput.class, code = 200
@@ -76,12 +82,23 @@ public class DefaultDownloadResource implements DownloadResource {
   })
   @Override
   public Response getGalleryInZip(
-    @PathParam("id") String id, @PathParam("filter") String filter, @PathParam("location") Boolean withLocation
+    @PathParam("id") String id,
+    @QueryParam("filter") ImageFilter filter,
+    @QueryParam("withLocation") boolean withLocation
   ) throws FileNotFoundException {
-    String withLocationName = withLocation ? "_with_location" : "_without_location";
-    return Response.ok(this.service.getGalleriesInZip(this.service.get(id), filter, withLocation))
+    final String withLocationName = withLocation ? "_with_location" : "_without_location";
+    
+    final ImagesInGallery galleriesInZip = this.service.getGalleriesInZip(this.service.get(id), filter, withLocation);
+    final StreamingOutput result = new StreamingOutput() {
+      @Override
+      public void write(OutputStream output) throws IOException, WebApplicationException {
+        galleriesInZip.writeTo(output);
+      }
+    };
+    
+    return Response.ok(result)
       .header("Content-Disposition", "attachment; filename=\"" + id + "_" + filter + withLocationName + ".zip\"")
-      .build();
+    .build();
   }
 
 }

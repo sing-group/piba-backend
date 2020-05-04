@@ -25,6 +25,7 @@ package org.sing_group.piba.rest.resource.spi.image;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.rest.entity.RestImageUploadData;
 import org.sing_group.piba.rest.entity.image.PolypLocationEditionData;
 
@@ -35,9 +36,9 @@ public interface ImageResource {
   
   public Response getBytes(String id);
   
-  public Response listImagesBy(String galleryId, int page, int pageSize, String filter);
+  public Response listImagesBy(String galleryId, int page, int pageSize, ImageFilter filter);
   
-  public Response listImagesIdentifiersBy(String galleryId, Integer page, Integer pageSize, String filter);
+  public Response listImagesIdentifiersBy(String galleryId, Integer page, Integer pageSize, ImageFilter filter);
   
   public Response listImageObservationsToRemoveBy(String observationToRemoveStartsWith);
 

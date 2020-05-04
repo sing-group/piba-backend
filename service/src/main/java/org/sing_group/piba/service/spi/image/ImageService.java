@@ -22,12 +22,14 @@
  */
 package org.sing_group.piba.service.spi.image;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.ejb.Local;
 
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.service.entity.image.ImageUploadData;
 
@@ -44,15 +46,17 @@ public interface ImageService {
 
   public PolypLocation getPolypLocation(Image image);
 
+  public Optional<PolypLocation> getPolypLocationIfPresent(Image image);
+
   public void delete(Image image);
 
   public void deletePolypLocation(Image image);
 
-  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter);
+  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
 
-  public int countImagesIn(Gallery gallery, String filter);
+  public int countImagesIn(Gallery gallery, ImageFilter filter);
 
-  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter);
+  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
 
   public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith);
 

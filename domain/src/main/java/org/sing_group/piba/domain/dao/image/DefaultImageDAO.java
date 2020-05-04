@@ -22,6 +22,10 @@
  */
 package org.sing_group.piba.domain.dao.image;
 
+import static java.util.function.UnaryOperator.identity;
+
+import java.util.Optional;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -36,6 +40,7 @@ import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.spi.image.ImageDAO;
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 
 @Default
@@ -85,8 +90,13 @@ public class DefaultImageDAO implements ImageDAO {
 
   @Override
   public PolypLocation getPolypLocation(Image image) {
-    return this.dhPolypLocation.getBy("image", image)
+    return this.getPolypLocationIfPresent(image)
       .orElseThrow(() -> new IllegalArgumentException("No location for image: " + image.getId()));
+  }
+
+  @Override
+  public Optional<PolypLocation> getPolypLocationIfPresent(Image image) {
+    return this.dhPolypLocation.getBy("image", image);
   }
 
   @Override
@@ -102,86 +112,90 @@ public class DefaultImageDAO implements ImageDAO {
   }
 
   @Override
-  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
     return this.listImagesBy(gallery, page, pageSize, filter, Image.class);
   }
 
   @Override
-  public int countImagesIn(Gallery gallery, String filter) {
-    Stream<Image> images = this.dh.listBy("gallery", gallery).stream().filter(img -> !img.isRemoved());
-    switch (filter) {
-      case "all":
-        break;
-      case "located":
-        images = images.filter(img -> img.getPolypLocation() != null);
-        break;
-      case "not_located":
-        images = images.filter(img -> img.getPolypLocation() == null);
-        break;
-      case "with_polyp":
-        images = images.filter(img -> img.getPolyp() != null);
-        break;
-      case "not_located_with_polyp":
-        images = images.filter(img -> img.getPolyp() != null && img.getPolypLocation() == null);
-        break;
-      default:
-        throw new IllegalArgumentException("Filter not valid");
-    }
-    return (int) images.count();
+  public int countImagesIn(Gallery gallery, ImageFilter filter) {
+    final UnaryOperator<String> transformSelect = image -> "COUNT(" + image + ")";
+    final TypedQuery<Long> query = this.em.createQuery(buildListImagesBySql(filter, transformSelect, true), Long.class)
+      .setParameter("gallery", gallery);
+    
+    return query.getSingleResult().intValue();
   }
 
   @Override
-  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
     return this.listImagesBy(gallery, page, pageSize, filter, String.class);
   }
+  
+  private static String buildListImagesBySql(ImageFilter filter, UnaryOperator<String> transformSelect, boolean sort) {
+    String query;
+    switch(filter) {
+      case ALL:
+        query = "SELECT " + transformSelect.apply("i")
+          + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false";
+        
+        if (sort) {
+          query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
+        }
+        
+        return query;
+      case LOCATED:
+        query = "SELECT " + transformSelect.apply("pl.image")
+          + " FROM PolypLocation pl WHERE pl.image.gallery=:gallery AND pl.image.isRemoved=false";
+        
+        if (sort) {
+          query += " ORDER BY pl.image.creationDate DESC, pl.image.video.id, pl.image.numFrame";
+        }
+        
+        return query;
+      case UNLOCATED:
+        query = "SELECT " + transformSelect.apply("i")
+          + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)";
+        
+        if (sort) {
+          query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
+        }
+        
+        return query;
+      case UNLOCATED_WITH_POLYP:
+        query = "SELECT " + transformSelect.apply("i")
+        + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)";
+        
+        if (sort) {
+          query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
+        }
+        
+        return query;
+      case WITH_POLYP:
+        query = "SELECT " + transformSelect.apply("i")
+        + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND i.polyp IS NOT NULL";
+        
+        if (sort) {
+          query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
+        }
+        
+        return query;
+      default:
+        throw new IllegalArgumentException("Image filter not supported: " + filter);
+        
+    }
+  }
 
-  private <T> Stream<T> listImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter, Class<T> clazz) {
-    boolean onlyIds = false;
-    if (clazz.equals(String.class)) {
-      onlyIds = true;
-    } else if (!clazz.equals(Image.class)) {
+  private <T> Stream<T> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter, Class<T> clazz) {
+    if (!clazz.equals(String.class) && !clazz.equals(Image.class)) {
       throw new IllegalArgumentException("only String or Image classes are allowed");
     }
+    
+    final boolean onlyIds = clazz.equals(String.class);
+    final UnaryOperator<String> transformSelect = onlyIds
+      ? image -> image + ".id" : identity();
 
-    TypedQuery<T> query = null;
-
-    switch (filter) {
-      case "all":
-        query =
-          this.em.createQuery(
-            "SELECT i" + (onlyIds ? ".id" : "")
-              + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false ORDER BY i.creationDate DESC, i.video.id, i.numFrame",
-            clazz
-          );
-        break;
-      case "located":
-        query =
-          this.em.createQuery(
-            "SELECT pl.image" + (onlyIds ? ".id" : "")
-              + " FROM PolypLocation pl WHERE pl.image.gallery=:gallery AND pl.image.isRemoved=false ORDER BY pl.image.creationDate DESC, pl.image.video.id, pl.image.numFrame",
-            clazz
-          );
-        break;
-      case "not_located":
-        query =
-          this.em.createQuery(
-            "SELECT i" + (onlyIds ? ".id" : "")
-              + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i) ORDER BY i.creationDate DESC, i.video.id, i.numFrame",
-            clazz
-          );
-        break;
-      case "not_located_with_polyp":
-        query =
-          this.em.createQuery(
-            "SELECT i" + (onlyIds ? ".id" : "")
-              + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i) ORDER BY i.creationDate DESC, i.video.id, i.numFrame",
-            clazz
-          );
-        break;
-      default:
-        throw new IllegalArgumentException("Filter not valid");
-    }
-    query.setParameter("gallery", gallery);
+    final TypedQuery<T> query = this.em.createQuery(buildListImagesBySql(filter, transformSelect, true), clazz)
+      .setParameter("gallery", gallery);
+    
     if (page != null && pageSize != null) {
       return query.setFirstResult((page - 1) * pageSize).setMaxResults(pageSize).getResultList().stream();
     } else {

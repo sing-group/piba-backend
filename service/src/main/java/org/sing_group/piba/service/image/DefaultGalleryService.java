@@ -22,30 +22,18 @@
  */
 package org.sing_group.piba.service.image;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.tools.zip.ZipEntry;
-import org.apache.tools.zip.ZipOutputStream;
 import org.sing_group.piba.domain.dao.spi.image.GalleryDAO;
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
-import org.sing_group.piba.domain.entities.image.PolypLocation;
+import org.sing_group.piba.domain.entities.image.ImageFilter;
+import org.sing_group.piba.service.entity.image.ImagesInGallery;
 import org.sing_group.piba.service.spi.image.GalleryService;
 import org.sing_group.piba.service.spi.image.ImageService;
 import org.sing_group.piba.service.spi.storage.FileStorage;
@@ -79,61 +67,22 @@ public class DefaultGalleryService implements GalleryService {
   }
 
   @Override
-  public StreamingOutput getGalleriesInZip(Gallery gallery, String filter, Boolean withLocation)
+  public ImagesInGallery getGalleriesInZip(Gallery gallery, ImageFilter filter, boolean withLocation)
     throws FileNotFoundException {
-    Stream<Image> images = imageService.listImagesBy(gallery, null, null, filter);
+    final Stream<Image> images = this.imageService.listImagesBy(gallery, null, null, filter);
 
-    StreamingOutput sout = new StreamingOutput() {
-      @Override
-      public void write(OutputStream out) throws IOException, WebApplicationException {
-        ZipOutputStream zout = new ZipOutputStream(out);
-        images.forEach(image -> {
-          InputStream imageStream = fileStorage.retrieve(image.getId(), "png");
-
-          try {
-            BufferedImage imageData = ImageIO.read(imageStream);
-            if (withLocation) {
-              PolypLocation polypLocation = null;
-              try {
-                polypLocation =
-                  imageService.getPolypLocation(imageService.get(image.getId()));
-              } catch (EJBException e) {
-                if (e.getCause() instanceof IllegalArgumentException) {
-                  // catched "No location for image:", which is normal when an
-                  // image does not have an assigned polyp location
-                } else {
-                  throw e;
-                }
-              }
-              // draw the polyp location
-              if (polypLocation != null) {
-                Graphics2D g2 = imageData.createGraphics();
-                g2.setColor(Color.RED);
-                g2.setStroke(new BasicStroke(2));
-                g2.drawRect(
-                  polypLocation.getX(), polypLocation.getY(),
-                  polypLocation.getWidth(), polypLocation.getHeight()
-                );
-              }
-            }
-
-            String polypId = image.getPolyp() == null ? "" : image.getPolyp().getId() + "_";
-            ZipEntry zipEntry =
-              new ZipEntry(
-                polypId + image.getVideo().getId() + "_" + image.getNumFrame() + ".png"
-              );
-            zout.putNextEntry(zipEntry);
-            ImageIO.write(imageData, "png", zout);
-
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-        });
-        zout.flush();
-        zout.close();
-      }
-    };
-    return sout;
+    if (withLocation) {
+      return new ImagesInGallery(
+        images,
+        image -> this.fileStorage.retrieve(image.getId(), "png"),
+        image -> this.imageService.getPolypLocationIfPresent(image)
+      );
+    } else {
+      return new ImagesInGallery(
+        images,
+        image -> this.fileStorage.retrieve(image.getId(), "png")
+      );
+    }
   }
 
   @Override

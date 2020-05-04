@@ -24,6 +24,7 @@ package org.sing_group.piba.service.image;
 
 import java.io.FileInputStream;
 import java.nio.file.Files;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
@@ -33,6 +34,7 @@ import javax.inject.Inject;
 import org.sing_group.piba.domain.dao.spi.image.ImageDAO;
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.video.Video;
@@ -106,6 +108,11 @@ public class DefaultImageService implements ImageService {
   public PolypLocation getPolypLocation(Image image) {
     return imageDao.getPolypLocation(image);
   }
+  
+  @Override
+  public Optional<PolypLocation> getPolypLocationIfPresent(Image image) {
+    return imageDao.getPolypLocationIfPresent(image);
+  }
 
   @Override
   public void delete(Image image) {
@@ -118,17 +125,17 @@ public class DefaultImageService implements ImageService {
   }
 
   @Override
-  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
     return imageDao.listImagesBy(gallery, page, pageSize, filter);
   }
 
   @Override
-  public int countImagesIn(Gallery gallery, String filter) {
+  public int countImagesIn(Gallery gallery, ImageFilter filter) {
     return imageDao.countImagesIn(gallery, filter);
   }
 
   @Override
-  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter) {
+  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
     return imageDao.listImagesIdentifiersBy(gallery, page, pageSize, filter);
   }
 

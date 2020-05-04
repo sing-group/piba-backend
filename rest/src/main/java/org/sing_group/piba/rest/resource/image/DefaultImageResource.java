@@ -24,6 +24,8 @@ package org.sing_group.piba.rest.resource.image;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static org.sing_group.piba.domain.entities.image.ImageFilter.LOCATED;
+import static org.sing_group.piba.domain.entities.image.ImageFilter.WITH_POLYP;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +56,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 import org.sing_group.piba.rest.entity.RestImageUploadData;
 import org.sing_group.piba.rest.entity.UuidAndUri;
@@ -247,7 +250,7 @@ public class DefaultImageResource implements ImageResource {
   public Response listImagesBy(
     @QueryParam("gallery_id") String galleryId,
     @QueryParam("page") int page, @QueryParam("pageSize") int pageSize,
-    @QueryParam("filter") String filter
+    @QueryParam("filter") ImageFilter filter
   ) {
     Gallery gallery = this.galleryService.get(galleryId);
     return Response.ok(
@@ -255,9 +258,9 @@ public class DefaultImageResource implements ImageResource {
     ).header(
       "X-Pagination-Total-Items", this.service.countImagesIn(gallery, filter)
     ).header(
-      "X-Located-Total-Items", this.service.countImagesIn(gallery, "located")
+      "X-Located-Total-Items", this.service.countImagesIn(gallery, LOCATED)
     ).header(
-      "X-With-Polyp-Total-Items", this.service.countImagesIn(gallery, "with_polyp")
+      "X-With-Polyp-Total-Items", this.service.countImagesIn(gallery, WITH_POLYP)
     ).build();
   }
 
@@ -273,7 +276,7 @@ public class DefaultImageResource implements ImageResource {
   public Response listImagesIdentifiersBy(
     @QueryParam("gallery_id") String galleryId,
     @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
-    @QueryParam("filter") String filter
+    @QueryParam("filter") ImageFilter filter
   ) {
     Gallery gallery = this.galleryService.get(galleryId);
 
@@ -287,9 +290,9 @@ public class DefaultImageResource implements ImageResource {
     return response.header(
       "X-Pagination-Total-Items", this.service.countImagesIn(gallery, filter)
     ).header(
-      "X-Located-Total-Items", this.service.countImagesIn(gallery, "located")
+      "X-Located-Total-Items", this.service.countImagesIn(gallery, LOCATED)
     ).header(
-      "X-With-Polyp-Total-Items", this.service.countImagesIn(gallery, "with_polyp")
+      "X-With-Polyp-Total-Items", this.service.countImagesIn(gallery, WITH_POLYP)
     ).build();
   }
 

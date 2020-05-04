@@ -26,8 +26,11 @@ import java.io.FileNotFoundException;
 
 import javax.ws.rs.core.Response;
 
+import org.sing_group.piba.domain.entities.image.ImageFilter;
+
 public interface DownloadResource {
 
-  public Response getGalleryInZip(String id, String filter, Boolean withLocation) throws FileNotFoundException;
+  public Response getGalleryInZip(String id, ImageFilter filter, boolean withLocation)
+    throws FileNotFoundException;
 
 }

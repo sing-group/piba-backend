@@ -22,10 +22,12 @@
  */
 package org.sing_group.piba.domain.dao.spi.image;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
+import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
 
 public interface ImageDAO {
@@ -40,16 +42,18 @@ public interface ImageDAO {
 
   public PolypLocation getPolypLocation(Image image);
 
+  public Optional<PolypLocation> getPolypLocationIfPresent(Image image);
+
   public void delete(Image image);
 
   public void deletePolypLocation(Image image);
 
-  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, String format);
+  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
 
-  public int countImagesIn(Gallery gallery, String filter);
-
-  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, String filter);
+  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
   
   public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith);
+  
+  public int countImagesIn(Gallery gallery, ImageFilter filter);
 
 }

@@ -1,8 +1,8 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
- * Copyright (C) 2018 Daniel Glez-Peña, Miguel Reboiro-Jato,
+ * Copyright (C) 2018 - 2020 Daniel Glez-Peña, Miguel Reboiro-Jato,
  * 			Florentino Fdez-Riverola, Alba Nogueira Rodríguez
  * %%
  * This program is free software: you can redistribute it and/or modify
@@ -20,27 +20,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.piba.service.spi.image;
+package org.sing_group.piba.domain.entities.image;
 
-import java.io.FileNotFoundException;
-import java.util.stream.Stream;
-
-import javax.ejb.Local;
-
-import org.sing_group.piba.domain.entities.image.Gallery;
-import org.sing_group.piba.domain.entities.image.ImageFilter;
-import org.sing_group.piba.service.entity.image.ImagesInGallery;
-
-@Local
-public interface GalleryService {
-  public Gallery create(Gallery galery);
-
-  public Gallery get(String id);
-
-  public Stream<Gallery> listGalleries();
-
-  public Gallery edit(Gallery gallery);
-
-  public ImagesInGallery getGalleriesInZip(Gallery gallery, ImageFilter filter, boolean withLocation)
-    throws FileNotFoundException;
+public enum ImageFilter {
+  ALL,
+  WITH_POLYP,
+  LOCATED,
+  UNLOCATED,
+  LOCATED_WITH_POLYP,
+  UNLOCATED_WITH_POLYP;
 }
