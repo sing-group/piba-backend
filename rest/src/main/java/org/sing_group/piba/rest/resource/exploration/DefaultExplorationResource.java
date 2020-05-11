@@ -107,7 +107,7 @@ public class DefaultExplorationResource implements ExplorationResource {
   @Path("{id}")
   @GET
   @ApiOperation(
-    value = "Return the data of a exploration.", response = ExplorationData.class, code = 200
+    value = "Return the data of an exploration.", response = ExplorationData.class, code = 200
   )
   @ApiResponses(
     @ApiResponse(code = 400, message = "Unknown exploration: {id}")

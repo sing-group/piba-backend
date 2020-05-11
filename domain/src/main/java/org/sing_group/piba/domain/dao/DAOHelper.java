@@ -93,6 +93,10 @@ public class DAOHelper<K, T> {
   public List<T> list(ListingOptions options) {
     return this.list(options, (cb, r) -> new Predicate[0]);
   }
+  
+  public List<T> list(BiFunction<CriteriaBuilder, Root<T>, Predicate[]> predicatesBuilder) {
+    return this.list(ListingOptions.allResults().unsorted(), predicatesBuilder);
+  }
 
   public List<T> list(ListingOptions options, BiFunction<CriteriaBuilder, Root<T>, Predicate[]> predicatesBuilder) {
     final ListingOptionsQueryBuilder optionsBuilder = new ListingOptionsQueryBuilder(options);
@@ -159,6 +163,32 @@ public class DAOHelper<K, T> {
     CriteriaQuery<Long> query = cb().createQuery(Long.class);
 
     query = query.select(cb().count(query.from(this.getEntityType())));
+
+    return this.em.createQuery(query).getSingleResult();
+  }
+
+  public long count(BiFunction<CriteriaBuilder, Root<T>, Predicate[]> predicatesBuilder) {
+    final CriteriaQuery<Long> queryBuilder = cb().createQuery(Long.class);
+    final Root<T> root = queryBuilder.from(this.getEntityType());
+
+    final Predicate[] predicates = predicatesBuilder.apply(cb(), root);
+    
+    CriteriaQuery<Long> select = queryBuilder.select(cb().count(root));
+    
+    if (predicates.length > 0) {
+      select = queryBuilder.where(predicates);
+    }
+
+    return this.em.createQuery(select).getSingleResult();
+  }
+
+  public int countRelated(String key, K keyValue, String relationFieldName) {
+    CriteriaQuery<Integer> query = cb().createQuery(Integer.class);
+
+    final Root<T> root = query.from(this.getEntityType());
+    
+    query = query.select(cb().size(root.get(relationFieldName)))
+      .where(cb().equal(root.get(key), keyValue));
 
     return this.em.createQuery(query).getSingleResult();
   }
