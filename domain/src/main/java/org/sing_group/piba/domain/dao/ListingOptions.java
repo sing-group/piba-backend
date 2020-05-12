@@ -59,6 +59,13 @@ public class ListingOptions implements Serializable {
     return new ListingOptionsBuilder(null, null);
   }
 
+  public static ListingOptionsBuilder forPage(int page, int pageSize) {
+    final int start = (page - 1) * pageSize;
+    final int end = start + pageSize - 1;
+    
+    return new ListingOptionsBuilder(start, end);
+  }
+
   public static ListingOptionsBuilder between(int start, int end) {
     return new ListingOptionsBuilder(start, end);
   }

@@ -62,10 +62,7 @@ public class DefaultPolypDAO implements PolypDAO {
 
   @Override
   public Stream<Polyp> listPolyps(int page, int pageSize) {
-    int start = (page - 1) * pageSize;
-    int end = start + pageSize - 1;
-    
-    ListingOptions listingOptions = ListingOptions.between(start, end)
+    ListingOptions listingOptions = ListingOptions.forPage(page, pageSize)
       .sortedBy(
         ascending("exploration.title"),
         ascending("name")

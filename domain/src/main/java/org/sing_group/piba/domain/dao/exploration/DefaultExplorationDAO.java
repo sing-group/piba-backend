@@ -74,9 +74,9 @@ public class DefaultExplorationDAO implements ExplorationDAO {
 
   @Override
   public Stream<Exploration> listExplorations(int page, int pageSize, Patient patient) {
-    int startBlock = (page - 1) * pageSize;
-    int endBlock = startBlock + pageSize - 1;
-    ListingOptions listingOptions = new ListingOptions(startBlock, endBlock, SortField.descending("creationDate"));
+    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize)
+      .sortedBy(SortField.descending("creationDate"));
+    
     // Checks if a patient is sent
     if (patient != null) {
       return dh.listBy("patient", patient, listingOptions).stream();

@@ -70,20 +70,14 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
 
   @Override
   public Stream<PolypDataset> listPolypDatasets(int page, int pageSize) {
-    int start = (page - 1) * pageSize;
-    int end = start + pageSize - 1;
-    
-    ListingOptions listingOptions = ListingOptions.between(start, end).unsorted();
+    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
     
     return this.dh.list(listingOptions).stream();
   }
   
   @Override
   public Stream<Polyp> listPolypsInDataset(String datasetId, int page, int pageSize) {
-    int start = (page - 1) * pageSize;
-    int end = start + pageSize - 1;
-    
-    ListingOptions listingOptions = ListingOptions.between(start, end).unsorted();
+    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
     
     return this.dhPolyp.list(listingOptions, (cb, root) -> new Predicate[] {
       cb.equal(root.join("polypDatasets").get("id"), datasetId)
