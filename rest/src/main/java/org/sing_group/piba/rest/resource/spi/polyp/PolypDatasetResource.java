@@ -27,8 +27,10 @@ import javax.ws.rs.core.Response;
 @Local
 public interface PolypDatasetResource {
   public Response getPolypDataset(String id);
-  
+
   public Response listPolypDatasets(int page, int pageSize);
 
   public Response listPolypsOfPolypDatasets(String datasetId, int page, int pageSize);
+
+  public Response listPolypRecordingsOfPolypDatasets(String datasetId, int page, int pageSize);
 }

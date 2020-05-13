@@ -28,7 +28,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -37,6 +40,7 @@ import org.sing_group.piba.domain.dao.ListingOptions;
 import org.sing_group.piba.domain.dao.spi.polyp.PolypDatasetDAO;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
+import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
@@ -46,6 +50,7 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   protected EntityManager em;
   protected DAOHelper<String, PolypDataset> dh;
   protected DAOHelper<String, Polyp> dhPolyp;
+  protected DAOHelper<String, PolypRecording> dhPolypRecording;
 
   public DefaultPolypDatasetDAO() {
     super();
@@ -60,8 +65,9 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   private void createDAOHelper() {
     this.dh = DAOHelper.of(String.class, PolypDataset.class, this.em);
     this.dhPolyp = DAOHelper.of(String.class, Polyp.class, this.em);
+    this.dhPolypRecording = DAOHelper.of(String.class, PolypRecording.class, em);
   }
-  
+
   @Override
   public PolypDataset getPolypDataset(String id) {
     return this.dh.get(id)
@@ -74,44 +80,57 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
     
     return this.dh.list(listingOptions).stream();
   }
-  
+
   @Override
   public Stream<Polyp> listPolypsInDataset(String datasetId, int page, int pageSize) {
-    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
+    final PolypDataset dataset = this.dh.get(datasetId)
+      .orElseThrow(() -> new IllegalArgumentException("Dataset not found: " + datasetId));
     
-    return this.dhPolyp.list(listingOptions, (cb, root) -> new Predicate[] {
-      cb.equal(root.join("polypDatasets").get("id"), datasetId)
+    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
+
+    return this.dhPolyp.list(listingOptions, (cb, root) -> {
+      return new Predicate[] {
+        cb.isMember(dataset, root.get("polypDatasets"))
+      };
     }).stream();
   }
-  
+
+  @Override
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, int page, int pageSize) {
+    final PolypDataset dataset = this.dh.get(datasetId)
+      .orElseThrow(() -> new IllegalArgumentException("Dataset not found: " + datasetId));
+
+    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
+
+    return this.dhPolypRecording.list(listingOptions, (cb, root) -> new Predicate[] {
+      cb.isMember(dataset, root.join("polyp").get("polypDatasets"))
+    }).stream();
+  }
+
+  @Override
+  public int countPolypDatasets() {
+    return (int) this.dh.count();
+  }
+
   @Override
   public int countPolypsInDataset(String datasetId) {
     return this.dh.countRelated("id", datasetId, "polyps");
   }
   
   @Override
-  public int countPolypDatasets() {
-    return this.dh.list().size();
-  }
+  public int countPolypRecordingsInDatasets(String datasetId) {
+    final PolypDataset dataset = this.dh.get(datasetId)
+      .orElseThrow(() -> new IllegalArgumentException("Dataset not found: " + datasetId));
+    
+    final CriteriaBuilder cb = this.dhPolypRecording.cb();
+    CriteriaQuery<Long> query = cb.createQuery(Long.class);
 
-//  @Override
-//  public Polyp getPolyp(String id) {
-//    return this.dh.get(id).orElseThrow(() -> new IllegalArgumentException("Unknown polyp: " + id));
-//  }
-//
-//  @Override
-//  public Polyp create(Polyp polyp) {
-//    return this.dh.persist(polyp);
-//  }
-//
-//  @Override
-//  public Polyp edit(Polyp polyp) {
-//    return this.dh.update(polyp);
-//  }
-//
-//  @Override
-//  public void delete(Polyp polyp) {
-//    this.dh.remove(polyp);
-//  }
+    final Root<PolypRecording> root = query.from(this.dhPolypRecording.getEntityType());
+    
+    query = query.select(cb.count(root))
+      .where(cb.isMember(dataset, root.join("polyp").get("polypDatasets")));
+
+    return this.em.createQuery(query).getSingleResult().intValue();
+  }
 
 }

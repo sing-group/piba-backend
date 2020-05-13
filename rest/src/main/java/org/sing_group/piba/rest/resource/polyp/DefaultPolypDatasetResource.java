@@ -40,8 +40,10 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.rest.entity.mapper.spi.PolypDatasetMapper;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypMapper;
+import org.sing_group.piba.rest.entity.mapper.spi.PolypRecordingMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.polyp.PolypDatasetResource;
 import org.sing_group.piba.service.spi.polyp.PolypDatasetService;
@@ -69,9 +71,12 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
 
   @Inject
   private PolypDatasetMapper polypDatasetMapper;
-  
+
   @Inject
   private PolypMapper polypMapper;
+  
+  @Inject
+  private PolypRecordingMapper polypRecordingMapper;
 
   @Context
   private UriInfo uriInfo;
@@ -80,6 +85,7 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
   public void init() {
     this.polypDatasetMapper.setRequestURI(this.uriInfo);
     this.polypMapper.setRequestURI(this.uriInfo);
+    this.polypRecordingMapper.setRequestURI(this.uriInfo);
   }
 
   @Path("{id}")
@@ -96,7 +102,7 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
   ) {
     return Response
       .ok(this.polypDatasetMapper.toPolypDatasetData(this.service.getPolypDataset(id)))
-    .build();
+      .build();
   }
 
   @GET
@@ -111,20 +117,21 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
     @QueryParam("page") int page, @QueryParam("pageSize") int pageSize
   ) {
     int countPolyps = this.service.countPolypDatasets();
-    
+
     return Response.ok(
-        this.service.listPolypDatasets(page, pageSize)
-          .map(this.polypDatasetMapper::toPolypDatasetData)
+      this.service.listPolypDatasets(page, pageSize)
+        .map(this.polypDatasetMapper::toPolypDatasetData)
         .toArray(PolypDatasetData[]::new)
-      )
+    )
       .header("X-Pagination-Total-Items", countPolyps)
-    .build();
+      .build();
   }
 
   @GET
   @Path("{id}/polyp")
   @ApiOperation(
-    value = "Returns the data of all the polyp datasets.", response = PolypData.class, responseContainer = "List", code = 200
+    value = "Returns the polyps of a polyp datasets.",
+    response = PolypData.class, responseContainer = "List", code = 200
   )
   @ApiResponses(
     @ApiResponse(code = 400, message = "Invalid page or pageSize. They must be an integer.")
@@ -136,12 +143,38 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
     @QueryParam("pageSize") int pageSize
   ) {
     int countPolyps = this.service.countPolypsInDatasets(datasetId);
-    
+
     return Response.ok(
-        this.service.listPolypsInDatasets(datasetId, page, pageSize)
-          .map(this.polypMapper::toPolypData)
+      this.service.listPolypsInDatasets(datasetId, page, pageSize)
+        .map(this.polypMapper::toPolypData)
         .toArray(PolypData[]::new)
-      )
+    )
+      .header("X-Pagination-Total-Items", countPolyps)
+      .build();
+  }
+
+  @GET
+  @Path("{id}/polyprecording")
+  @ApiOperation(
+    value = "Returns the polpy recorgings of a polyp datasets.",
+    response = PolypRecordingData.class, responseContainer = "List", code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Invalid page or pageSize. They must be an integer.")
+  )
+  @Override
+  public Response listPolypRecordingsOfPolypDatasets(
+    @PathParam("id") String datasetId,
+    @QueryParam("page") int page,
+    @QueryParam("pageSize") int pageSize
+  ) {
+    int countPolyps = this.service.countPolypRecordingsInDatasets(datasetId);
+
+    return Response.ok(
+      this.service.listPolypRecordingsInDatasets(datasetId, page, pageSize)
+        .map(this.polypRecordingMapper::toPolypRecordingData)
+      .toArray(PolypRecordingData[]::new)
+    )
       .header("X-Pagination-Total-Items", countPolyps)
     .build();
   }

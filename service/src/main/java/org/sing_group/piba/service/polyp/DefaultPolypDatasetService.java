@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import org.sing_group.piba.domain.dao.spi.polyp.PolypDatasetDAO;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
+import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.service.spi.polyp.PolypDatasetService;
 
 @Stateless
@@ -54,6 +55,11 @@ public class DefaultPolypDatasetService implements PolypDatasetService {
   }
   
   @Override
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, int page, int pageSize) {
+    return this.polypDatasetDao.listPolypRecordingsInDatasets(datasetId, page, pageSize);
+  }
+  
+  @Override
   public int countPolypDatasets() {
     return this.polypDatasetDao.countPolypDatasets();
   }
@@ -61,5 +67,10 @@ public class DefaultPolypDatasetService implements PolypDatasetService {
   @Override
   public int countPolypsInDatasets(String datasetId) {
     return this.polypDatasetDao.countPolypsInDataset(datasetId);
+  }
+  
+  @Override
+  public int countPolypRecordingsInDatasets(String datasetId) {
+    return this.polypDatasetDao.countPolypRecordingsInDatasets(datasetId);
   }
 }

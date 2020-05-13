@@ -26,17 +26,22 @@ import java.util.stream.Stream;
 
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
+import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 
 public interface PolypDatasetService {
 
   public PolypDataset getPolypDataset(String id);
 
   public Stream<PolypDataset> listPolypDatasets(int page, int pageSize);
-  
+
   public Stream<Polyp> listPolypsInDatasets(String datasetId, int page, int pageSize);
-  
+
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, int page, int pageSize);
+
   public int countPolypDatasets();
 
   public int countPolypsInDatasets(String datasetId);
+
+  public int countPolypRecordingsInDatasets(String datasetId);
 
 }

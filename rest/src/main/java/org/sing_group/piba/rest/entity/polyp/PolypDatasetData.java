@@ -48,6 +48,8 @@ public class PolypDatasetData implements Serializable {
 
   @XmlElement(name = "polyps")
   private List<UuidAndUri> polyps;
+  
+  PolypDatasetData() {}
 
   public PolypDatasetData(String id, String title, List<UuidAndUri> polyps) {
     this.id = id;
