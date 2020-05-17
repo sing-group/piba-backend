@@ -55,7 +55,7 @@ public class DefaultPolypDatasetService implements PolypDatasetService {
   }
   
   @Override
-  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, int page, int pageSize) {
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, Integer page, Integer pageSize) {
     return this.polypDatasetDao.listPolypRecordingsInDatasets(datasetId, page, pageSize);
   }
   

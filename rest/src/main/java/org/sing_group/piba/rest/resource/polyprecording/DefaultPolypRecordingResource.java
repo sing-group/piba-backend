@@ -104,6 +104,20 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
     this.polypRecordingMapper.setRequestURI(this.uriInfo);
   }
 
+
+  @GET
+  @Path("/{id}")
+  @ApiOperation(
+    value = "Returns a polyp recording.", response = PolypRecordingData.class, code = 200
+  )
+  @ApiResponses(@ApiResponse(code = 400, message = "Unknown polyp recording: {id}"))
+  @Override
+  public Response getPolypRecording(@PathParam("id") int id) {
+    return Response.ok(
+      this.polypRecordingMapper.toPolypRecordingData(this.polypRecordingService.get(id))
+    ).build();
+  }
+
   @GET
   @Path("/video/{video_id}")
   @ApiOperation(

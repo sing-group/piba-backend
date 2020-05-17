@@ -37,6 +37,8 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.ListingOptions;
+import org.sing_group.piba.domain.dao.ListingOptions.ListingOptionsBuilder;
+import org.sing_group.piba.domain.dao.ListingOptions.SortField;
 import org.sing_group.piba.domain.dao.spi.polyp.PolypDatasetDAO;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
@@ -96,11 +98,13 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   }
 
   @Override
-  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, int page, int pageSize) {
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, Integer page, Integer pageSize) {
     final PolypDataset dataset = this.dh.get(datasetId)
       .orElseThrow(() -> new IllegalArgumentException("Dataset not found: " + datasetId));
-
-    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
+    
+    final ListingOptionsBuilder listingOptionsBuilder = (page == null || pageSize == null)
+      ? ListingOptions.allResults() : ListingOptions.forPage(page, pageSize);
+    final ListingOptions listingOptions = listingOptionsBuilder.sortedBy(SortField.ascending("creationDate"));
 
     return this.dhPolypRecording.list(listingOptions, (cb, root) -> new Predicate[] {
       cb.isMember(dataset, root.join("polyp").get("polypDatasets"))

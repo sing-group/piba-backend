@@ -32,5 +32,5 @@ public interface PolypDatasetResource {
 
   public Response listPolypsOfPolypDatasets(String datasetId, int page, int pageSize);
 
-  public Response listPolypRecordingsOfPolypDatasets(String datasetId, int page, int pageSize);
+  public Response listPolypRecordingsOfPolypDatasets(String datasetId, Integer page, Integer pageSize);
 }

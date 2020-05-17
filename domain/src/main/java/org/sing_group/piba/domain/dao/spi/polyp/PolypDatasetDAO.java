@@ -36,7 +36,7 @@ public interface PolypDatasetDAO {
 
   public Stream<Polyp> listPolypsInDataset(String datasetId, int page, int pageSize);
 
-  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, int page, int pageSize);
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, Integer page, Integer pageSize);
   
   public int countPolypDatasets();
 

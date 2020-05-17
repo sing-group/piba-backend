@@ -36,8 +36,8 @@ public interface PolypDatasetService {
 
   public Stream<Polyp> listPolypsInDatasets(String datasetId, int page, int pageSize);
 
-  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, int page, int pageSize);
-
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, Integer page, Integer pageSize);
+  
   public int countPolypDatasets();
 
   public int countPolypsInDatasets(String datasetId);

@@ -156,7 +156,7 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
   @GET
   @Path("{id}/polyprecording")
   @ApiOperation(
-    value = "Returns the polpy recorgings of a polyp datasets.",
+    value = "Returns the polpy recordings of a polyp datasets.",
     response = PolypRecordingData.class, responseContainer = "List", code = 200
   )
   @ApiResponses(
@@ -165,8 +165,8 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
   @Override
   public Response listPolypRecordingsOfPolypDatasets(
     @PathParam("id") String datasetId,
-    @QueryParam("page") int page,
-    @QueryParam("pageSize") int pageSize
+    @QueryParam("page") Integer page,
+    @QueryParam("pageSize") Integer pageSize
   ) {
     int countPolyps = this.service.countPolypRecordingsInDatasets(datasetId);
 
@@ -178,5 +178,4 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
       .header("X-Pagination-Total-Items", countPolyps)
     .build();
   }
-
 }
