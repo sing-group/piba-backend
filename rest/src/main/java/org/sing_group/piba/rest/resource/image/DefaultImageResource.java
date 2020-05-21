@@ -128,7 +128,7 @@ public class DefaultImageResource implements ImageResource {
       .entity(imageMapper.toImageData(image)).build();
   }
 
-  @Path("{id}")
+  @Path("{id:[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}}")
   @GET
   @ApiOperation(
     value = "Return the bytes of a image.", response = byte[].class, code = 200
@@ -154,7 +154,7 @@ public class DefaultImageResource implements ImageResource {
     }
   }
 
-  @Path("{id}/metadata")
+  @Path("{id:[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}}/metadata")
   @GET
   @ApiOperation(
     value = "Return the data of a image.", response = ImageData.class, code = 200
@@ -171,7 +171,7 @@ public class DefaultImageResource implements ImageResource {
     return Response.ok(this.imageMapper.toImageData(this.service.get(id))).build();
   }
 
-  @Path("{id}/polyplocation")
+  @Path("{id:[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}}/polyplocation")
   @POST
   @RolesAllowed("ENDOSCOPIST")
   @ApiOperation(
@@ -191,7 +191,7 @@ public class DefaultImageResource implements ImageResource {
   }
 
   @DELETE
-  @Path("{id}")
+  @Path("{id:[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}}")
   @RolesAllowed("ENDOSCOPIST")
   @ApiOperation(
     value = "Deletes an existing image.", code = 200
@@ -207,7 +207,7 @@ public class DefaultImageResource implements ImageResource {
     return Response.ok().build();
   }
 
-  @Path("{id}/polyplocation")
+  @Path("{id:[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}}/polyplocation")
   @GET
   @ApiOperation(
     value = "Return the data of the polyp location in the image.", response = PolypLocationData.class, code = 200
@@ -223,7 +223,7 @@ public class DefaultImageResource implements ImageResource {
   }
 
   @DELETE
-  @Path("{id}/polyplocation")
+  @Path("{id:[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}}/polyplocation")
   @RolesAllowed("ENDOSCOPIST")
   @ApiOperation(
     value = "Deletes an existing polyp location in the image.", code = 200
@@ -306,6 +306,7 @@ public class DefaultImageResource implements ImageResource {
     @QueryParam("observationStartsWith") String observationToRemoveStartsWith
   ) {
     return Response
-      .ok(this.service.listImageObservationsToRemoveBy(observationToRemoveStartsWith).toArray(String[]::new)).build();
+      .ok(this.service.listImageObservationsToRemoveBy(observationToRemoveStartsWith).toArray(String[]::new))
+    .build();
   }
 }
