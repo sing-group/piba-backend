@@ -21,21 +21,36 @@
  */
 package org.sing_group.piba.rest.entity.mapper;
 
-import java.util.ArrayList;
+import static java.util.stream.Collectors.toList;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
 import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypDatasetMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetData;
+import org.sing_group.piba.rest.entity.polyp.PolypDatasetEditionData;
+import org.sing_group.piba.rest.resource.image.DefaultGalleryResource;
 import org.sing_group.piba.rest.resource.polyp.DefaultPolypDatasetResource;
+import org.sing_group.piba.service.spi.image.GalleryService;
+import org.sing_group.piba.service.spi.polyp.PolypService;
 
 @Default
 public class DefaultPolypDatasetMapper implements PolypDatasetMapper {
 
   private UriInfo requestURI;
+  
+  @Inject
+  private PolypService polypService;
+  
+  @Inject
+  private GalleryService galleryService;
 
   @Override
   public void setRequestURI(UriInfo requestURI) {
@@ -46,7 +61,23 @@ public class DefaultPolypDatasetMapper implements PolypDatasetMapper {
   public PolypDatasetData toPolypDatasetData(PolypDataset dataset) {
     return new PolypDatasetData(
       dataset.getId(), dataset.getTitle(),
-      UuidAndUri.fromEntities(requestURI, new ArrayList<>(dataset.getPolyps()), DefaultPolypDatasetResource.class)
+      UuidAndUri.fromEntities(requestURI, dataset.getPolyps().collect(toList()), DefaultPolypDatasetResource.class),
+      UuidAndUri.fromEntity(requestURI, dataset.getDefaultGallery(), DefaultGalleryResource.class)
     );
+  }
+  
+  @Override
+  public void assignPolypDatasetEditionData(PolypDataset polypDataset, PolypDatasetEditionData data) {
+    polypDataset.setTitle(data.getTitle());
+    if (data.getDefaultGallery() == null) {
+      polypDataset.setDefaultGallery(null);
+    } else {
+      polypDataset.setDefaultGallery(this.galleryService.get(data.getDefaultGallery()));
+    }
+    
+    final Set<Polyp> polyps = data.getPolyps().stream()
+      .map(this.polypService::getPolyp)
+    .collect(Collectors.toSet());
+    polypDataset.setPolyps(polyps);
   }
 }

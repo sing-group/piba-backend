@@ -40,6 +40,7 @@ import org.sing_group.piba.domain.dao.ListingOptions;
 import org.sing_group.piba.domain.dao.ListingOptions.ListingOptionsBuilder;
 import org.sing_group.piba.domain.dao.ListingOptions.SortField;
 import org.sing_group.piba.domain.dao.spi.polyp.PolypDatasetDAO;
+import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
@@ -53,6 +54,7 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   protected DAOHelper<String, PolypDataset> dh;
   protected DAOHelper<String, Polyp> dhPolyp;
   protected DAOHelper<String, PolypRecording> dhPolypRecording;
+  protected DAOHelper<String, Gallery> dhGallery;
 
   public DefaultPolypDatasetDAO() {
     super();
@@ -68,6 +70,7 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
     this.dh = DAOHelper.of(String.class, PolypDataset.class, this.em);
     this.dhPolyp = DAOHelper.of(String.class, Polyp.class, this.em);
     this.dhPolypRecording = DAOHelper.of(String.class, PolypRecording.class, em);
+    this.dhGallery = DAOHelper.of(String.class, Gallery.class, em);
   }
 
   @Override
@@ -136,5 +139,9 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
 
     return this.em.createQuery(query).getSingleResult().intValue();
   }
-
+  
+  @Override
+  public PolypDataset edit(PolypDataset polypDataset) {
+    return this.dh.update(polypDataset);
+  }
 }

@@ -30,44 +30,25 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.sing_group.piba.rest.entity.UuidAndUri;
-
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "polyp-dataset", namespace = "http://entity.resource.rest.piba.sing-group.org")
+@XmlRootElement(name = "polyp-dataset-edition-data", namespace = "http://entity.resource.rest.piba.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "polyp-dataset", description = "A set of related polyps.")
-public class PolypDatasetData implements Serializable {
+@ApiModel(value = "polyp-dataset-edition-data", description = "A set of related polyps for edition.")
+public class PolypDatasetEditionData implements Serializable {
   private static final long serialVersionUID = 1L;
-
-  @XmlElement(name = "id", required = true)
-  private String id;
 
   @XmlElement(name = "title", required = true)
   private String title;
 
   @XmlElement(name = "polyps")
-  private List<UuidAndUri> polyps;
+  private List<String> polyps;
   
   @XmlElement(name = "defaultGallery")
-  private UuidAndUri defaultGallery;
+  private String defaultGallery;
   
-  PolypDatasetData() {}
+  PolypDatasetEditionData() {}
 
-  public PolypDatasetData(String id, String title, List<UuidAndUri> polyps, UuidAndUri defaultGallery) {
-    this.id = id;
-    this.title = title;
-    this.polyps = polyps;
-    this.defaultGallery = defaultGallery;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public String getTitle() {
     return title;
@@ -77,19 +58,19 @@ public class PolypDatasetData implements Serializable {
     this.title = name;
   }
 
-  public List<UuidAndUri> getPolyps() {
+  public List<String> getPolyps() {
     return polyps;
   }
 
-  public void setPolyps(List<UuidAndUri> polyps) {
+  public void setPolyps(List<String> polyps) {
     this.polyps = polyps;
   }
 
-  public UuidAndUri getDefaultGallery() {
+  public String getDefaultGallery() {
     return defaultGallery;
   }
 
-  public void setDefaultGallery(UuidAndUri defaultGallery) {
+  public void setDefaultGallery(String defaultGallery) {
     this.defaultGallery = defaultGallery;
   }
 }

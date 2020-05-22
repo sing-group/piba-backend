@@ -80,7 +80,8 @@ public class DefaultImageService implements ImageService {
     image = this.imageDao.create(image);
     try {
       fileStorage.store(
-        image.getId(), Files.probeContentType(imageUploadData.getImageData().toPath()).replaceAll("[^/]+/", ""),
+        image.getId(),
+        Files.probeContentType(imageUploadData.getImageData().toPath()).replaceAll("[^/]+/", ""),
         new FileInputStream(imageUploadData.getImageData())
       );
     } catch (Exception e) {

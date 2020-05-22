@@ -73,4 +73,9 @@ public class DefaultPolypDatasetService implements PolypDatasetService {
   public int countPolypRecordingsInDatasets(String datasetId) {
     return this.polypDatasetDao.countPolypRecordingsInDatasets(datasetId);
   }
+  
+  @Override
+  public PolypDataset edit(PolypDataset polypDataset) {
+    return this.polypDatasetDao.edit(polypDataset);
+  }
 }

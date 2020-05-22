@@ -44,4 +44,6 @@ public interface PolypDatasetService {
 
   public int countPolypRecordingsInDatasets(String datasetId);
 
+  public PolypDataset edit(PolypDataset polypDataset);
+
 }

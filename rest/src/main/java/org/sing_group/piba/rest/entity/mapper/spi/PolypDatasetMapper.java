@@ -26,9 +26,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetData;
+import org.sing_group.piba.rest.entity.polyp.PolypDatasetEditionData;
 
 public interface PolypDatasetMapper {
   public void setRequestURI(UriInfo requestURI);
 
   public PolypDatasetData toPolypDatasetData(PolypDataset dataset);
+
+  public void assignPolypDatasetEditionData(PolypDataset polypDataset, PolypDatasetEditionData data);
 }

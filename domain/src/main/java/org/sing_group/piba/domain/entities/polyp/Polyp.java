@@ -236,4 +236,12 @@ public class Polyp implements Identifiable {
   public void setConfirmed(boolean confirmed) {
     this.confirmed = confirmed;
   }
+  
+  protected void addPolypDataset(PolypDataset polypDataset) {
+    this.polypDatasets.add(polypDataset);
+  }
+  
+  protected void removePolypDataset(PolypDataset polypDataset) {
+    this.polypDatasets.remove(polypDataset);
+  }
 }

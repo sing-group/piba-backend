@@ -81,7 +81,7 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
   @Override
   protected RestImageUploadData build() {
     return new RestImageUploadData(
-      this.numFrame, this.imageData, this.gallery, this.video, this.polyp, this.observation, this.manuallySelected
+      this.imageData, this.numFrame, this.gallery, this.video, this.polyp, this.observation, this.manuallySelected
     );
   }
 

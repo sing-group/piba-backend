@@ -201,12 +201,9 @@ public class DefaultPolypRecordingResource implements PolypRecordingResource {
   })
   @Override
   public Response edit(@PathParam("id") int id, PolypRecordingEditionData polypRecordingEditionData) {
-    System.out.println(polypRecordingEditionData);
     PolypRecording polypRecording = this.polypRecordingService.get(id);
-    System.out.println(polypRecording);
     if (isPolypRecordingEditable(polypRecording, polypRecordingEditionData)) {
       this.polypRecordingMapper.assignPolypRecordingEditionData(polypRecording, polypRecordingEditionData);
-      System.out.println(polypRecording);
       return Response
         .ok(this.polypRecordingMapper.toPolypRecordingData(this.polypRecordingService.edit(polypRecording)))
         .build();

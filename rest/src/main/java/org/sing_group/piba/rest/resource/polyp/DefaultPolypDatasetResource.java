@@ -30,6 +30,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -38,11 +39,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.entities.polyp.PolypDataset;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypDatasetMapper;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypMapper;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypRecordingMapper;
 import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetData;
+import org.sing_group.piba.rest.entity.polyp.PolypDatasetEditionData;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.polyp.PolypDatasetResource;
@@ -177,5 +180,25 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
     )
       .header("X-Pagination-Total-Items", countPolyps)
     .build();
+  }
+
+  @PUT
+  @Path("{id}")
+  @ApiOperation(
+    value = "Modifies a polyp datasets.",
+    response = PolypRecordingData.class, code = 200
+  )
+  @Override
+  public Response editPolypDataset(
+    @PathParam("id") String datasetId,
+    PolypDatasetEditionData data
+  ) {
+    final PolypDataset polypDataset = this.service.getPolypDataset(datasetId);
+    
+    this.polypDatasetMapper.assignPolypDatasetEditionData(polypDataset, data);
+    
+    return Response.ok(
+      this.polypDatasetMapper.toPolypDatasetData(this.service.edit(polypDataset))
+    ).build();
   }
 }
