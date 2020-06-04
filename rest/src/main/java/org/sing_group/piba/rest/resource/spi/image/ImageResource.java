@@ -36,7 +36,7 @@ public interface ImageResource {
   
   public Response getBytes(String id);
   
-  public Response listImagesBy(String galleryId, int page, int pageSize, ImageFilter filter);
+  public Response listImagesBy(String galleryId, String polypId, Integer page, Integer pageSize, ImageFilter filter);
   
   public Response listImagesIdentifiersBy(String galleryId, Integer page, Integer pageSize, ImageFilter filter);
   
@@ -45,10 +45,12 @@ public interface ImageResource {
   public Response uploadImage(RestImageUploadData restImageUploadData);
 
   public Response delete(String id, String observationToRemove);
-  
-  public Response createPolypLocation(String id, PolypLocationEditionData polypLocationEditicionData);
 
   public Response getPolypLocation(String id);
+  
+  public Response createPolypLocation(String id, PolypLocationEditionData polypLocationEditionData);
+
+  public Response modifyPolypLocation(String id, PolypLocationEditionData polypLocationEditionData);
 
   public Response deletePolypLocation(String id);
 

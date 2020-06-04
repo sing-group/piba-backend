@@ -46,16 +46,16 @@ public class PolypLocation implements Identifiable {
   private String id;
 
   @Column(name = "x", nullable = false)
-  private Integer x;
+  private int x;
 
   @Column(name = "y", nullable = false)
-  private Integer y;
+  private int y;
 
   @Column(name = "width", nullable = false)
-  private Integer width;
+  private int width;
 
   @Column(name = "height", nullable = false)
-  private Integer height;
+  private int height;
 
   @Column(name = "creation_date", columnDefinition = "DATETIME(3)")
   private Timestamp creationDate;
@@ -65,7 +65,7 @@ public class PolypLocation implements Identifiable {
 
   public PolypLocation() {}
 
-  public PolypLocation(Integer x, Integer y, Integer width, Integer height, Image image) {
+  public PolypLocation(int x, int y, int width, int height, Image image) {
     this.id = UUID.randomUUID().toString();
     this.creationDate = new Timestamp(System.currentTimeMillis());
     this.setX(x);
@@ -80,38 +80,38 @@ public class PolypLocation implements Identifiable {
     return id;
   }
 
-  public Integer getX() {
+  public int getX() {
     return x;
   }
 
-  public void setX(Integer x) {
+  public void setX(int x) {
     checkArgument(x, coordinate -> requireNonNull(coordinate, "X can not be null"));
     this.x = x;
   }
 
-  public Integer getY() {
+  public int getY() {
     return y;
   }
 
-  public void setY(Integer y) {
+  public void setY(int y) {
     checkArgument(y, coordinate -> requireNonNull(coordinate, "Y can not be null"));
     this.y = y;
   }
 
-  public Integer getWidth() {
+  public int getWidth() {
     return width;
   }
 
-  public void setWidth(Integer width) {
+  public void setWidth(int width) {
     checkArgument(width, w -> requireNonNull(w, "Width can not be null"));
     this.width = width;
   }
 
-  public Integer getHeight() {
+  public int getHeight() {
     return height;
   }
 
-  public void setHeight(Integer height) {
+  public void setHeight(int height) {
     checkArgument(height, h -> requireNonNull(h, "Height can not be null"));
     this.height = height;
   }

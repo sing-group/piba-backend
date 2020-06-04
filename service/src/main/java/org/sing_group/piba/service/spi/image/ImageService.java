@@ -31,6 +31,7 @@ import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.service.entity.image.ImageUploadData;
 
 @Local
@@ -44,6 +45,8 @@ public interface ImageService {
 
   public PolypLocation createPolypLocation(PolypLocation polypLocation);
 
+  public PolypLocation modifyPolypLocation(PolypLocation polypLocation);
+
   public PolypLocation getPolypLocation(Image image);
 
   public Optional<PolypLocation> getPolypLocationIfPresent(Image image);
@@ -52,12 +55,16 @@ public interface ImageService {
 
   public void deletePolypLocation(Image image);
 
-  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
+  public Stream<Image> listImagesByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
 
-  public int countImagesIn(Gallery gallery, ImageFilter filter);
-
-  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
+  public Stream<String> listImagesIdentifiersByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
 
   public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith);
+  
+  public int countImagesInGallery(Gallery gallery, ImageFilter filter);
+
+  public Stream<Image> listImagesByPolyp(Polyp polyp, Integer page, Integer pageSize, ImageFilter filter);
+  
+  public int countImagesInPolyp(Polyp polyp, ImageFilter filter);
 
 }

@@ -30,6 +30,7 @@ import static org.sing_group.piba.domain.entities.image.ImageFilter.WITH_POLYP;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -41,6 +42,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -58,6 +60,7 @@ import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.rest.entity.RestImageUploadData;
 import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.image.ImageData;
@@ -68,6 +71,7 @@ import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.image.ImageResource;
 import org.sing_group.piba.service.spi.image.GalleryService;
 import org.sing_group.piba.service.spi.image.ImageService;
+import org.sing_group.piba.service.spi.polyp.PolypService;
 import org.sing_group.piba.service.spi.storage.FileStorage;
 
 import io.swagger.annotations.Api;
@@ -99,6 +103,9 @@ public class DefaultImageResource implements ImageResource {
 
   @Inject
   private GalleryService galleryService;
+  
+  @Inject
+  private PolypService polypService;
 
   @Inject
   private ImageMapper imageMapper;
@@ -181,13 +188,35 @@ public class DefaultImageResource implements ImageResource {
     @ApiResponse(code = 400, message = "Unknown image: {id}")
   )
   @Override
-  public Response createPolypLocation(@PathParam("id") String id, PolypLocationEditionData polypLocationEditicionData) {
-    PolypLocation polypLocation =
-      new PolypLocation(
-        polypLocationEditicionData.getX(), polypLocationEditicionData.getY(), polypLocationEditicionData.getWidth(),
-        polypLocationEditicionData.getHeight(), this.service.get(id)
-      );
+  public Response createPolypLocation(@PathParam("id") String id, PolypLocationEditionData polypLocationEditionData) {
+    final PolypLocation polypLocation = new PolypLocation(
+      polypLocationEditionData.getX(), polypLocationEditionData.getY(),
+      polypLocationEditionData.getWidth(), polypLocationEditionData.getHeight(),
+      this.service.get(id)
+    );
+    
     return Response.ok(this.imageMapper.toPolypLocationData(this.service.createPolypLocation(polypLocation))).build();
+  }
+
+  @Path("{id:[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}}/polyplocation")
+  @PUT
+  @RolesAllowed("ENDOSCOPIST")
+  @ApiOperation(
+    value = "Creates a polyp location in the image.", response = PolypLocationData.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown image: {id}")
+  )
+  @Override
+  public Response modifyPolypLocation(@PathParam("id") String id, PolypLocationEditionData polypLocationEditionData) {
+    final PolypLocation polypLocation = this.service.getPolypLocation(this.service.get(id));
+    
+    polypLocation.setX(polypLocationEditionData.getX());
+    polypLocation.setY(polypLocationEditionData.getY());
+    polypLocation.setHeight(polypLocationEditionData.getHeight());
+    polypLocation.setWidth(polypLocationEditionData.getWidth());
+    
+    return Response.ok(this.imageMapper.toPolypLocationData(this.service.modifyPolypLocation(polypLocation))).build();
   }
 
   @DELETE
@@ -243,24 +272,49 @@ public class DefaultImageResource implements ImageResource {
     value = "Returns a list of images according to the pagination and filter indicated", response = ImageData.class, code = 200
   )
   @ApiResponses(value = {
-    @ApiResponse(code = 400, message = "Unknown gallery: {gallery_id}"),
+    @ApiResponse(code = 400, message = "Unknown gallery: {galleryId}"),
     @ApiResponse(code = 400, message = "Invalid page: {page} or pageSize: {pageSize}")
   })
   @Override
   public Response listImagesBy(
-    @QueryParam("gallery_id") String galleryId,
-    @QueryParam("page") int page, @QueryParam("pageSize") int pageSize,
+    @QueryParam("galleryId") String galleryId,
+    @QueryParam("polypId") String polypId,
+    @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
     @QueryParam("filter") ImageFilter filter
   ) {
-    Gallery gallery = this.galleryService.get(galleryId);
+    final boolean hasGalleryId = galleryId != null && !galleryId.isEmpty();
+    final boolean hasPolypId = polypId != null && !polypId.isEmpty();
+    
+    final Stream<Image> imageList;
+    final int paginationTotalItems;
+    final int countLocated;
+    final int countWithPolyp;
+    if (hasGalleryId && hasPolypId) {
+      throw new IllegalArgumentException("Both galleryId and polypId can't be used at the same time");
+    } else if (!hasGalleryId && !hasPolypId) {
+      throw new IllegalArgumentException("galleryId or polypId must be provided");
+    } else if (hasGalleryId) {
+      final Gallery gallery = this.galleryService.get(galleryId);
+      imageList = this.service.listImagesByGallery(gallery, page, pageSize, filter);
+      paginationTotalItems = this.service.countImagesInGallery(gallery, filter);
+      countLocated = this.service.countImagesInGallery(gallery, filter);
+      countWithPolyp = this.service.countImagesInGallery(gallery, filter);
+    } else {
+      final Polyp polyp = this.polypService.getPolyp(polypId);
+      imageList = this.service.listImagesByPolyp(polyp, page, pageSize, filter);
+      paginationTotalItems = this.service.countImagesInPolyp(polyp, filter);
+      countLocated = this.service.countImagesInPolyp(polyp, filter);
+      countWithPolyp = this.service.countImagesInPolyp(polyp, filter);
+    }
+    
     return Response.ok(
-      this.service.listImagesBy(gallery, page, pageSize, filter).map(this.imageMapper::toImageData).toArray(ImageData[]::new)
+      imageList.map(this.imageMapper::toImageData).toArray(ImageData[]::new)
     ).header(
-      "X-Pagination-Total-Items", this.service.countImagesIn(gallery, filter)
+      "X-Pagination-Total-Items", paginationTotalItems
     ).header(
-      "X-Located-Total-Items", this.service.countImagesIn(gallery, LOCATED)
+      "X-Located-Total-Items", countLocated
     ).header(
-      "X-With-Polyp-Total-Items", this.service.countImagesIn(gallery, WITH_POLYP)
+      "X-With-Polyp-Total-Items", countWithPolyp
     ).build();
   }
 
@@ -270,11 +324,11 @@ public class DefaultImageResource implements ImageResource {
     value = "Returns a list of identifiers and url to the resource based on the indicated filter", response = UuidAndUri.class, code = 200
   )
   @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown gallery: {gallery_id}")
+    @ApiResponse(code = 400, message = "Unknown gallery: {galleryId}")
   )
   @Override
   public Response listImagesIdentifiersBy(
-    @QueryParam("gallery_id") String galleryId,
+    @QueryParam("galleryId") String galleryId,
     @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
     @QueryParam("filter") ImageFilter filter
   ) {
@@ -282,17 +336,17 @@ public class DefaultImageResource implements ImageResource {
 
     ResponseBuilder response =
       Response.ok(
-        this.service.listImagesIdentifiersBy(gallery, page, pageSize, filter).map(this.imageMapper::toUuidAndUri).toArray(UuidAndUri[]::new)
+        this.service.listImagesIdentifiersByGallery(gallery, page, pageSize, filter).map(this.imageMapper::toUuidAndUri).toArray(UuidAndUri[]::new)
       );
     if (page != null && pageSize != null) {
-      response.header("X-Pagination-Total-Items", this.service.countImagesIn(gallery, filter));
+      response.header("X-Pagination-Total-Items", this.service.countImagesInGallery(gallery, filter));
     }
     return response.header(
-      "X-Pagination-Total-Items", this.service.countImagesIn(gallery, filter)
+      "X-Pagination-Total-Items", this.service.countImagesInGallery(gallery, filter)
     ).header(
-      "X-Located-Total-Items", this.service.countImagesIn(gallery, LOCATED)
+      "X-Located-Total-Items", this.service.countImagesInGallery(gallery, LOCATED)
     ).header(
-      "X-With-Polyp-Total-Items", this.service.countImagesIn(gallery, WITH_POLYP)
+      "X-With-Polyp-Total-Items", this.service.countImagesInGallery(gallery, WITH_POLYP)
     ).build();
   }
 

@@ -42,6 +42,7 @@ import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
@@ -69,6 +70,19 @@ public class DefaultImageDAO implements ImageDAO {
 
   @Override
   public Image create(Image image) {
+    final long count = this.em.createQuery(
+      "SELECT COUNT(i) FROM Image i WHERE i.numFrame = :numFrame AND i.gallery = :gallery AND i.video = :video AND i.isRemoved = false",
+      Long.class
+    )
+      .setParameter("numFrame", image.getNumFrame())
+      .setParameter("gallery", image.getGallery())
+      .setParameter("video", image.getVideo())
+    .getSingleResult();
+    
+    if (count > 0) {
+      throw new IllegalArgumentException("An image already exists for the same frame.");
+    }
+    
     return this.dh.persist(image);
   }
 
@@ -84,8 +98,13 @@ public class DefaultImageDAO implements ImageDAO {
   }
 
   @Override
-  public PolypLocation create(PolypLocation polypLocation) {
+  public PolypLocation createPolypLocation(PolypLocation polypLocation) {
     return this.dhPolypLocation.persist(polypLocation);
+  }
+  
+  @Override
+  public PolypLocation modifyPolypLocation(PolypLocation polypLocation) {
+    return this.dhPolypLocation.update(polypLocation);
   }
 
   @Override
@@ -112,30 +131,57 @@ public class DefaultImageDAO implements ImageDAO {
   }
 
   @Override
-  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
-    return this.listImagesBy(gallery, page, pageSize, filter, Image.class);
+  public Stream<Image> listImagesByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
+    return this.listImagesByGallery(gallery, page, pageSize, filter, Image.class);
   }
 
   @Override
-  public int countImagesIn(Gallery gallery, ImageFilter filter) {
+  public int countImagesInGallery(Gallery gallery, ImageFilter filter) {
     final UnaryOperator<String> transformSelect = image -> "COUNT(" + image + ")";
-    final TypedQuery<Long> query = this.em.createQuery(buildListImagesBySql(filter, transformSelect, true), Long.class)
+    final TypedQuery<Long> query = this.em.createQuery(buildListImagesBySql("gallery", "gallery", filter, transformSelect, true), Long.class)
       .setParameter("gallery", gallery);
     
     return query.getSingleResult().intValue();
   }
 
   @Override
-  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
-    return this.listImagesBy(gallery, page, pageSize, filter, String.class);
+  public Stream<String> listImagesIdentifiersByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
+    return this.listImagesByGallery(gallery, page, pageSize, filter, String.class);
   }
   
-  private static String buildListImagesBySql(ImageFilter filter, UnaryOperator<String> transformSelect, boolean sort) {
+  @Override
+  public Stream<Image> listImagesByPolyp(Polyp polyp, Integer page, Integer pageSize, ImageFilter filter) {
+    final TypedQuery<Image> query = this.em.createQuery(buildListImagesBySql(
+      "polyp", "polyp", filter, identity(), true), Image.class
+    ).setParameter("polyp", polyp);
+    
+    if (page != null && pageSize != null) {
+      return query.setFirstResult((page - 1) * pageSize).setMaxResults(pageSize).getResultList().stream();
+    } else {
+      return query.getResultList().stream();
+    }
+  }
+  
+  @Override
+  public int countImagesInPolyp(Polyp polyp, ImageFilter filter) {
+    final UnaryOperator<String> transformSelect = image -> "COUNT(" + image + ")";
+    final TypedQuery<Long> query = this.em.createQuery(buildListImagesBySql("polyp", "polyp", filter, transformSelect, true), Long.class)
+      .setParameter("polyp", polyp);
+    
+    return query.getSingleResult().intValue();
+  }
+  
+  
+  private static String buildListImagesBySql(
+    String field, String alias,
+    ImageFilter filter, UnaryOperator<String> transformSelect, boolean sort
+  ) {
     String query;
     switch(filter) {
       case ALL:
-        query = "SELECT " + transformSelect.apply("i")
-          + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false";
+        query = String.format("SELECT %s FROM Image i WHERE i.%s=:%s AND i.isRemoved=false",
+          transformSelect.apply("i"), field, alias
+        );
         
         if (sort) {
           query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
@@ -143,8 +189,9 @@ public class DefaultImageDAO implements ImageDAO {
         
         return query;
       case LOCATED:
-        query = "SELECT " + transformSelect.apply("pl.image")
-          + " FROM PolypLocation pl WHERE pl.image.gallery=:gallery AND pl.image.isRemoved=false";
+        query = String.format("SELECT %s FROM PolypLocation pl WHERE pl.image.%s=:%s AND pl.image.isRemoved=false",
+          transformSelect.apply("pl.image"), field, alias
+        );
         
         if (sort) {
           query += " ORDER BY pl.image.creationDate DESC, pl.image.video.id, pl.image.numFrame";
@@ -152,8 +199,9 @@ public class DefaultImageDAO implements ImageDAO {
         
         return query;
       case UNLOCATED:
-        query = "SELECT " + transformSelect.apply("i")
-          + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)";
+        query = String.format("SELECT %s FROM Image i WHERE i.%s=:%s AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)",
+          transformSelect.apply("i"), field, alias
+        );
         
         if (sort) {
           query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
@@ -161,8 +209,9 @@ public class DefaultImageDAO implements ImageDAO {
         
         return query;
       case UNLOCATED_WITH_POLYP:
-        query = "SELECT " + transformSelect.apply("i")
-        + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)";
+        query = String.format("SELECT %s FROM Image i WHERE i.%s=:%s AND i.isRemoved=false AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)",
+          transformSelect.apply("i"), field, alias
+        );
         
         if (sort) {
           query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
@@ -170,8 +219,9 @@ public class DefaultImageDAO implements ImageDAO {
         
         return query;
       case WITH_POLYP:
-        query = "SELECT " + transformSelect.apply("i")
-        + " FROM Image i WHERE i.gallery=:gallery AND i.isRemoved=false AND i.polyp IS NOT NULL";
+        query = String.format("SELECT %s FROM Image i WHERE i.%s=:%s AND i.isRemoved=false AND i.polyp IS NOT NULL",
+          transformSelect.apply("i"), field, alias
+        );
         
         if (sort) {
           query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
@@ -184,7 +234,7 @@ public class DefaultImageDAO implements ImageDAO {
     }
   }
 
-  private <T> Stream<T> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter, Class<T> clazz) {
+  private <T> Stream<T> listImagesByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter, Class<T> clazz) {
     if (!clazz.equals(String.class) && !clazz.equals(Image.class)) {
       throw new IllegalArgumentException("only String or Image classes are allowed");
     }
@@ -193,7 +243,7 @@ public class DefaultImageDAO implements ImageDAO {
     final UnaryOperator<String> transformSelect = onlyIds
       ? image -> image + ".id" : identity();
 
-    final TypedQuery<T> query = this.em.createQuery(buildListImagesBySql(filter, transformSelect, true), clazz)
+    final TypedQuery<T> query = this.em.createQuery(buildListImagesBySql("gallery", "gallery", filter, transformSelect, true), clazz)
       .setParameter("gallery", gallery);
     
     if (page != null && pageSize != null) {

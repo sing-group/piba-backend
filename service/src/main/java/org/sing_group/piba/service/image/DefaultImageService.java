@@ -102,9 +102,14 @@ public class DefaultImageService implements ImageService {
 
   @Override
   public PolypLocation createPolypLocation(PolypLocation polypLocation) {
-    return imageDao.create(polypLocation);
+    return imageDao.createPolypLocation(polypLocation);
   }
 
+  @Override
+  public PolypLocation modifyPolypLocation(PolypLocation polypLocation) {
+    return imageDao.modifyPolypLocation(polypLocation);
+  }
+  
   @Override
   public PolypLocation getPolypLocation(Image image) {
     return imageDao.getPolypLocation(image);
@@ -126,23 +131,33 @@ public class DefaultImageService implements ImageService {
   }
 
   @Override
-  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
-    return imageDao.listImagesBy(gallery, page, pageSize, filter);
+  public Stream<Image> listImagesByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
+    return imageDao.listImagesByGallery(gallery, page, pageSize, filter);
   }
 
   @Override
-  public int countImagesIn(Gallery gallery, ImageFilter filter) {
-    return imageDao.countImagesIn(gallery, filter);
-  }
-
-  @Override
-  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
-    return imageDao.listImagesIdentifiersBy(gallery, page, pageSize, filter);
+  public Stream<String> listImagesIdentifiersByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter) {
+    return imageDao.listImagesIdentifiersByGallery(gallery, page, pageSize, filter);
   }
 
   @Override
   public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith) {
     return imageDao.listImageObservationsToRemoveBy(observationToRemoveStartsWith);
+  }
+
+  @Override
+  public int countImagesInGallery(Gallery gallery, ImageFilter filter) {
+    return imageDao.countImagesInGallery(gallery, filter);
+  }
+  
+  @Override
+  public Stream<Image> listImagesByPolyp(Polyp polyp, Integer page, Integer pageSize, ImageFilter filter) {
+    return this.imageDao.listImagesByPolyp(polyp, page, pageSize, filter);
+  }
+  
+  @Override
+  public int countImagesInPolyp(Polyp polyp, ImageFilter filter) {
+    return this.imageDao.countImagesInPolyp(polyp, filter);
   }
 
 }

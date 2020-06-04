@@ -33,7 +33,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.Identifiable;
@@ -41,9 +40,7 @@ import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
-@Table(name = "image", uniqueConstraints = @UniqueConstraint(columnNames = {
-  "gallery_id", "video_id", "num_frame"
-}))
+@Table(name = "image")
 public class Image implements Identifiable {
 
   @Id

@@ -29,6 +29,7 @@ import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.domain.entities.image.PolypLocation;
+import org.sing_group.piba.domain.entities.polyp.Polyp;
 
 public interface ImageDAO {
 
@@ -38,22 +39,28 @@ public interface ImageDAO {
 
   public Image get(String id);
 
-  public PolypLocation create(PolypLocation polypLocation);
-
-  public PolypLocation getPolypLocation(Image image);
-
-  public Optional<PolypLocation> getPolypLocationIfPresent(Image image);
-
   public void delete(Image image);
 
   public void deletePolypLocation(Image image);
 
-  public Stream<Image> listImagesBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
+  public Stream<Image> listImagesByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
 
-  public Stream<String> listImagesIdentifiersBy(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
+  public Stream<String> listImagesIdentifiersByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
   
   public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith);
   
-  public int countImagesIn(Gallery gallery, ImageFilter filter);
+  public int countImagesInGallery(Gallery gallery, ImageFilter filter);
+
+  public Stream<Image> listImagesByPolyp(Polyp polyp, Integer page, Integer pageSize, ImageFilter filter);
+
+  public int countImagesInPolyp(Polyp polyp, ImageFilter filter);
+
+  public PolypLocation createPolypLocation(PolypLocation polypLocation);
+
+  public PolypLocation modifyPolypLocation(PolypLocation polypLocation);
+
+  public PolypLocation getPolypLocation(Image image);
+
+  public Optional<PolypLocation> getPolypLocationIfPresent(Image image);
 
 }

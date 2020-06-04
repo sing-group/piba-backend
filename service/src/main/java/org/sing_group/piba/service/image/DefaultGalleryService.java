@@ -69,7 +69,7 @@ public class DefaultGalleryService implements GalleryService {
   @Override
   public ImagesInGallery getGalleriesInZip(Gallery gallery, ImageFilter filter, boolean withLocation)
     throws FileNotFoundException {
-    final Stream<Image> images = this.imageService.listImagesBy(gallery, null, null, filter);
+    final Stream<Image> images = this.imageService.listImagesByGallery(gallery, null, null, filter);
 
     if (withLocation) {
       return new ImagesInGallery(
