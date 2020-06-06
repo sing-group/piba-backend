@@ -76,15 +76,11 @@ public class PolypDataset implements Identifiable {
   
   PolypDataset() {}
   
-  public PolypDataset(String title) {
-    this(title, null);
-  }
-  
-  public PolypDataset(String title, Gallery defaultGallery) {
+  public PolypDataset(String title, Collection<Polyp> polyps, Gallery defaultGallery) {
     this.id = UUID.randomUUID().toString();
     this.title = title;
     this.defaultGallery = defaultGallery;
-    this.polyps = new HashSet<>();
+    this.polyps = new HashSet<>(polyps);
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
   }
 

@@ -44,5 +44,9 @@ public interface PolypDatasetDAO {
 
   public int countPolypRecordingsInDatasets(String datasetId);
 
-  public PolypDataset edit(PolypDataset polypDataset);
+  public PolypDataset createPolypDataset(PolypDataset polypDataset);
+  
+  public PolypDataset editPolypDataset(PolypDataset polypDataset);
+
+  public void deletePolypDataset(String datasetId);
 }

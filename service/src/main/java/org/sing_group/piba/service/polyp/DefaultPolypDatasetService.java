@@ -75,7 +75,17 @@ public class DefaultPolypDatasetService implements PolypDatasetService {
   }
   
   @Override
-  public PolypDataset edit(PolypDataset polypDataset) {
-    return this.polypDatasetDao.edit(polypDataset);
+  public PolypDataset createPolypDataset(PolypDataset polypDataset) {
+    return this.polypDatasetDao.createPolypDataset(polypDataset);
+  }
+  
+  @Override
+  public PolypDataset editPolypDataset(PolypDataset polypDataset) {
+    return this.polypDatasetDao.editPolypDataset(polypDataset);
+  }
+  
+  @Override
+  public void deletePolypDataset(String datasetId) {
+    this.polypDatasetDao.deletePolypDataset(datasetId);
   }
 }

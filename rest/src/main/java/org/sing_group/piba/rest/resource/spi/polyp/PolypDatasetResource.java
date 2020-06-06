@@ -37,4 +37,8 @@ public interface PolypDatasetResource {
   public Response listPolypRecordingsOfPolypDatasets(String datasetId, Integer page, Integer pageSize);
   
   public Response editPolypDataset(String datasetId, PolypDatasetEditionData data);
+  
+  public Response createPolypDataset(PolypDatasetEditionData data);
+
+  public Response deletePolypDataset(String datasetId);
 }

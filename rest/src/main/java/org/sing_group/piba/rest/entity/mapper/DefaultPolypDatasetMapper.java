@@ -66,6 +66,16 @@ public class DefaultPolypDatasetMapper implements PolypDatasetMapper {
     );
   }
   
+  public PolypDataset toNewPolypDataset(PolypDatasetEditionData data) {
+    return new PolypDataset(
+      data.getTitle(),
+      data.getPolyps().stream()
+        .map(this.polypService::getPolyp)
+      .collect(toList()),
+      data.getDefaultGallery() == null ? null : this.galleryService.get(data.getDefaultGallery())
+    );
+  }
+  
   @Override
   public void assignPolypDatasetEditionData(PolypDataset polypDataset, PolypDatasetEditionData data) {
     polypDataset.setTitle(data.getTitle());
@@ -80,4 +90,5 @@ public class DefaultPolypDatasetMapper implements PolypDatasetMapper {
     .collect(Collectors.toSet());
     polypDataset.setPolyps(polyps);
   }
+  
 }

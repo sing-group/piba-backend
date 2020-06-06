@@ -141,7 +141,17 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   }
   
   @Override
-  public PolypDataset edit(PolypDataset polypDataset) {
+  public PolypDataset createPolypDataset(PolypDataset polypDataset) {
+    return this.dh.persist(polypDataset);
+  }
+  
+  @Override
+  public PolypDataset editPolypDataset(PolypDataset polypDataset) {
     return this.dh.update(polypDataset);
+  }
+  
+  @Override
+  public void deletePolypDataset(String datasetId) {
+    this.dh.removeByKey(datasetId);
   }
 }

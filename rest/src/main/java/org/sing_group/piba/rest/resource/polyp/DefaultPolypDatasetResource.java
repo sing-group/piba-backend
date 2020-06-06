@@ -29,7 +29,9 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -48,6 +50,7 @@ import org.sing_group.piba.rest.entity.polyp.PolypDatasetData;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetEditionData;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 import org.sing_group.piba.rest.filter.CrossDomain;
+import org.sing_group.piba.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.piba.rest.resource.spi.polyp.PolypDatasetResource;
 import org.sing_group.piba.service.spi.polyp.PolypDatasetService;
 
@@ -198,7 +201,42 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
     this.polypDatasetMapper.assignPolypDatasetEditionData(polypDataset, data);
     
     return Response.ok(
-      this.polypDatasetMapper.toPolypDatasetData(this.service.edit(polypDataset))
+      this.polypDatasetMapper.toPolypDatasetData(this.service.editPolypDataset(polypDataset))
     ).build();
+  }
+
+  @POST
+  @ApiOperation(
+    value = "Creates a polyp datasets.",
+    response = PolypRecordingData.class, code = 200
+  )
+  @Override
+  public Response createPolypDataset(
+    PolypDatasetEditionData data
+  ) {
+    final PolypDataset polypDataset = this.service.createPolypDataset(
+      this.polypDatasetMapper.toNewPolypDataset(data)
+    );
+    
+    return Response.ok(
+      this.polypDatasetMapper.toPolypDatasetData(polypDataset)
+    ).build();
+  }
+
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Deletes an existing polyp dataset.", code = 200
+  )
+  @ApiResponses({
+    @ApiResponse(code = 400, message = "Unknown polyp dataset: {id}")
+  })
+  @Override
+  public Response deletePolypDataset(
+    @PathParam("id") String datasetId
+  ) {
+    this.service.deletePolypDataset(datasetId);
+    
+    return Response.ok().build();
   }
 }

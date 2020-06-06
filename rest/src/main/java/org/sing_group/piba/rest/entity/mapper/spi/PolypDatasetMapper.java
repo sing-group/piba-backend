@@ -34,4 +34,6 @@ public interface PolypDatasetMapper {
   public PolypDatasetData toPolypDatasetData(PolypDataset dataset);
 
   public void assignPolypDatasetEditionData(PolypDataset polypDataset, PolypDatasetEditionData data);
+
+  public PolypDataset toNewPolypDataset(PolypDatasetEditionData data);
 }

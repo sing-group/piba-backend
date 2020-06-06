@@ -49,7 +49,6 @@ public class PolypDatasetEditionData implements Serializable {
   
   PolypDatasetEditionData() {}
 
-
   public String getTitle() {
     return title;
   }
