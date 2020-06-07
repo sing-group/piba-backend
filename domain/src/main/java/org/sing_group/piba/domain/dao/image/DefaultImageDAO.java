@@ -24,6 +24,7 @@ package org.sing_group.piba.domain.dao.image;
 
 import static java.util.function.UnaryOperator.identity;
 
+import java.text.DateFormat.Field;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -171,16 +172,73 @@ public class DefaultImageDAO implements ImageDAO {
     return query.getSingleResult().intValue();
   }
   
+  @Override
+  public Stream<Image> listImagesByPolypAndGallery(
+    Polyp polyp, Gallery gallery, Integer page, Integer pageSize, ImageFilter filter
+  ) {
+    final TypedQuery<Image> query = this.em.createQuery(buildListImagesBySql(
+      new String[] { "polyp", "gallery" }, new String[] { "polyp", "gallery" }, filter, identity(), true), Image.class
+    )
+      .setParameter("polyp", polyp)
+      .setParameter("gallery", gallery);
+    
+    if (page != null && pageSize != null) {
+      return query.setFirstResult((page - 1) * pageSize).setMaxResults(pageSize).getResultList().stream();
+    } else {
+      return query.getResultList().stream();
+    }
+  }
+  
+  @Override
+  public int countImagesByPolypAndGallery(Polyp polyp, Gallery gallery, ImageFilter filter) {
+    final UnaryOperator<String> transformSelect = image -> "COUNT(" + image + ")";
+    final TypedQuery<Long> query = this.em.createQuery(buildListImagesBySql(
+      new String[] { "polyp", "gallery" }, new String[] { "polyp", "gallery" }, filter, transformSelect, true), Long.class
+    )
+      .setParameter("polyp", polyp)
+      .setParameter("gallery", gallery);
+    
+    return query.getSingleResult().intValue();
+  }
+  
   
   private static String buildListImagesBySql(
     String field, String alias,
     ImageFilter filter, UnaryOperator<String> transformSelect, boolean sort
   ) {
+    return buildListImagesBySql(
+      new String[] { field }, new String[] { alias }, filter, transformSelect, sort
+    );
+  }
+  
+  private static String buildListImagesBySql(
+    String[] fields, String[] aliases,
+    ImageFilter filter, UnaryOperator<String> transformSelect, boolean sort
+  ) {
+    if (fields.length != aliases.length) {
+      throw new IllegalArgumentException("fields and aliases must have the same length");
+    } else if (fields.length == 0) {
+      throw new IllegalArgumentException("fields can't be empty");
+    } else if (aliases.length == 0) {
+      throw new IllegalArgumentException("fields can't be empty");
+    }
+    
+    final UnaryOperator<String> transformConditions = image -> {
+      final StringBuilder conditions = new StringBuilder();
+      for (int i = 0; i < fields.length; i++) {
+        if (conditions.length() >  0) {
+          conditions.append(" AND ");
+        }
+        conditions.append(image + "." + fields[i] + "=:" + aliases[i]);
+      }
+      return conditions.toString();
+    };
+    
     String query;
     switch(filter) {
       case ALL:
-        query = String.format("SELECT %s FROM Image i WHERE i.%s=:%s AND i.isRemoved=false",
-          transformSelect.apply("i"), field, alias
+        query = String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false",
+          transformSelect.apply("i"), transformConditions.apply("i")
         );
         
         if (sort) {
@@ -189,8 +247,8 @@ public class DefaultImageDAO implements ImageDAO {
         
         return query;
       case LOCATED:
-        query = String.format("SELECT %s FROM PolypLocation pl WHERE pl.image.%s=:%s AND pl.image.isRemoved=false",
-          transformSelect.apply("pl.image"), field, alias
+        query = String.format("SELECT %s FROM PolypLocation pl WHERE %s AND pl.image.isRemoved=false",
+          transformSelect.apply("pl.image"), transformConditions.apply("pl.image")
         );
         
         if (sort) {
@@ -199,8 +257,8 @@ public class DefaultImageDAO implements ImageDAO {
         
         return query;
       case UNLOCATED:
-        query = String.format("SELECT %s FROM Image i WHERE i.%s=:%s AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)",
-          transformSelect.apply("i"), field, alias
+        query = String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)",
+          transformSelect.apply("i"), transformConditions.apply("i")
         );
         
         if (sort) {
@@ -209,8 +267,8 @@ public class DefaultImageDAO implements ImageDAO {
         
         return query;
       case UNLOCATED_WITH_POLYP:
-        query = String.format("SELECT %s FROM Image i WHERE i.%s=:%s AND i.isRemoved=false AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)",
-          transformSelect.apply("i"), field, alias
+        query = String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)",
+          transformSelect.apply("i"), transformConditions.apply("i")
         );
         
         if (sort) {
@@ -219,8 +277,8 @@ public class DefaultImageDAO implements ImageDAO {
         
         return query;
       case WITH_POLYP:
-        query = String.format("SELECT %s FROM Image i WHERE i.%s=:%s AND i.isRemoved=false AND i.polyp IS NOT NULL",
-          transformSelect.apply("i"), field, alias
+        query = String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false AND i.polyp IS NOT NULL",
+          transformSelect.apply("i"), transformConditions.apply("i")
         );
         
         if (sort) {

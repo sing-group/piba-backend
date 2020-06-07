@@ -290,21 +290,26 @@ public class DefaultImageResource implements ImageResource {
     final int countLocated;
     final int countWithPolyp;
     if (hasGalleryId && hasPolypId) {
-      throw new IllegalArgumentException("Both galleryId and polypId can't be used at the same time");
+      final Polyp polyp = this.polypService.getPolyp(polypId);
+      final Gallery gallery = this.galleryService.get(galleryId);
+      imageList = this.service.listImagesByPolypAndGallery(polyp, gallery, page, pageSize, filter);
+      paginationTotalItems = this.service.countImagesByPolypAndGallery(polyp, gallery, filter);
+      countLocated = this.service.countImagesByPolypAndGallery(polyp, gallery, filter);
+      countWithPolyp = this.service.countImagesByPolypAndGallery(polyp, gallery, filter);
     } else if (!hasGalleryId && !hasPolypId) {
       throw new IllegalArgumentException("galleryId or polypId must be provided");
     } else if (hasGalleryId) {
       final Gallery gallery = this.galleryService.get(galleryId);
       imageList = this.service.listImagesByGallery(gallery, page, pageSize, filter);
-      paginationTotalItems = this.service.countImagesInGallery(gallery, filter);
-      countLocated = this.service.countImagesInGallery(gallery, filter);
-      countWithPolyp = this.service.countImagesInGallery(gallery, filter);
+      paginationTotalItems = this.service.countImagesByGallery(gallery, filter);
+      countLocated = this.service.countImagesByGallery(gallery, filter);
+      countWithPolyp = this.service.countImagesByGallery(gallery, filter);
     } else {
       final Polyp polyp = this.polypService.getPolyp(polypId);
       imageList = this.service.listImagesByPolyp(polyp, page, pageSize, filter);
-      paginationTotalItems = this.service.countImagesInPolyp(polyp, filter);
-      countLocated = this.service.countImagesInPolyp(polyp, filter);
-      countWithPolyp = this.service.countImagesInPolyp(polyp, filter);
+      paginationTotalItems = this.service.countImagesByPolyp(polyp, filter);
+      countLocated = this.service.countImagesByPolyp(polyp, filter);
+      countWithPolyp = this.service.countImagesByPolyp(polyp, filter);
     }
     
     return Response.ok(
@@ -339,14 +344,14 @@ public class DefaultImageResource implements ImageResource {
         this.service.listImagesIdentifiersByGallery(gallery, page, pageSize, filter).map(this.imageMapper::toUuidAndUri).toArray(UuidAndUri[]::new)
       );
     if (page != null && pageSize != null) {
-      response.header("X-Pagination-Total-Items", this.service.countImagesInGallery(gallery, filter));
+      response.header("X-Pagination-Total-Items", this.service.countImagesByGallery(gallery, filter));
     }
     return response.header(
-      "X-Pagination-Total-Items", this.service.countImagesInGallery(gallery, filter)
+      "X-Pagination-Total-Items", this.service.countImagesByGallery(gallery, filter)
     ).header(
-      "X-Located-Total-Items", this.service.countImagesInGallery(gallery, LOCATED)
+      "X-Located-Total-Items", this.service.countImagesByGallery(gallery, LOCATED)
     ).header(
-      "X-With-Polyp-Total-Items", this.service.countImagesInGallery(gallery, WITH_POLYP)
+      "X-With-Polyp-Total-Items", this.service.countImagesByGallery(gallery, WITH_POLYP)
     ).build();
   }
 

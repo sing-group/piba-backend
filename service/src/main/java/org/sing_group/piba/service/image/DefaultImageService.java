@@ -146,7 +146,7 @@ public class DefaultImageService implements ImageService {
   }
 
   @Override
-  public int countImagesInGallery(Gallery gallery, ImageFilter filter) {
+  public int countImagesByGallery(Gallery gallery, ImageFilter filter) {
     return imageDao.countImagesInGallery(gallery, filter);
   }
   
@@ -156,8 +156,20 @@ public class DefaultImageService implements ImageService {
   }
   
   @Override
-  public int countImagesInPolyp(Polyp polyp, ImageFilter filter) {
+  public int countImagesByPolyp(Polyp polyp, ImageFilter filter) {
     return this.imageDao.countImagesInPolyp(polyp, filter);
+  }
+  
+  @Override
+  public Stream<Image> listImagesByPolypAndGallery(
+    Polyp polyp, Gallery gallery, Integer page, Integer pageSize, ImageFilter filter
+  ) {
+    return this.imageDao.listImagesByPolypAndGallery(polyp, gallery, page, pageSize, filter);
+  }
+  
+  @Override
+  public int countImagesByPolypAndGallery(Polyp polyp, Gallery gallery, ImageFilter filter) {
+    return this.imageDao.countImagesByPolypAndGallery(polyp, gallery, filter);
   }
 
 }

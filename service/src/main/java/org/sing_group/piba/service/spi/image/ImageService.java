@@ -61,10 +61,16 @@ public interface ImageService {
 
   public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith);
   
-  public int countImagesInGallery(Gallery gallery, ImageFilter filter);
+  public int countImagesByGallery(Gallery gallery, ImageFilter filter);
 
   public Stream<Image> listImagesByPolyp(Polyp polyp, Integer page, Integer pageSize, ImageFilter filter);
   
-  public int countImagesInPolyp(Polyp polyp, ImageFilter filter);
+  public int countImagesByPolyp(Polyp polyp, ImageFilter filter);
+
+  public Stream<Image> listImagesByPolypAndGallery(
+    Polyp polyp, Gallery gallery, Integer page, Integer pageSize, ImageFilter filter
+  );
+
+  public int countImagesByPolypAndGallery(Polyp polyp, Gallery gallery, ImageFilter filter);
 
 }

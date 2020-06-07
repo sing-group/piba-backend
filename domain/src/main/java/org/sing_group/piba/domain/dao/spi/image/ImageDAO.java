@@ -55,6 +55,10 @@ public interface ImageDAO {
 
   public int countImagesInPolyp(Polyp polyp, ImageFilter filter);
 
+  public Stream<Image> listImagesByPolypAndGallery(Polyp polyp, Gallery gallery, Integer page, Integer pageSize, ImageFilter filter);
+
+  public int countImagesByPolypAndGallery(Polyp polyp, Gallery gallery, ImageFilter filter);
+
   public PolypLocation createPolypLocation(PolypLocation polypLocation);
 
   public PolypLocation modifyPolypLocation(PolypLocation polypLocation);
