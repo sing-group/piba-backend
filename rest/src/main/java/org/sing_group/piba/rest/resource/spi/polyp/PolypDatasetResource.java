@@ -24,6 +24,7 @@ package org.sing_group.piba.rest.resource.spi.polyp;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.piba.domain.dao.SortDirection;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetEditionData;
 
 @Local
@@ -34,7 +35,7 @@ public interface PolypDatasetResource {
 
   public Response listPolypsOfPolypDatasets(String datasetId, int page, int pageSize);
 
-  public Response listPolypRecordingsOfPolypDatasets(String datasetId, Integer page, Integer pageSize);
+  public Response listPolypRecordingsOfPolypDatasets(String datasetId, Integer page, Integer pageSize, SortDirection imageSort);
   
   public Response editPolypDataset(String datasetId, PolypDatasetEditionData data);
   

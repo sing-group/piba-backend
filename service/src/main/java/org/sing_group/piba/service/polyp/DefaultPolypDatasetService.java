@@ -27,6 +27,7 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.sing_group.piba.domain.dao.SortDirection;
 import org.sing_group.piba.domain.dao.spi.polyp.PolypDatasetDAO;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
@@ -55,8 +56,10 @@ public class DefaultPolypDatasetService implements PolypDatasetService {
   }
   
   @Override
-  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, Integer page, Integer pageSize) {
-    return this.polypDatasetDao.listPolypRecordingsInDatasets(datasetId, page, pageSize);
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(
+    String datasetId, Integer page, Integer pageSize, SortDirection imageSort
+  ) {
+    return this.polypDatasetDao.listPolypRecordingsInDatasets(datasetId, page, pageSize, imageSort);
   }
   
   @Override

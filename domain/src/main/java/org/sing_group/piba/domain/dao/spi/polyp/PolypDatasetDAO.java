@@ -24,6 +24,7 @@ package org.sing_group.piba.domain.dao.spi.polyp;
 
 import java.util.stream.Stream;
 
+import org.sing_group.piba.domain.dao.SortDirection;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
@@ -36,7 +37,9 @@ public interface PolypDatasetDAO {
 
   public Stream<Polyp> listPolypsInDataset(String datasetId, int page, int pageSize);
 
-  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, Integer page, Integer pageSize);
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(
+    String datasetId, Integer page, Integer pageSize, SortDirection imageSort
+  );
   
   public int countPolypDatasets();
 

@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -39,8 +40,10 @@ import org.sing_group.piba.domain.dao.DAOHelper;
 import org.sing_group.piba.domain.dao.ListingOptions;
 import org.sing_group.piba.domain.dao.ListingOptions.ListingOptionsBuilder;
 import org.sing_group.piba.domain.dao.ListingOptions.SortField;
+import org.sing_group.piba.domain.dao.SortDirection;
 import org.sing_group.piba.domain.dao.spi.polyp.PolypDatasetDAO;
 import org.sing_group.piba.domain.entities.image.Gallery;
+import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
@@ -55,6 +58,7 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   protected DAOHelper<String, Polyp> dhPolyp;
   protected DAOHelper<String, PolypRecording> dhPolypRecording;
   protected DAOHelper<String, Gallery> dhGallery;
+  protected DAOHelper<String, Image> dhImage;
 
   public DefaultPolypDatasetDAO() {
     super();
@@ -71,6 +75,7 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
     this.dhPolyp = DAOHelper.of(String.class, Polyp.class, this.em);
     this.dhPolypRecording = DAOHelper.of(String.class, PolypRecording.class, em);
     this.dhGallery = DAOHelper.of(String.class, Gallery.class, em);
+    this.dhImage = DAOHelper.of(String.class, Image.class, em);
   }
 
   @Override
@@ -101,19 +106,59 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   }
 
   @Override
-  public Stream<PolypRecording> listPolypRecordingsInDatasets(String datasetId, Integer page, Integer pageSize) {
+  public Stream<PolypRecording> listPolypRecordingsInDatasets(
+    String datasetId, Integer page, Integer pageSize, SortDirection imagesSort
+  ) {
     final PolypDataset dataset = this.dh.get(datasetId)
       .orElseThrow(() -> new IllegalArgumentException("Dataset not found: " + datasetId));
     
-    final ListingOptionsBuilder listingOptionsBuilder = (page == null || pageSize == null)
-      ? ListingOptions.allResults() : ListingOptions.forPage(page, pageSize);
-    final ListingOptions listingOptions = listingOptionsBuilder.sortedBy(SortField.ascending("creationDate"));
+    
+    if (imagesSort == null || imagesSort == SortDirection.NONE) {
+      final ListingOptionsBuilder listingOptionsBuilder = (page == null || pageSize == null)
+        ? ListingOptions.allResults() : ListingOptions.forPage(page, pageSize);
+        
+      final ListingOptions listingOptions = listingOptionsBuilder.sortedBy(SortField.ascending("creationDate"));
 
-    return this.dhPolypRecording.list(listingOptions, (cb, root) -> new Predicate[] {
-      cb.isMember(dataset, root.join("polyp").get("polypDatasets"))
-    }).stream();
+      return this.dhPolypRecording.list(listingOptions, (cb, root) -> new Predicate[] {
+        cb.isMember(dataset, root.join("polyp").get("polypDatasets"))
+      }).stream();
+    } else {
+      return this.listPolypRecordingsInDatasetOrderedByImages(dataset, page, pageSize, imagesSort);
+    }
   }
 
+  @SuppressWarnings("unchecked")
+  private Stream<PolypRecording> listPolypRecordingsInDatasetOrderedByImages(
+    PolypDataset dataset, Integer page, Integer pageSize, SortDirection imagesSort
+  ) {
+    // Native query is used because it is not possible to do a LEFT JOIN with conditions in JQL
+    final String querySql =
+      "SELECT pr.* " +
+        "FROM polyprecording pr " +
+        "JOIN video v ON v.id = pr.video_id " +
+        "LEFT JOIN polypsindataset pid ON pr.polyp_id = pid.polyp_id " +
+        "LEFT JOIN polypdataset pd ON pid.polypdataset_id = pd.id AND pd.id = :dataset " +
+        "LEFT JOIN image i ON NOT i.is_removed " +
+          "AND i.gallery_id = pd.defaultGallery_id " +
+          "AND i.video_id = pr.video_id AND i.polyp_id = pr.polyp_id " +
+          "AND i.num_frame / v.fps BETWEEN pr.start AND pr.end + 0.999 " +
+        "GROUP BY pr.id " +
+        "ORDER BY COUNT(DISTINCT i.id) " +
+        (imagesSort == SortDirection.ASCENDING ? "ASC" : "DESC") +
+        ", pr.creation_date ASC";
+        
+    Query query = this.em.createNativeQuery(querySql, PolypRecording.class)
+      .setParameter("dataset", dataset.getId());
+    
+    if (page != null && pageSize != null) {
+      query = query
+        .setFirstResult((page - 1) * pageSize)
+        .setMaxResults(pageSize);
+    }
+    
+    return query.getResultList().stream();
+  }
+  
   @Override
   public int countPolypDatasets() {
     return (int) this.dh.count();

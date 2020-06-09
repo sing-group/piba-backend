@@ -23,6 +23,7 @@ package org.sing_group.piba.rest.resource.polyp;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static org.sing_group.piba.domain.dao.SortDirection.NONE;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -30,6 +31,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -41,6 +43,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.piba.domain.dao.SortDirection;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypDatasetMapper;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypMapper;
@@ -50,7 +53,6 @@ import org.sing_group.piba.rest.entity.polyp.PolypDatasetData;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetEditionData;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 import org.sing_group.piba.rest.filter.CrossDomain;
-import org.sing_group.piba.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.piba.rest.resource.spi.polyp.PolypDatasetResource;
 import org.sing_group.piba.service.spi.polyp.PolypDatasetService;
 
@@ -172,12 +174,13 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
   public Response listPolypRecordingsOfPolypDatasets(
     @PathParam("id") String datasetId,
     @QueryParam("page") Integer page,
-    @QueryParam("pageSize") Integer pageSize
+    @QueryParam("pageSize") Integer pageSize,
+    @QueryParam("imagesSort") @DefaultValue("NONE") SortDirection imageSort
   ) {
     int countPolyps = this.service.countPolypRecordingsInDatasets(datasetId);
 
     return Response.ok(
-      this.service.listPolypRecordingsInDatasets(datasetId, page, pageSize)
+      this.service.listPolypRecordingsInDatasets(datasetId, page, pageSize, imageSort)
         .map(this.polypRecordingMapper::toPolypRecordingData)
       .toArray(PolypRecordingData[]::new)
     )
