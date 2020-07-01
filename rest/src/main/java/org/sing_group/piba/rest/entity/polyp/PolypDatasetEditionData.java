@@ -40,6 +40,9 @@ public class PolypDatasetEditionData implements Serializable {
 
   @XmlElement(name = "title", required = true)
   private String title;
+  
+  @XmlElement(name = "description", required = true)
+  private String description;
 
   @XmlElement(name = "polyps")
   private List<String> polyps;
@@ -55,6 +58,14 @@ public class PolypDatasetEditionData implements Serializable {
 
   public void setTitle(String name) {
     this.title = name;
+  }
+  
+  public String getDescription() {
+    return description;
+  }
+  
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public List<String> getPolyps() {

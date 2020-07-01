@@ -45,6 +45,9 @@ public class PolypDatasetData implements Serializable {
 
   @XmlElement(name = "title", required = true)
   private String title;
+  
+  @XmlElement(name = "description", required = true)
+  private String description;
 
   @XmlElement(name = "polyps")
   private List<UuidAndUri> polyps;
@@ -54,9 +57,13 @@ public class PolypDatasetData implements Serializable {
   
   PolypDatasetData() {}
 
-  public PolypDatasetData(String id, String title, List<UuidAndUri> polyps, UuidAndUri defaultGallery) {
+  public PolypDatasetData(
+    String id, String title, String description,
+    List<UuidAndUri> polyps, UuidAndUri defaultGallery
+  ) {
     this.id = id;
     this.title = title;
+    this.description = description;
     this.polyps = polyps;
     this.defaultGallery = defaultGallery;
   }
@@ -67,6 +74,14 @@ public class PolypDatasetData implements Serializable {
 
   public void setId(String id) {
     this.id = id;
+  }
+  
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public String getTitle() {

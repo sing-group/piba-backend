@@ -62,6 +62,9 @@ public class PolypDataset implements Identifiable {
 
   @Column(name = "title", nullable = false)
   private String title;
+  
+  @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+  private String description;
 
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinTable(
@@ -76,9 +79,10 @@ public class PolypDataset implements Identifiable {
   
   PolypDataset() {}
   
-  public PolypDataset(String title, Collection<Polyp> polyps, Gallery defaultGallery) {
+  public PolypDataset(String title, String description, Collection<Polyp> polyps, Gallery defaultGallery) {
     this.id = UUID.randomUUID().toString();
     this.title = title;
+    this.description = description;
     this.defaultGallery = defaultGallery;
     this.polyps = new HashSet<>(polyps);
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
@@ -95,6 +99,14 @@ public class PolypDataset implements Identifiable {
 
   public void setTitle(String name) {
     this.title = checkArgument(name, n -> requireNonNull(n, "name cannot be null"));
+  }
+  
+  public String getDescription() {
+    return description;
+  }
+  
+  public void setDescription(String description) {
+    this.description = description;
   }
   
   public Stream<Polyp> getPolyps() {
