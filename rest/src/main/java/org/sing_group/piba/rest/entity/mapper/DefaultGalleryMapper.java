@@ -35,7 +35,7 @@ public class DefaultGalleryMapper implements GalleryMapper {
   @Override
   public GalleryData toGalleryData(Gallery gallery) {
     return new GalleryData(
-      gallery.getId(), gallery.getTitle(), gallery.getDescription()
+      gallery.getId(), gallery.getTitle(), gallery.getDescription(), gallery.getCreationDate()
     );
   }
 

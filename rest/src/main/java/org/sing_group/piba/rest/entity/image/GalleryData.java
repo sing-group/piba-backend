@@ -23,6 +23,7 @@
 package org.sing_group.piba.rest.entity.image;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -44,12 +45,16 @@ public class GalleryData implements Serializable {
   @XmlElement(name = "description")
   private String description;
 
+  @XmlElement(name = "creationDate", required = true)
+  private Date creationDate;
+
   GalleryData() {}
 
-  public GalleryData(String id, String title, String description) {
+  public GalleryData(String id, String title, String description, Date creationDate) {
     this.id = id;
     this.title = title;
     this.description = description;
+    this.creationDate = creationDate;
   }
 
   public String getId() {
@@ -62,5 +67,9 @@ public class GalleryData implements Serializable {
 
   public String getDescription() {
     return description;
+  }
+  
+  public Date getCreationDate() {
+    return creationDate;
   }
 }

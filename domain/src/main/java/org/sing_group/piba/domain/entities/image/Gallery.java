@@ -26,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -65,6 +66,11 @@ public class Gallery implements Identifiable {
     this.setTitle(name);
   }
 
+  @Override
+  public String getId() {
+    return id;
+  }
+
   public String getTitle() {
     return title;
   }
@@ -82,9 +88,7 @@ public class Gallery implements Identifiable {
     this.description = description;
   }
 
-  @Override
-  public String getId() {
-    return id;
+  public Date getCreationDate() {
+    return this.creationDate;
   }
-
 }
