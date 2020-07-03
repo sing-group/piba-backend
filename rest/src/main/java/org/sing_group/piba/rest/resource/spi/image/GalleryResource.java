@@ -36,4 +36,6 @@ public interface GalleryResource {
   public Response create(GalleryEditionData galleryEditionData);
 
   public Response edit(String id, GalleryEditionData galleryEditionData);
+
+  public Response getGalleryStats(String id);
 }

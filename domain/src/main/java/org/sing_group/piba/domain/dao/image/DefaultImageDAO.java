@@ -24,7 +24,6 @@ package org.sing_group.piba.domain.dao.image;
 
 import static java.util.function.UnaryOperator.identity;
 
-import java.text.DateFormat.Field;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -234,62 +233,54 @@ public class DefaultImageDAO implements ImageDAO {
       return conditions.toString();
     };
     
-    String query;
+    final StringBuilder query = new StringBuilder(String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false",
+      transformSelect.apply("i"), transformConditions.apply("i")
+    ));
+    
     switch(filter) {
       case ALL:
-        query = String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false",
-          transformSelect.apply("i"), transformConditions.apply("i")
-        );
+        break;
+      case WITHOUT_POLYP:
+        query.append(" AND i.polyp IS NULL");
         
-        if (sort) {
-          query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
-        }
-        
-        return query;
-      case LOCATED:
-        query = String.format("SELECT %s FROM PolypLocation pl WHERE %s AND pl.image.isRemoved=false",
-          transformSelect.apply("pl.image"), transformConditions.apply("pl.image")
-        );
-        
-        if (sort) {
-          query += " ORDER BY pl.image.creationDate DESC, pl.image.video.id, pl.image.numFrame";
-        }
-        
-        return query;
-      case UNLOCATED:
-        query = String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)",
-          transformSelect.apply("i"), transformConditions.apply("i")
-        );
-        
-        if (sort) {
-          query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
-        }
-        
-        return query;
-      case UNLOCATED_WITH_POLYP:
-        query = String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)",
-          transformSelect.apply("i"), transformConditions.apply("i")
-        );
-        
-        if (sort) {
-          query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
-        }
-        
-        return query;
+        break;
       case WITH_POLYP:
-        query = String.format("SELECT %s FROM Image i WHERE %s AND i.isRemoved=false AND i.polyp IS NOT NULL",
-          transformSelect.apply("i"), transformConditions.apply("i")
-        );
+        query.append(" AND i.polyp IS NOT NULL");
         
-        if (sort) {
-          query += " ORDER BY i.creationDate DESC, i.video.id, i.numFrame";
-        }
+        break;
+      case WITHOUT_LOCATION:
+        query.append(" AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)");
         
-        return query;
+        break;
+      case WITH_LOCATION:
+        query.append(" AND EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)");
+        
+        break;
+      case WITHOUT_POLYP_AND_LOCATION:
+        query.append(" AND i.polyp IS NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)");
+        
+        break;
+      case WITHOUT_POLYP_AND_WITH_LOCATION:
+        query.append(" AND i.polyp IS NULL AND EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)");
+        
+        break;
+      case WITH_POLYP_AND_WITHOUT_LOCATION:
+        query.append(" AND i.polyp IS NOT NULL AND NOT EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)");
+        
+        break;
+      case WITH_POLYP_AND_LOCATION:
+        query.append(" AND i.polyp IS NOT NULL AND EXISTS (SELECT pl FROM PolypLocation pl WHERE pl.image = i)");
+        
+        break;
       default:
         throw new IllegalArgumentException("Image filter not supported: " + filter);
-        
     }
+    
+    if (sort) {
+      query.append(" ORDER BY i.creationDate DESC, i.video.id, i.numFrame");
+    }
+    
+    return query.toString();
   }
 
   private <T> Stream<T> listImagesByGallery(Gallery gallery, Integer page, Integer pageSize, ImageFilter filter, Class<T> clazz) {

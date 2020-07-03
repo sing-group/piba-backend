@@ -42,12 +42,15 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.piba.domain.entities.image.Gallery;
+import org.sing_group.piba.domain.entities.image.ImageFilter;
 import org.sing_group.piba.rest.entity.image.GalleryData;
 import org.sing_group.piba.rest.entity.image.GalleryEditionData;
+import org.sing_group.piba.rest.entity.image.GalleryStatsData;
 import org.sing_group.piba.rest.entity.mapper.spi.GalleryMapper;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.image.GalleryResource;
 import org.sing_group.piba.service.spi.image.GalleryService;
+import org.sing_group.piba.service.spi.image.ImageService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -72,6 +75,9 @@ public class DefaultGalleryResource implements GalleryResource {
 
   @Inject
   private GalleryService service;
+  
+  @Inject
+  private ImageService imageService;
 
   @Inject
   private GalleryMapper galleryMapper;
@@ -128,6 +134,31 @@ public class DefaultGalleryResource implements GalleryResource {
     this.galleryMapper.assignGalleryEditionData(gallery, galleryEditionData);
     return Response.ok(this.galleryMapper.toGalleryData(this.service.edit(gallery)))
       .build();
+  }
+
+  @Path("{id}/stats")
+  @GET
+  @ApiOperation(
+    value = "Return the stats of a gallery.", response = GalleryStatsData.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown gallery: {id}")
+  )
+  @Override
+  public Response getGalleryStats(@PathParam("id") String id) {
+    final Gallery gallery = this.service.get(id);
+    
+    return Response.ok(this.galleryMapper.toGalleryStatsData(
+      this.imageService.countImagesByGallery(gallery, ImageFilter.ALL),
+      this.imageService.countImagesByGallery(gallery, ImageFilter.WITHOUT_POLYP),
+      this.imageService.countImagesByGallery(gallery, ImageFilter.WITH_POLYP),
+      this.imageService.countImagesByGallery(gallery, ImageFilter.WITHOUT_LOCATION),
+      this.imageService.countImagesByGallery(gallery, ImageFilter.WITH_LOCATION),
+      this.imageService.countImagesByGallery(gallery, ImageFilter.WITHOUT_POLYP_AND_LOCATION),
+      this.imageService.countImagesByGallery(gallery, ImageFilter.WITHOUT_POLYP_AND_WITH_LOCATION),
+      this.imageService.countImagesByGallery(gallery, ImageFilter.WITH_POLYP_AND_WITHOUT_LOCATION),
+      this.imageService.countImagesByGallery(gallery, ImageFilter.WITH_POLYP_AND_LOCATION)
+    )).build();
   }
 
 }

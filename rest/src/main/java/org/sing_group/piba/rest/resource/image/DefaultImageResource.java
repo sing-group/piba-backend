@@ -24,12 +24,11 @@ package org.sing_group.piba.rest.resource.image;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static org.sing_group.piba.domain.entities.image.ImageFilter.LOCATED;
-import static org.sing_group.piba.domain.entities.image.ImageFilter.WITH_POLYP;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
+import java.util.function.IntSupplier;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -93,9 +92,7 @@ import io.swagger.annotations.ResponseHeader;
 })
 @Stateless
 @Default
-@CrossDomain(allowedHeaders = {
-  "X-Pagination-Total-Items", "X-Located-Total-Items", "X-With-Polyp-Total-Items"
-})
+@CrossDomain(allowedHeaders = "X-Pagination-Total-Items")
 public class DefaultImageResource implements ImageResource {
 
   @Inject
@@ -286,41 +283,34 @@ public class DefaultImageResource implements ImageResource {
     final boolean hasPolypId = polypId != null && !polypId.isEmpty();
     
     final Stream<Image> imageList;
-    final int paginationTotalItems;
-    final int countLocated;
-    final int countWithPolyp;
+    final IntSupplier paginationTotalItems;
+    
     if (hasGalleryId && hasPolypId) {
       final Polyp polyp = this.polypService.getPolyp(polypId);
       final Gallery gallery = this.galleryService.get(galleryId);
       imageList = this.service.listImagesByPolypAndGallery(polyp, gallery, page, pageSize, filter);
-      paginationTotalItems = this.service.countImagesByPolypAndGallery(polyp, gallery, filter);
-      countLocated = this.service.countImagesByPolypAndGallery(polyp, gallery, filter);
-      countWithPolyp = this.service.countImagesByPolypAndGallery(polyp, gallery, filter);
+      paginationTotalItems = () -> this.service.countImagesByPolypAndGallery(polyp, gallery, filter);
     } else if (!hasGalleryId && !hasPolypId) {
       throw new IllegalArgumentException("galleryId or polypId must be provided");
     } else if (hasGalleryId) {
       final Gallery gallery = this.galleryService.get(galleryId);
       imageList = this.service.listImagesByGallery(gallery, page, pageSize, filter);
-      paginationTotalItems = this.service.countImagesByGallery(gallery, filter);
-      countLocated = this.service.countImagesByGallery(gallery, filter);
-      countWithPolyp = this.service.countImagesByGallery(gallery, filter);
+      paginationTotalItems = () -> this.service.countImagesByGallery(gallery, filter);
     } else {
       final Polyp polyp = this.polypService.getPolyp(polypId);
       imageList = this.service.listImagesByPolyp(polyp, page, pageSize, filter);
-      paginationTotalItems = this.service.countImagesByPolyp(polyp, filter);
-      countLocated = this.service.countImagesByPolyp(polyp, filter);
-      countWithPolyp = this.service.countImagesByPolyp(polyp, filter);
+      paginationTotalItems = () -> this.service.countImagesByPolyp(polyp, filter);
     }
     
-    return Response.ok(
+    ResponseBuilder response = Response.ok(
       imageList.map(this.imageMapper::toImageData).toArray(ImageData[]::new)
-    ).header(
-      "X-Pagination-Total-Items", paginationTotalItems
-    ).header(
-      "X-Located-Total-Items", countLocated
-    ).header(
-      "X-With-Polyp-Total-Items", countWithPolyp
-    ).build();
+    );
+    
+    if (page != null && pageSize != null) {
+      response = response.header("X-Pagination-Total-Items", paginationTotalItems.getAsInt());
+    }
+    
+    return response.build();
   }
 
   @GET
@@ -337,22 +327,19 @@ public class DefaultImageResource implements ImageResource {
     @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
     @QueryParam("filter") ImageFilter filter
   ) {
-    Gallery gallery = this.galleryService.get(galleryId);
+    final Gallery gallery = this.galleryService.get(galleryId);
 
     ResponseBuilder response =
       Response.ok(
-        this.service.listImagesIdentifiersByGallery(gallery, page, pageSize, filter).map(this.imageMapper::toUuidAndUri).toArray(UuidAndUri[]::new)
+        this.service.listImagesIdentifiersByGallery(gallery, page, pageSize, filter)
+          .map(this.imageMapper::toUuidAndUri).toArray(UuidAndUri[]::new)
       );
+    
     if (page != null && pageSize != null) {
-      response.header("X-Pagination-Total-Items", this.service.countImagesByGallery(gallery, filter));
+      response = response.header("X-Pagination-Total-Items", this.service.countImagesByGallery(gallery, filter));
     }
-    return response.header(
-      "X-Pagination-Total-Items", this.service.countImagesByGallery(gallery, filter)
-    ).header(
-      "X-Located-Total-Items", this.service.countImagesByGallery(gallery, LOCATED)
-    ).header(
-      "X-With-Polyp-Total-Items", this.service.countImagesByGallery(gallery, WITH_POLYP)
-    ).build();
+    
+    return response.build();
   }
 
   @GET

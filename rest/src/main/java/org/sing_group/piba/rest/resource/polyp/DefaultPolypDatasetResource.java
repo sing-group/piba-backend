@@ -23,7 +23,6 @@ package org.sing_group.piba.rest.resource.polyp;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static org.sing_group.piba.domain.dao.SortDirection.NONE;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;

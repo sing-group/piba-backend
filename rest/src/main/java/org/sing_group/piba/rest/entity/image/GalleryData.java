@@ -40,8 +40,10 @@ public class GalleryData implements Serializable {
 
   @XmlElement(name = "id", required = true)
   private String id;
+  
   @XmlElement(name = "title")
   private String title;
+  
   @XmlElement(name = "description")
   private String description;
 

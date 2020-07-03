@@ -25,9 +25,16 @@ package org.sing_group.piba.rest.entity.mapper.spi;
 import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.rest.entity.image.GalleryData;
 import org.sing_group.piba.rest.entity.image.GalleryEditionData;
+import org.sing_group.piba.rest.entity.image.GalleryStatsData;
 
 public interface GalleryMapper {
   public GalleryData toGalleryData(Gallery gallery);
 
   public void assignGalleryEditionData(Gallery gallery, GalleryEditionData galleryEditionData);
+  
+  public GalleryStatsData toGalleryStatsData(
+    int countImages, int countImagesWithoutPolyp, int countImagesWithPolyp, int countImagesWithoutLocation,
+    int countImagesWithLocation, int countImagesWithoutPolypAndLocation, int countImagesWithoutPolypAndWithLocation,
+    int countImagesWithPolypAndWithoutLocation, int countImagesWithPolypAndLocation
+  );
 }
