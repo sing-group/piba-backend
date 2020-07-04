@@ -86,7 +86,8 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
 
   @Override
   public Stream<PolypDataset> listPolypDatasets(int page, int pageSize) {
-    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
+    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize
+      ).sortedBy(SortField.ascending("title"));
     
     return this.dh.list(listingOptions).stream();
   }
