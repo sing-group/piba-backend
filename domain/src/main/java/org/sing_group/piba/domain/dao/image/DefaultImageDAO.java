@@ -304,10 +304,18 @@ public class DefaultImageDAO implements ImageDAO {
 
   @Override
   public Stream<String> listImageObservationsToRemoveBy(String observationToRemoveStartsWith) {
-    return this.em.createQuery(
-      "SELECT DISTINCT i.observationToRemove FROM Image i WHERE i.observationToRemove LIKE :observationToRemoveStartsWith",
-      String.class
-    ).setParameter("observationToRemoveStartsWith", observationToRemoveStartsWith + "%").getResultList().stream();
+    String query = "SELECT DISTINCT i.observationToRemove FROM Image i WHERE i.observationToRemove IS NOT NULL";
+    
+    if (observationToRemoveStartsWith != null && !observationToRemoveStartsWith.trim().isEmpty()) {
+      query += " AND i.observationToRemove LIKE :observationToRemoveStartsWith ORDER BY i.observationToRemove ASC";
+      
+      return this.em.createQuery(query, String.class)
+        .setParameter("observationToRemoveStartsWith", observationToRemoveStartsWith + "%")
+      .getResultList().stream();
+    } else {
+      query += " ORDER BY i.observationToRemove ASC";
+      
+      return this.em.createQuery(query, String.class).getResultList().stream();
+    }
   }
-
 }

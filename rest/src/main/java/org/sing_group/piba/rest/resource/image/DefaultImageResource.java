@@ -38,6 +38,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -349,7 +350,7 @@ public class DefaultImageResource implements ImageResource {
   )
   @Override
   public Response listImageObservationsToRemoveBy(
-    @QueryParam("observationStartsWith") String observationToRemoveStartsWith
+    @DefaultValue("") @QueryParam("observationStartsWith") String observationToRemoveStartsWith
   ) {
     return Response
       .ok(this.service.listImageObservationsToRemoveBy(observationToRemoveStartsWith).toArray(String[]::new))
