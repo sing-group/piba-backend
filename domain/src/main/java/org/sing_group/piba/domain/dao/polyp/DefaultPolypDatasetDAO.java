@@ -137,8 +137,8 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
       "SELECT pr.* " +
         "FROM polyprecording pr " +
         "JOIN video v ON v.id = pr.video_id " +
-        "LEFT JOIN polypsindataset pid ON pr.polyp_id = pid.polyp_id " +
-        "LEFT JOIN polypdataset pd ON pid.polypdataset_id = pd.id AND pd.id = :dataset " +
+        "JOIN polypsindataset pid ON pr.polyp_id = pid.polyp_id " +
+        "JOIN polypdataset pd ON pid.polypdataset_id = pd.id AND pd.id = :dataset " +
         "LEFT JOIN image i ON NOT i.is_removed " +
           "AND i.gallery_id = pd.defaultGallery_id " +
           "AND i.video_id = pr.video_id AND i.polyp_id = pr.polyp_id " +
