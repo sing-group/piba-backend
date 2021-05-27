@@ -23,11 +23,11 @@
 package org.sing_group.piba.domain.entities.polyp;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toSet;
 import static org.sing_group.fluent.checker.Checks.checkArgument;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -37,10 +37,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -66,13 +64,8 @@ public class PolypDataset implements Identifiable {
   @Column(name = "description", nullable = false, columnDefinition = "TEXT")
   private String description;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinTable(
-    name = "polypsindataset",
-    joinColumns = @JoinColumn(name = "polypdataset_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "polyp_id", referencedColumnName = "id")
-  )
-  private Set<Polyp> polyps;
+  @OneToMany(mappedBy = "polypDataset", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Set<PolypInDataset> polyps;
   
   @ManyToOne(fetch = FetchType.LAZY, optional = true)
   private Gallery defaultGallery;
@@ -84,7 +77,9 @@ public class PolypDataset implements Identifiable {
     this.title = title;
     this.description = description;
     this.defaultGallery = defaultGallery;
-    this.polyps = new HashSet<>(polyps);
+    this.polyps = polyps.stream()
+      .map(polyp -> new PolypInDataset(polyp, this))
+    .collect(toSet());
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
   }
 
@@ -110,24 +105,39 @@ public class PolypDataset implements Identifiable {
   }
   
   public Stream<Polyp> getPolyps() {
-    return this.polyps.stream();
+    return this.polyps.stream()
+      .map(PolypInDataset::getPolyp);
   }
   
   public void setPolyps(Collection<Polyp> polyps) {
-    this.polyps.forEach(polyp -> polyp.removePolypDataset(this));
+    this.polyps.stream()
+      .forEach(pid -> pid.getPolyp().removePolypInDataset(pid));
     this.polyps.clear();
     polyps.forEach(this::addPolyp);
   }
   
   public void addPolyp(Polyp polyp) {
-    if (this.polyps.add(polyp)) {
-      polyp.addPolypDataset(this);
-    }
+    this.addPolypInDataset(new PolypInDataset(polyp, this));
   }
   
   public void removePolyp(Polyp polyp) {
-    if (this.polyps.remove(polyp)) {
-      polyp.addPolypDataset(this);
+    final PolypInDataset polypInDataset = this.polyps.stream()
+      .filter(pid -> pid.getPolyp().equals(polyp))
+      .findAny()
+    .orElseThrow(() -> new IllegalArgumentException("Polyp does not belong to dataset"));
+    
+    this.removePolypInDataset(polypInDataset);
+  }
+  
+  protected void addPolypInDataset(PolypInDataset polypInDataset) {
+    if (this.polyps.add(polypInDataset)) {
+      polypInDataset.getPolyp().addPolypInDataset(polypInDataset);
+    }
+  }
+  
+  protected void removePolypInDataset(PolypInDataset polypInDataset) {
+    if (this.polyps.remove(polypInDataset)) {
+      polypInDataset.getPolyp().removePolypInDataset(polypInDataset);
     }
   }
   

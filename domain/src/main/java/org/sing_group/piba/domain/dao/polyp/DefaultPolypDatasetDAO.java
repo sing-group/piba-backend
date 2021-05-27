@@ -22,6 +22,7 @@
 
 package org.sing_group.piba.domain.dao.polyp;
 
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -31,8 +32,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -46,6 +49,7 @@ import org.sing_group.piba.domain.entities.image.Gallery;
 import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
+import org.sing_group.piba.domain.entities.polyp.PolypInDataset;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 
 @Default
@@ -97,13 +101,11 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
     final PolypDataset dataset = this.dh.get(datasetId)
       .orElseThrow(() -> new IllegalArgumentException("Dataset not found: " + datasetId));
     
-    final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
-
-    return this.dhPolyp.list(listingOptions, ctx -> {
-      return new Predicate[] {
-        ctx.cb().isMember(dataset, ctx.root().get("polypDatasets"))
-      };
-    }).stream();
+    return this.dhPolyp.list(
+      ListingOptions.forPage(page, pageSize).unsorted(),
+      DefaultPolypDatasetDAO.<Polyp>createPolypInDatasetPredicateBuilder(dataset, root -> root)
+    )
+    .stream();
   }
 
   @Override
@@ -113,16 +115,15 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
     final PolypDataset dataset = this.dh.get(datasetId)
       .orElseThrow(() -> new IllegalArgumentException("Dataset not found: " + datasetId));
     
-    
     if (imagesSort == null || imagesSort == SortDirection.NONE) {
       final ListingOptionsBuilder listingOptionsBuilder = (page == null || pageSize == null)
         ? ListingOptions.allResults() : ListingOptions.forPage(page, pageSize);
         
-      final ListingOptions listingOptions = listingOptionsBuilder.sortedBy(SortField.ascending("creationDate"));
-
-      return this.dhPolypRecording.list(listingOptions, ctx -> new Predicate[] {
-        ctx.cb().isMember(dataset, ctx.root().join("polyp").get("polypDatasets"))
-      }).stream();
+      return this.dhPolypRecording.list(
+        listingOptionsBuilder.sortedBy(SortField.ascending("creationDate")),
+        DefaultPolypDatasetDAO.<PolypRecording>createPolypInDatasetPredicateBuilder(dataset, root -> root.get("polyp"))
+      )
+      .stream();
     } else {
       return this.listPolypRecordingsInDatasetOrderedByImages(dataset, page, pageSize, imagesSort);
     }
@@ -137,8 +138,8 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
       "SELECT pr.* " +
         "FROM polyprecording pr " +
         "JOIN video v ON v.id = pr.video_id " +
-        "JOIN polypsindataset pid ON pr.polyp_id = pid.polyp_id " +
-        "JOIN polypdataset pd ON pid.polypdataset_id = pd.id AND pd.id = :dataset " +
+        "JOIN polypindataset pid ON pr.polyp_id = pid.polyp_id " +
+        "JOIN polypdataset pd ON pid.dataset_id = pd.id AND pd.id = :dataset " +
         "LEFT JOIN image i ON NOT i.is_removed " +
           "AND i.gallery_id = pd.defaultGallery_id " +
           "AND i.video_id = pr.video_id AND i.polyp_id = pr.polyp_id " +
@@ -179,9 +180,15 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
     CriteriaQuery<Long> query = cb.createQuery(Long.class);
 
     final Root<PolypRecording> root = query.from(this.dhPolypRecording.getEntityType());
+
+    final Subquery<Polyp> subquery = query.subquery(Polyp.class);
+    final Root<PolypInDataset> subroot = subquery.from(PolypInDataset.class);
     
+    final Subquery<Polyp> select = subquery.select(subroot.get("polyp"))
+      .where(cb.equal(subroot.get("polypDataset"), dataset));
+
     query = query.select(cb.count(root))
-      .where(cb.isMember(dataset, root.join("polyp").get("polypDatasets")));
+      .where(cb.in(root.get("polyp")).value(select));
 
     return this.em.createQuery(query).getSingleResult().intValue();
   }
@@ -199,5 +206,23 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   @Override
   public void deletePolypDataset(String datasetId) {
     this.dh.removeByKey(datasetId);
+  }
+
+  private static <P> Function<DAOHelper<String, P>.ListQueryContext, Predicate[]> createPolypInDatasetPredicateBuilder(
+    final PolypDataset dataset, final Function<Root<P>, Expression<Polyp>> getPolypField
+  ) {
+    return context -> {
+      final Subquery<Polyp> subquery = context.query().subquery(Polyp.class);
+      final Root<PolypInDataset> subroot = subquery.from(PolypInDataset.class);
+      
+      final Subquery<Polyp> select = subquery.select(subroot.get("polyp"))
+        .where(context.cb().equal(subroot.get("polypDataset"), dataset));
+      
+      final Expression<Polyp> polypField = getPolypField.apply(context.root());
+      
+      return new Predicate[] {
+        context.cb().in(polypField).value(select)
+      };
+    };
   }
 }
