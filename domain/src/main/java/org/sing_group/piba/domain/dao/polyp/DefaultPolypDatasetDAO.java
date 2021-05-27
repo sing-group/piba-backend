@@ -99,9 +99,9 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
     
     final ListingOptions listingOptions = ListingOptions.forPage(page, pageSize).unsorted();
 
-    return this.dhPolyp.list(listingOptions, (cb, root) -> {
+    return this.dhPolyp.list(listingOptions, ctx -> {
       return new Predicate[] {
-        cb.isMember(dataset, root.get("polypDatasets"))
+        ctx.cb().isMember(dataset, ctx.root().get("polypDatasets"))
       };
     }).stream();
   }
@@ -120,8 +120,8 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
         
       final ListingOptions listingOptions = listingOptionsBuilder.sortedBy(SortField.ascending("creationDate"));
 
-      return this.dhPolypRecording.list(listingOptions, (cb, root) -> new Predicate[] {
-        cb.isMember(dataset, root.join("polyp").get("polypDatasets"))
+      return this.dhPolypRecording.list(listingOptions, ctx -> new Predicate[] {
+        ctx.cb().isMember(dataset, ctx.root().join("polyp").get("polypDatasets"))
       }).stream();
     } else {
       return this.listPolypRecordingsInDatasetOrderedByImages(dataset, page, pageSize, imagesSort);

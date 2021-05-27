@@ -91,14 +91,14 @@ public class DAOHelper<K, T> {
   }
 
   public List<T> list(ListingOptions options) {
-    return this.list(options, (cb, r) -> new Predicate[0]);
+    return this.list(options, context -> new Predicate[0]);
   }
   
-  public List<T> list(BiFunction<CriteriaBuilder, Root<T>, Predicate[]> predicatesBuilder) {
+  public List<T> list(Function<ListQueryContext, Predicate[]> predicatesBuilder) {
     return this.list(ListingOptions.allResults().unsorted(), predicatesBuilder);
   }
 
-  public List<T> list(ListingOptions options, BiFunction<CriteriaBuilder, Root<T>, Predicate[]> predicatesBuilder) {
+  public List<T> list(ListingOptions options, Function<ListQueryContext, Predicate[]> predicatesBuilder) {
     final ListingOptionsQueryBuilder optionsBuilder = new ListingOptionsQueryBuilder(options);
 
     final CriteriaQuery<T> queryBuilder = createCBQuery();
@@ -106,7 +106,9 @@ public class DAOHelper<K, T> {
 
     CriteriaQuery<T> select = optionsBuilder.addOrder(cb(), queryBuilder.select(root), root);
 
-    final Predicate[] predicates = predicatesBuilder.apply(cb(), root);
+    final Predicate[] predicates = predicatesBuilder.apply(
+      new ListQueryContext(root, select)
+    );
 
     if (predicates.length > 0)
       select = select.where(predicates);
@@ -242,5 +244,27 @@ public class DAOHelper<K, T> {
 
   public CriteriaBuilder cb() {
     return em.getCriteriaBuilder();
+  }
+  
+  public class ListQueryContext {
+    private final Root<T> root;
+    private final CriteriaQuery<T> query;
+
+    public ListQueryContext(Root<T> root, CriteriaQuery<T> query) {
+      this.root = root;
+      this.query = query;
+    }
+
+    public CriteriaBuilder cb() {
+      return DAOHelper.this.cb();
+    }
+
+    public Root<T> root() {
+      return root;
+    }
+
+    public CriteriaQuery<T> query() {
+      return query;
+    }
   }
 }
