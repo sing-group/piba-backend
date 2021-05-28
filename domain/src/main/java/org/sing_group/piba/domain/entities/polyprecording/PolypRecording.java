@@ -26,18 +26,23 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.sing_group.piba.domain.entities.VideoInterval;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
+import org.sing_group.piba.domain.entities.polyp.ReviewedPolypRecording;
 import org.sing_group.piba.domain.entities.video.Video;
 
 @Entity
@@ -58,7 +63,12 @@ public class PolypRecording extends VideoInterval implements Serializable {
   @Column(name = "update_date", columnDefinition = "DATETIME(3)")
   private Timestamp updateDate;
 
+  // Needed for ReviewedPolypRecording relation
+  @Column(name = "polyp_id", insertable = false, updatable = false)
+  private String polypId;
+  
   @ManyToOne
+  @JoinColumn(name = "polyp_id", referencedColumnName = "id")
   private Polyp polyp;
 
   @ManyToOne
@@ -66,11 +76,15 @@ public class PolypRecording extends VideoInterval implements Serializable {
 
   @Column(name = "confirmed", columnDefinition = "BIT(1) DEFAULT FALSE")
   private boolean confirmed;
+  
+  @OneToMany(mappedBy = "polypRecording", fetch = FetchType.LAZY)
+  private Set<ReviewedPolypRecording> reviewedPolypRecordings;
 
   PolypRecording() {}
 
   public PolypRecording(Polyp polyp, Video video, Integer start, Integer end, boolean confirmed) {
     this.polyp = polyp;
+    this.polypId = this.polyp.getId();
     this.video = video;
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
     this.confirmed = confirmed;
@@ -82,6 +96,7 @@ public class PolypRecording extends VideoInterval implements Serializable {
   public PolypRecording(int id, Polyp polyp, Video video, Integer start, Integer end, boolean confirmed) {
     this.id = id;
     this.polyp = polyp;
+    this.polypId = this.polyp.getId();
     this.video = video;
     this.creationDate = this.updateDate = new Timestamp(System.currentTimeMillis());
     this.confirmed = confirmed;
@@ -116,6 +131,11 @@ public class PolypRecording extends VideoInterval implements Serializable {
 
   public void setConfirmed(boolean confirmed) {
     this.confirmed = confirmed;
+  }
+  
+  public boolean isReviewedInDataset(String datasetId) {
+    return this.reviewedPolypRecordings.stream()
+      .anyMatch(rpr -> rpr.getPolypDataset().getId().equals(datasetId));
   }
 
   @Override

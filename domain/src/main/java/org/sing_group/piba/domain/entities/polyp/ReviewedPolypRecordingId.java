@@ -25,16 +25,30 @@ package org.sing_group.piba.domain.entities.polyp;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class PolypInDatasetId implements Serializable {
+public class ReviewedPolypRecordingId implements Serializable {
   private static final long serialVersionUID = 1L;
-
-  private String polypId;
 
   private String polypDatasetId;
 
+  private String polypId;
+
+  private int polypRecordingId;
+
+  public String getPolypDatasetId() {
+    return polypDatasetId;
+  }
+
+  public String getPolypId() {
+    return polypId;
+  }
+
+  public int getPolypRecordingId() {
+    return polypRecordingId;
+  }
+
   @Override
   public int hashCode() {
-    return Objects.hash(polypDatasetId, polypId);
+    return Objects.hash(polypDatasetId, polypId, polypRecordingId);
   }
 
   @Override
@@ -45,8 +59,9 @@ public class PolypInDatasetId implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    PolypInDatasetId other = (PolypInDatasetId) obj;
-    return Objects.equals(polypDatasetId, other.polypDatasetId) && Objects.equals(polypId, other.polypId);
+    ReviewedPolypRecordingId other = (ReviewedPolypRecordingId) obj;
+    return Objects.equals(polypDatasetId, other.polypDatasetId) && Objects.equals(polypId, other.polypId)
+      && polypRecordingId == other.polypRecordingId;
   }
 
 }

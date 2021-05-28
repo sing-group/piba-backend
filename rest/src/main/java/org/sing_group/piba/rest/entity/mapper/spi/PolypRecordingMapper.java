@@ -27,10 +27,13 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditionData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingInDatasetData;
 
 public interface PolypRecordingMapper {
 
   public PolypRecordingData toPolypRecordingData(PolypRecording polypRecording);
+
+  public PolypRecordingInDatasetData toPolypRecordingInDatasetData(PolypRecording polypRecording, String datasetId);
 
   void setRequestURI(UriInfo requestURI);
 

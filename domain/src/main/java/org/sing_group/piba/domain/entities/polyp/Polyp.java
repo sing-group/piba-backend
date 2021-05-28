@@ -28,6 +28,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -236,11 +237,9 @@ public class Polyp implements Identifiable {
     this.confirmed = confirmed;
   }
   
-//  protected void addPolypDataset(PolypDataset polypDataset) {
-//    this.polypDatasets.add(
-//      new PolypInDataset(this, polypDataset, false)
-//    );
-//  }
+  public Stream<PolypInDataset> getPolypDatasets() {
+    return polypDatasets.stream();
+  }
   
   protected void addPolypInDataset(PolypInDataset polypInDataset) {
     this.polypDatasets.add(polypInDataset);
@@ -249,13 +248,4 @@ public class Polyp implements Identifiable {
   protected void removePolypInDataset(PolypInDataset polypInDataset) {
     this.polypDatasets.remove(polypInDataset);
   }
-  
-//  protected void removePolypDataset(PolypDataset polypDataset) {
-//    final PolypInDataset polypInDataset = this.polypDatasets.stream()
-//      .filter(pid -> pid.getDataset().equals(polypDataset))
-//      .findAny()
-//    .orElseThrow(() -> new IllegalArgumentException("Polyp does not belong to polyp dataset"));
-//    
-//    this.polypDatasets.remove(polypInDataset);
-//  }
 }

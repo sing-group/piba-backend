@@ -39,6 +39,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -51,6 +52,7 @@ import org.sing_group.piba.rest.entity.polyp.PolypData;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetData;
 import org.sing_group.piba.rest.entity.polyp.PolypDatasetEditionData;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingInDatasetData;
 import org.sing_group.piba.rest.filter.CrossDomain;
 import org.sing_group.piba.rest.resource.spi.polyp.PolypDatasetResource;
 import org.sing_group.piba.service.spi.polyp.PolypDatasetService;
@@ -164,7 +166,7 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
   @Path("{id}/polyprecording")
   @ApiOperation(
     value = "Returns the polpy recordings of a polyp datasets.",
-    response = PolypRecordingData.class, responseContainer = "List", code = 200
+    response = PolypRecordingInDatasetData.class, responseContainer = "List", code = 200
   )
   @ApiResponses(
     @ApiResponse(code = 400, message = "Invalid page or pageSize. They must be an integer.")
@@ -180,11 +182,27 @@ public class DefaultPolypDatasetResource implements PolypDatasetResource {
 
     return Response.ok(
       this.service.listPolypRecordingsInDatasets(datasetId, page, pageSize, imageSort)
-        .map(this.polypRecordingMapper::toPolypRecordingData)
+        .map(polypRecording -> this.polypRecordingMapper.toPolypRecordingInDatasetData(polypRecording, datasetId))
       .toArray(PolypRecordingData[]::new)
     )
       .header("X-Pagination-Total-Items", countPolyps)
     .build();
+  }
+
+  @PUT
+  @Path("{id}/polyprecording/{polyprecording_id}/reviewed")
+  @Consumes(MediaType.WILDCARD)
+  @ApiOperation(
+    value = "Marks a polyp recording as reviewed.", code = 200
+  )
+  @Override
+  public Response markPolypRecordingAsReviewed(
+    @PathParam("id") String datasetId,
+    @PathParam("polyprecording_id") int polypRecordingId
+  ) {
+    this.service.markPolypRecordingAsReviewed(datasetId, polypRecordingId);
+
+    return Response.ok().build();
   }
 
   @PUT

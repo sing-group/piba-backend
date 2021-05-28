@@ -31,6 +31,7 @@ import org.sing_group.piba.rest.entity.UuidAndUri;
 import org.sing_group.piba.rest.entity.mapper.spi.PolypRecordingMapper;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingData;
 import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingEditionData;
+import org.sing_group.piba.rest.entity.polyprecording.PolypRecordingInDatasetData;
 import org.sing_group.piba.rest.resource.polyp.DefaultPolypResource;
 import org.sing_group.piba.rest.resource.video.DefaultVideoResource;
 import org.sing_group.piba.service.spi.polyp.PolypService;
@@ -59,6 +60,17 @@ public class DefaultPolypRecordingMapper implements PolypRecordingMapper {
       UuidAndUri.fromEntity(requestURI, polypRecording.getVideo(), DefaultVideoResource.class),
       UuidAndUri.fromEntity(requestURI, polypRecording.getPolyp(), DefaultPolypResource.class),
       polypRecording.getStart(), polypRecording.getEnd(), polypRecording.isConfirmed()
+    );
+  }
+  
+  @Override
+  public PolypRecordingInDatasetData toPolypRecordingInDatasetData(PolypRecording polypRecording, String datasetId) {
+    return new PolypRecordingInDatasetData(
+      polypRecording.getId(),
+      UuidAndUri.fromEntity(requestURI, polypRecording.getVideo(), DefaultVideoResource.class),
+      UuidAndUri.fromEntity(requestURI, polypRecording.getPolyp(), DefaultPolypResource.class),
+      polypRecording.getStart(),polypRecording.getEnd(), polypRecording.isConfirmed(),
+      polypRecording.isReviewedInDataset(datasetId)
     );
   }
 

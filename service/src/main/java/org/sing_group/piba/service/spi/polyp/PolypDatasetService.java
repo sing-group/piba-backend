@@ -53,5 +53,7 @@ public interface PolypDatasetService {
 
   public void deletePolypDataset(String datasetId);
 
+  public void markPolypRecordingAsReviewed(String datasetId, int polypRecordingId);
+
 
 }

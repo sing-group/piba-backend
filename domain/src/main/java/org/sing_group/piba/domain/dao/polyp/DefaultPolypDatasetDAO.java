@@ -50,6 +50,8 @@ import org.sing_group.piba.domain.entities.image.Image;
 import org.sing_group.piba.domain.entities.polyp.Polyp;
 import org.sing_group.piba.domain.entities.polyp.PolypDataset;
 import org.sing_group.piba.domain.entities.polyp.PolypInDataset;
+import org.sing_group.piba.domain.entities.polyp.ReviewedPolypRecording;
+import org.sing_group.piba.domain.entities.polyp.ReviewedPolypRecordingId;
 import org.sing_group.piba.domain.entities.polyprecording.PolypRecording;
 
 @Default
@@ -60,9 +62,10 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   protected EntityManager em;
   protected DAOHelper<String, PolypDataset> dh;
   protected DAOHelper<String, Polyp> dhPolyp;
-  protected DAOHelper<String, PolypRecording> dhPolypRecording;
+  protected DAOHelper<Integer, PolypRecording> dhPolypRecording;
   protected DAOHelper<String, Gallery> dhGallery;
   protected DAOHelper<String, Image> dhImage;
+  protected DAOHelper<ReviewedPolypRecordingId, ReviewedPolypRecording> dhReviewedPolypRecording;
 
   public DefaultPolypDatasetDAO() {
     super();
@@ -77,9 +80,10 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   private void createDAOHelper() {
     this.dh = DAOHelper.of(String.class, PolypDataset.class, this.em);
     this.dhPolyp = DAOHelper.of(String.class, Polyp.class, this.em);
-    this.dhPolypRecording = DAOHelper.of(String.class, PolypRecording.class, em);
+    this.dhPolypRecording = DAOHelper.of(Integer.class, PolypRecording.class, em);
     this.dhGallery = DAOHelper.of(String.class, Gallery.class, em);
     this.dhImage = DAOHelper.of(String.class, Image.class, em);
+    this.dhReviewedPolypRecording = DAOHelper.of(ReviewedPolypRecordingId.class, ReviewedPolypRecording.class, em);
   }
 
   @Override
@@ -103,7 +107,7 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
     
     return this.dhPolyp.list(
       ListingOptions.forPage(page, pageSize).unsorted(),
-      DefaultPolypDatasetDAO.<Polyp>createPolypInDatasetPredicateBuilder(dataset, root -> root)
+      DefaultPolypDatasetDAO.<String, Polyp>createPolypInDatasetPredicateBuilder(dataset, root -> root)
     )
     .stream();
   }
@@ -121,7 +125,9 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
         
       return this.dhPolypRecording.list(
         listingOptionsBuilder.sortedBy(SortField.ascending("creationDate")),
-        DefaultPolypDatasetDAO.<PolypRecording>createPolypInDatasetPredicateBuilder(dataset, root -> root.get("polyp"))
+        DefaultPolypDatasetDAO.<Integer, PolypRecording>createPolypInDatasetPredicateBuilder(
+          dataset, root -> root.get("polyp")
+        )
       )
       .stream();
     } else {
@@ -207,8 +213,23 @@ public class DefaultPolypDatasetDAO implements PolypDatasetDAO {
   public void deletePolypDataset(String datasetId) {
     this.dh.removeByKey(datasetId);
   }
+  
+  @Override
+  public void markPolypRecordingAsReviewed(String datasetId, int polypRecordingId) {
+    final PolypRecording polypRecording = this.dhPolypRecording.get(polypRecordingId)
+      .orElseThrow(() -> new IllegalArgumentException("No polyp recording found with id: " + polypRecordingId));
 
-  private static <P> Function<DAOHelper<String, P>.ListQueryContext, Predicate[]> createPolypInDatasetPredicateBuilder(
+    final PolypInDataset polypInDataset = polypRecording.getPolyp().getPolypDatasets()
+      .filter(pid -> pid.getPolypDataset().getId().equals(datasetId))
+      .findAny()
+    .orElseThrow(() -> new IllegalArgumentException("Polyp recording does not belong to dataset: " + datasetId));
+    
+    final ReviewedPolypRecording reviewed = new ReviewedPolypRecording(polypInDataset, polypRecording);
+    
+    this.dhReviewedPolypRecording.persist(reviewed);
+  }
+
+  private static <K, P> Function<DAOHelper<K, P>.ListQueryContext, Predicate[]> createPolypInDatasetPredicateBuilder(
     final PolypDataset dataset, final Function<Root<P>, Expression<Polyp>> getPolypField
   ) {
     return context -> {

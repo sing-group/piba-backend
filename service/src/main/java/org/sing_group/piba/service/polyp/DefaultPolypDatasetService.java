@@ -91,4 +91,9 @@ public class DefaultPolypDatasetService implements PolypDatasetService {
   public void deletePolypDataset(String datasetId) {
     this.polypDatasetDao.deletePolypDataset(datasetId);
   }
+  
+  @Override
+  public void markPolypRecordingAsReviewed(String datasetId, int polypRecordingId) {
+    this.polypDatasetDao.markPolypRecordingAsReviewed(datasetId, polypRecordingId);
+  }
 }

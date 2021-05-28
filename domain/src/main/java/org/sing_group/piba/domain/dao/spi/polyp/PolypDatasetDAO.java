@@ -52,4 +52,6 @@ public interface PolypDatasetDAO {
   public PolypDataset editPolypDataset(PolypDataset polypDataset);
 
   public void deletePolypDataset(String datasetId);
+
+  public void markPolypRecordingAsReviewed(String datasetId, int polypRecordingId);
 }

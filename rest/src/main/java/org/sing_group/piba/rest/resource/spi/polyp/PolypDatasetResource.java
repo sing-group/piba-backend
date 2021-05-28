@@ -42,4 +42,6 @@ public interface PolypDatasetResource {
   public Response createPolypDataset(PolypDatasetEditionData data);
 
   public Response deletePolypDataset(String datasetId);
+
+  public Response markPolypRecordingAsReviewed(String datasetId, int polypRecordingId);
 }
