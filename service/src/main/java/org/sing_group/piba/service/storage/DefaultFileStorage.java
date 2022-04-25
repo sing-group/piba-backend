@@ -35,10 +35,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import javax.annotation.Resource;
@@ -50,14 +54,20 @@ import org.sing_group.piba.service.spi.storage.FileStorage;
 public class DefaultFileStorage implements FileStorage {
 
   private static final String PATH_CONFIG_NAME = "java:global/piba/defaultfilestorage/path";
+  private static final String ORIGINAL_PATH_CONFIG_NAME = "java:global/piba/defaultfilestorage/original";
+
+  private static final Logger LOGGER = Logger.getLogger(DefaultFileStorage.class.getName());
 
   @Resource(name = PATH_CONFIG_NAME)
   private String path;
+  @Resource(name = ORIGINAL_PATH_CONFIG_NAME)
+  private String originalPath;
 
   public DefaultFileStorage() {}
 
-  public DefaultFileStorage(String path) {
+  public DefaultFileStorage(String path, String originalPath) {
     this.path = path;
+    this.originalPath = originalPath;
   }
 
   @Override
@@ -74,8 +84,41 @@ public class DefaultFileStorage implements FileStorage {
     }
   }
 
+  @Override
+  public void storeOriginal(String id, String name, Supplier<InputStream> data) {
+    final Path file;
+
+    if ((file = getOriginalFileForVideo(id, name)) != null) {
+      try (InputStream input = data.get()) {
+        copy(input, file);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
   private Path getFileForId(String id, String format) {
     return getBasePath().resolve(id + "." + format);
+  }
+
+  private Path getOriginalFileForVideo(String id, String name) {
+    final Path p = getOriginalBasePath();
+
+    // The file name comes from the client. Be extra careful
+    Path sanitizedFilename;
+    try {
+      // Convert to absolute path to get rid of path traversal sequences
+      sanitizedFilename = Paths.get(id + "_" + name).toAbsolutePath().getFileName();
+      if (sanitizedFilename == null) {
+        throw new InvalidPathException(name, "Sanitization failed");
+      }
+    } catch (InvalidPathException e) {
+      // Handle the name containing characters invalid for a path (on Unix systems, NUL)
+      // or sanitization going so wrong that we don't have a file name path component
+      sanitizedFilename = Paths.get(id + "_unknown.bin");
+    }
+
+    return p != null ? p.resolve(sanitizedFilename) : null;
   }
 
   private Path getBasePath() {
@@ -89,6 +132,21 @@ public class DefaultFileStorage implements FileStorage {
         )
       );
     }
+    return p;
+  }
+
+  private Path getOriginalBasePath() {
+    final Path p = !this.originalPath.equals("DISABLED") ? Paths.get(this.originalPath) : null;
+
+    if (p != null && (!exists(p) || !isDirectory(p))) {
+      throw new IllegalArgumentException(
+        String.format(
+          "path for original file storage is invalid: %s. Check that you have configured the global resource name '%s' correctly",
+          this.originalPath, ORIGINAL_PATH_CONFIG_NAME
+        )
+      );
+    }
+
     return p;
   }
 
@@ -108,24 +166,39 @@ public class DefaultFileStorage implements FileStorage {
 
   @Override
   public void delete(String id) {
-    walkOverFilesWithId(id)
-      .forEach(
-        path -> {
-          try {
-            Files.delete(path);
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
+    Stream.concat(
+      walkOverFilesWithId(getBasePath(), id),
+      walkOverFilesWithId(getOriginalBasePath(), id)
+    )
+    .forEach(
+      path -> {
+        try {
+          LOGGER.info("Deleting " + path);
+          Files.delete(path);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
         }
-      );
+      }
+    );
   }
 
   @Override
   public Set<String> getAllIds() {
     Set<String> ids = new HashSet<String>();
-    walkOverFiles().forEach(path -> {
-      File file = path.toFile();
-      ids.add(file.getName().split("\\.")[0]);
+    walkOverFiles(getBasePath()).forEach(path -> {
+      final File file = path.toFile();
+      final String filename = file.getName().split("\\.")[0];
+
+      boolean isUUID = true;
+      try {
+        UUID.fromString(filename);
+      } catch (IllegalArgumentException e) {
+        isUUID = false;
+      }
+
+      if (isUUID && file.isFile()) {
+        ids.add(filename);
+      }
     });
     return ids;
   }
@@ -137,18 +210,19 @@ public class DefaultFileStorage implements FileStorage {
 
   @Override
   public Set<String> getFormatsForId(String id) {
-    return walkOverFilesWithId(id)
+    return walkOverFilesWithId(getBasePath(), id)
       .map(path -> getExtension(path.toFile().getName()))
       .collect(toSet());
   }
 
-  private Stream<Path> walkOverFilesWithId(String id) {
-    return walkOverFiles().filter(path -> path.toFile().getName().startsWith(id));
+  private Stream<Path> walkOverFilesWithId(Path basePath, String id) {
+    return walkOverFiles(basePath).filter(path -> path.toFile().getName().startsWith(id));
   }
 
-  private Stream<Path> walkOverFiles() {
+  private Stream<Path> walkOverFiles(Path basePath) {
     try {
-      return walk(getBasePath()).filter(path -> !path.equals(getBasePath()));
+      final Stream<Path> fileStream = basePath != null ? walk(basePath) : Stream.empty();
+      return fileStream.filter(path -> !path.equals(basePath));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

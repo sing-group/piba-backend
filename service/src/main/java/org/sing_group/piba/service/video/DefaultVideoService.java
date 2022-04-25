@@ -24,6 +24,7 @@ package org.sing_group.piba.service.video;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.stream.Stream;
 
@@ -87,7 +88,16 @@ public class DefaultVideoService implements VideoService {
         Video video = videoDao.getVideo(task.getId());
         video.setProcessing(false);
         video.setFps(task.getFps());
-        task.getInput().delete();
+
+        final File inputFile = task.getInput();
+        videoStorage.storeOriginal(task.getId(), task.getOriginalInputFilename(), () -> {
+          try {
+            return new FileInputStream(inputFile);
+          } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+          }
+        });
+        inputFile.delete();
       }
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -116,7 +126,7 @@ public class DefaultVideoService implements VideoService {
         new FileAndFormat("mp4", File.createTempFile("piba_converted_video_", ".mp4"))
       };
 
-      conversionService.convertVideo(new VideoConversionTask(video.getId(), data.getVideoData(), output));
+      conversionService.convertVideo(new VideoConversionTask(video.getId(), data.getVideoData(), data.getVideoFilename(), output));
 
       return video;
     } catch (IOException e) {

@@ -35,12 +35,14 @@ public class VideoConversionTask {
   private String id;
   private Integer fps;
   private File input;
+  private String originalInputFilename;
   private FileAndFormat[] outputs;
   private ConversionTaskStatus status = ConversionTaskStatus.ON_PROGRESS;
 
-  public VideoConversionTask(String id, File input, FileAndFormat ... outputs) {
+  public VideoConversionTask(String id, File input, String originalInputFilename, FileAndFormat ... outputs) {
     this.id = id;
     this.input = input;
+    this.originalInputFilename = originalInputFilename;
     this.outputs = outputs;
   }
 
@@ -58,6 +60,10 @@ public class VideoConversionTask {
 
   public File getInput() {
     return input;
+  }
+
+  public String getOriginalInputFilename() {
+    return originalInputFilename;
   }
   
   public List<FileAndFormat> getOutputs() {

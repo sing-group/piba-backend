@@ -32,6 +32,7 @@ import org.sing_group.piba.rest.entity.RestVideoUploadData;
 public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVideoUploadData> {
 
   private File videoData;
+  private String videoFilename;
   private String title;
   private String observations;
   private String withText;
@@ -57,10 +58,11 @@ public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVi
   }
 
   @Override
-  protected void add(String name, File uploadedFile) {
+  protected void add(String name, File uploadedFile, String filename) {
     switch (name) {
       case "video":
         this.videoData = uploadedFile;
+        this.videoFilename = filename;
         break;
     }
 
@@ -68,7 +70,7 @@ public class RestVideoUploadDataReader extends MultipartMessageBodyReader<RestVi
 
   @Override
   protected RestVideoUploadData build() {
-    return new RestVideoUploadData(this.title, this.observations, this.videoData, this.withText, this.explorationId);
+    return new RestVideoUploadData(this.title, this.observations, this.videoData, this.videoFilename, this.withText, this.explorationId);
   }
 
   @Override

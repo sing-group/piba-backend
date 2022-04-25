@@ -34,8 +34,8 @@ public class RestVideoUploadData extends VideoUploadData implements Serializable
   private static final long serialVersionUID = 1L;
   
   public RestVideoUploadData(
-    String title, String observations, File videoData, String withText, String exploratioId
+    String title, String observations, File videoData, String videoFilename, String withText, String explorationId
   ) {
-    super(title, observations, videoData, withText, exploratioId);
+    super(title, observations, videoData, videoFilename, withText, explorationId);
   }
 }

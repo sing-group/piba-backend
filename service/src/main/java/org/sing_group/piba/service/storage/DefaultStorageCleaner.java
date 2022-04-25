@@ -23,6 +23,7 @@
 package org.sing_group.piba.service.storage;
 
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -44,6 +45,8 @@ import org.sing_group.piba.service.spi.video.VideoService;
 @Startup
 @Singleton
 public class DefaultStorageCleaner implements StorageCleaner {
+
+  private static final Logger LOGGER = Logger.getLogger(DefaultStorageCleaner.class.getName());
 
   @Resource
   private SessionContext sessionContext;
@@ -67,7 +70,10 @@ public class DefaultStorageCleaner implements StorageCleaner {
 
   @Timeout
   public void timeOutHandler() {
+    LOGGER.info("Running storage cleanup");
+
     for (String id : fileStorage.getAllIds()) {
+      LOGGER.fine("Considering " + id + " for removal");
       if (!videoService.existsVideo(id) && !imageService.existsImage(id)) {
         fileStorage.delete(id);
       }

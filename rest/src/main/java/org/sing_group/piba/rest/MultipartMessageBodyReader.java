@@ -45,6 +45,13 @@ import org.apache.commons.fileupload.MultipartStream;
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 public abstract class MultipartMessageBodyReader<T> implements MessageBodyReader<T> {
 
+  // Mostly RFC 2183, 2045 and 2046 conformant regex
+  private static final Pattern MULTIPART_FILENAME_REGEX =
+    Pattern.compile(
+      "^Content-Disposition: ?form-data(?: ?; ?[a-zA-Z0-9-_!#$%&'*+.~^|{}`]+ ?= ?(?:[a-zA-Z0-9-_!#$%&'*+.~^|{}`]+|\\\".*\\\"))* ?; ?filename ?= ?(?:(?<filename>[a-zA-Z0-9-_!#$%&'*+.~^|{}`]+)|\\\"(?<quotedFilename>.*)\\\")",
+      Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
+    );
+
   protected byte[] toByteArray(InputStream stream) throws IOException {
     byte[] buffer = new byte[1024];
     int readed = -1;
@@ -101,8 +108,9 @@ public abstract class MultipartMessageBodyReader<T> implements MessageBodyReader
         while (nextPart) {
           String header = multipartStream.readHeaders();
           String name = getName(header);
-          
-          if (header.contains("filename=")) {
+          String filename = getFilename(header);
+
+          if (filename != null) {
             // it is a file, copy it to a temp file and open an stream to in that when it is closed, the file is 
             // removed
             Path tempFile = Files.createTempFile("http_file_uploaded", "data");
@@ -110,16 +118,14 @@ public abstract class MultipartMessageBodyReader<T> implements MessageBodyReader
             multipartStream.readBodyData(fout);
             fout.close();
 
-            this.add(name, tempFile.toFile());
-
+            this.add(name, tempFile.toFile(), filename);
           } else {
             // it is not a file
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             multipartStream.readBodyData(baos);
             this.add(name, new String(baos.toByteArray()));
           }
-          
-          
+
           nextPart = multipartStream.readBoundary();
         }
       } else {
@@ -143,11 +149,24 @@ public abstract class MultipartMessageBodyReader<T> implements MessageBodyReader
     return name;
   }
 
+  private String getFilename(String headers) {
+    final Matcher matcher = MULTIPART_FILENAME_REGEX.matcher(headers);
+
+    String filename = null;
+    if (matcher.find()) {
+      if ((filename = matcher.group("filename")) == null) {
+        filename = matcher.group("quotedFilename");
+      }
+    }
+
+    return filename;
+  }
+
   // Template methods
   protected abstract void init();
 
   protected abstract void add(String name, String value);
-  protected abstract void add(String name, File uploadedFile);
+  protected abstract void add(String name, File uploadedFile, String filename);
 
   protected abstract T build();
 }

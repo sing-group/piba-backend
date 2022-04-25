@@ -24,9 +24,12 @@ package org.sing_group.piba.service.spi.storage;
 
 import java.io.InputStream;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public interface FileStorage {
   public void store(String id, String format, InputStream data);
+
+  public void storeOriginal(String id, String name, Supplier<InputStream> data);
 
   public InputStream retrieve(String id, String format);
 
