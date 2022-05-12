@@ -70,7 +70,7 @@ public class RestImageUploadDataReader extends MultipartMessageBodyReader<RestIm
   }
 
   @Override
-  protected void add(String name, File uploadedFile) {
+  protected void add(String name, File uploadedFile, String filename) {
     switch (name) {
       case "image":
         this.imageData = uploadedFile;
